@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BSI SYSTEM PRO - Hafiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        .mobile-menu { transition: transform 0.3s ease-in-out; }
+        .mobile-menu.closed { transform: translateX(-100%); }
+        .animate-fade-up { animation: fadeUp 0.4s ease-out; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-900">
+
+    <div id="auth-section" class="flex items-center justify-center min-h-screen p-6">
+        <div class="bg-white p-8 rounded-[2.5rem] shadow-2xl w-full max-w-md border border-slate-100 text-center">
+            <h1 class="text-2xl font-extrabold text-blue-900 tracking-tight uppercase mb-6 italic">BSI SYSTEM PRO</h1>
+            
+            <div id="register-fields" class="hidden space-y-3 mb-3">
+                <div class="flex gap-2">
+                    <input type="text" id="reg-firstname" placeholder="Nama Depan" class="w-1/2 p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none text-sm font-bold uppercase">
+                    <input type="text" id="reg-lastname" placeholder="Nama Belakang" class="w-1/2 p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none text-sm font-bold uppercase">
+                </div>
+                <select id="reg-platoon" class="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none text-sm font-bold">
+                    <option value="">-- Pilih Platun --</option>
+                </select>
+            </div>
+
+            <div class="space-y-3">
+                <input type="email" id="email" placeholder="Email" class="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none text-sm">
+                <input type="password" id="password" placeholder="Kata Laluan" class="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none text-sm">
+            </div>
+
+            <button id="btn-action" class="w-full bg-blue-900 text-white font-black py-4 rounded-2xl mt-6 hover:bg-blue-800 shadow-lg active:scale-95 transition-all uppercase tracking-widest text-xs">Log Masuk</button>
+            <button id="auth-toggle-btn" class="w-full mt-4 text-[10px] text-blue-600 font-black uppercase tracking-widest hover:underline">Daftar Akaun Baru</button>
+        </div>
+    </div>
+
+    <div id="main-dashboard" class="hidden">
+        <nav class="bg-white border-b border-slate-100 p-4 sticky top-0 z-50 shadow-sm">
+            <div class="max-w-5xl mx-auto flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <button id="menu-open" class="md:hidden p-2 text-slate-600 bg-slate-50 rounded-xl">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                    <span class="font-extrabold text-blue-900 italic tracking-tighter text-xl underline decoration-blue-200">BSI-PRO</span>
+                </div>
+                <button id="btn-logout" class="bg-red-50 text-red-600 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest">Logout</button>
+            </div>
+        </nav>
+
+        <div id="mobile-sidebar" class="fixed inset-0 bg-slate-900/60 z-[60] hidden backdrop-blur-sm">
+            <div class="mobile-menu closed bg-white w-72 h-full p-6 flex flex-col shadow-2xl">
+                <button id="menu-close" class="self-end p-2 mb-8 bg-slate-50 rounded-full"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+                <div class="space-y-2 font-black uppercase text-[10px] tracking-[0.2em]">
+                    <button onclick="menuNav('jadual-tugas')" class="block w-full text-left p-4 hover:bg-blue-50 rounded-2xl">Tugasan Hari Ini</button>
+                    <button onclick="menuNav('jadual-induk')" class="block w-full text-left p-4 hover:bg-blue-50 rounded-2xl">Kalendar Tugas (Induk)</button>
+                    <button id="admin-nav-mb" onclick="menuNav('admin')" class="hidden w-full text-left p-4 bg-red-50 text-red-600 rounded-2xl italic border border-red-100">Admin Panel</button>
+                </div>
+            </div>
+        </div>
+
+        <main class="max-w-4xl mx-auto p-4 md:p-8">
+            <div id="dynamic-content"></div>
+        </main>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
+        import { getDatabase, ref, set, get, child, update } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-database.js";
+
+        const firebaseConfig = { apiKey: "AIzaSyCQ9SBXkEILe6PZdmLyGBSFK63XhPM_V7o", authDomain: "bravorians-bsi.firebaseapp.com", databaseURL: "https://bravorians-bsi-default-rtdb.asia-southeast1.firebasedatabase.app", projectId: "bravorians-bsi", storageBucket: "bravorians-bsi.firebasestorage.app", appId: "1:314220494464:web:d3b21e9b742e1db86f7065" };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const rdb = getDatabase(app);
+
+        const JADUAL_2 = { 1: ["ENTRY MC", "ENTRY KA", "ENTRY BAS"], 2: ["EXIT KB", "EXIT SBY#2", "EXIT MA"], 3: ["ENTRY KC", "ENTRY BDL/Autogate", "ENTRY SBY#1"], 4: ["EXIT LORI", "EXIT BAS", "EXIT KD"], 5: ["ENTRY MC", "ENTRY SBY#3", "ENTRY KB"], 6: ["EXIT MA", "EXIT SBY#1", "EXIT KC"], 7: ["ENTRY SBY#2", "ENTRY BAS", "ENTRY KD"], 8: ["EXIT BAS", "EXIT KA", "EXIT SBY#3"], 9: ["ENTRY KA", "ENTRY BAS", "ENTRY MC"], 10: ["EXIT SBY#2", "EXIT MA", "EXIT KB"], 11: ["ENTRY SBY#1", "ENTRY KC", "ENTRY BDL/Autogate"], 12: ["EXIT KD", "EXIT LORI", "EXIT BAS"], 13: ["ENTRY SBY#3", "ENTRY KB", "ENTRY MC"], 14: ["EXIT KC", "EXIT MA", "EXIT SBY#1"], 15: ["ENTRY KD", "ENTRY SBY#2", "ENTRY BAS"], 16: ["EXIT SBY#3", "EXIT BAS", "EXIT KA"], 17: ["ENTRY BAS", "ENTRY MC", "ENTRY KA"], 18: ["EXIT MA", "EXIT KB", "EXIT SBY#2"], 19: ["ENTRY BDL/Autogate", "ENTRY SBY#1", "ENTRY KC"], 20: ["EXIT BAS", "EXIT KD", "EXIT LORI"], 21: ["ENTRY KB", "ENTRY MC", "ENTRY SBY#3"], 22: ["EXIT SBY#1", "EXIT KC", "EXIT MA"], 23: ["ENTRY BAS", "ENTRY KD", "ENTRY SBY#2"], 24: ["EXIT KA", "EXIT SBY#3", "EXIT BAS"] };
+        const PLATOON_START_ROW = { 2: 2, 3: 1, 4: 20, 5: 13, 6: 16, 7: 17, 8: 6, 9: 3, 10: 10, 11: 7, 12: 24, 13: 15, 14: 22, 15: 5, 16: 14, 17: 19, 18: 8, 19: 9, 20: 12, 21: 21, 22: 4, 23: 11, 24: 18, 25: 23 };
+
+        function getDuty(date, platoon) {
+            const base = new Date(2026, 0, 3);
+            date.setHours(0,0,0,0);
+            const diffDays = Math.floor((date - base) / (1000 * 60 * 60 * 24));
+            if (diffDays < 0) return { off: true };
+            const cyclePos = diffDays % 4; 
+            if (cyclePos === 3) return { off: true };
+            const cycleCount = Math.floor(diffDays / 4);
+            const currentRow = ((PLATOON_START_ROW[platoon] + cycleCount - 1) % 24) + 1;
+            return { off: false, shift: ["PETANG", "PAGI", "MALAM"][cyclePos], loc: JADUAL_2[currentRow][cyclePos], row: currentRow };
+        }
+
+        const sel = document.getElementById('reg-platoon');
+        for(let i=2; i<=25; i++) { let opt = document.createElement('option'); opt.value = i; opt.text = "Platun " + i; sel.appendChild(opt); }
+        document.getElementById('menu-open').onclick = () => { document.getElementById('mobile-sidebar').classList.remove('hidden'); setTimeout(() => document.querySelector('.mobile-menu').classList.remove('closed'), 10); };
+        document.getElementById('menu-close').onclick = () => { document.querySelector('.mobile-menu').classList.add('closed'); setTimeout(() => document.getElementById('mobile-sidebar').classList.add('hidden'), 300); };
+        window.menuNav = (p) => { document.getElementById('menu-close').click(); showPage(p); };
+
+        let userData = null;
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const snap = await get(child(ref(rdb), `users/${user.uid}`));
+                if (snap.exists() && snap.val().status === "approved") {
+                    userData = snap.val();
+                    document.getElementById('auth-section').classList.add('hidden');
+                    document.getElementById('main-dashboard').classList.remove('hidden');
+                    const adminBtn = document.getElementById('admin-nav-mb');
+                    if(userData.role === 'admin') adminBtn.classList.remove('hidden');
+                    else adminBtn.classList.add('hidden');
+                    showPage('jadual-tugas');
+                } else { 
+                    signOut(auth); 
+                    if(snap.exists() && snap.val().status === "pending") alert("Akaun anda sedang menunggu kelulusan Admin."); 
+                }
+            } else {
+                document.getElementById('auth-section').classList.remove('hidden');
+                document.getElementById('main-dashboard').classList.add('hidden');
+            }
+        });
+
+        document.getElementById('btn-action').onclick = async () => {
+            const email = document.getElementById('email').value, pass = document.getElementById('password').value;
+            if (document.getElementById('register-fields').classList.contains('hidden')) {
+                try { await signInWithEmailAndPassword(auth, email, pass); } catch(e) { alert("Emel atau Kata Laluan Salah!"); }
+            } else {
+                const fName = document.getElementById('reg-firstname').value.trim().toUpperCase();
+                const lName = document.getElementById('reg-lastname').value.trim().toUpperCase();
+                const p = document.getElementById('reg-platoon').value;
+                if(!fName || !lName || !p) return alert("Sila isi Nama Depan, Nama Belakang dan Platun!");
+                try {
+                    const res = await createUserWithEmailAndPassword(auth, email, pass);
+                    await set(ref(rdb, 'users/' + res.user.uid), { 
+                        firstName: fName, 
+                        lastName: lName, 
+                        fullName: `${fName} ${lName}`,
+                        platoon: parseInt(p), 
+                        role: "user", 
+                        status: "pending" 
+                    });
+                    alert("Pendaftaran Berjaya! Tunggu Admin luluskan."); location.reload();
+                } catch(e) { alert(e.message); }
+            }
+        };
+
+        document.getElementById('auth-toggle-btn').onclick = () => {
+            document.getElementById('register-fields').classList.toggle('hidden');
+            document.getElementById('btn-action').innerText = document.getElementById('register-fields').classList.contains('hidden') ? "Log Masuk" : "Daftar Akaun";
+        };
+
+        document.getElementById('btn-logout').onclick = () => signOut(auth);
+
+        window.showPage = async (page) => {
+            if (page === 'admin' && userData.role !== 'admin') {
+                alert("Akses Dilarang!");
+                return showPage('jadual-tugas');
+            }
+
+            const content = document.getElementById('dynamic-content');
+            content.innerHTML = `<div class="flex justify-center py-20 text-blue-900 animate-pulse font-black uppercase text-xs tracking-widest">Sila Tunggu...</div>`;
+
+            if (page === 'jadual-tugas') {
+                const duty = getDuty(new Date(), userData.platoon);
+                const excelSnap = await get(child(ref(rdb), 'excel_data'));
+                let kaunter = "Menunggu Update Admin...";
+
+                if(excelSnap.exists() && !duty.off){
+                    const dataExcel = excelSnap.val();
+                    const match = dataExcel.find(i => 
+                        String(i.Nama).trim().toUpperCase() === String(userData.fullName).trim().toUpperCase()
+                    );
+                    if(match && match.No_Kaunter) kaunter = match.No_Kaunter;
+                }
+
+                content.innerHTML = `
+                <div class="animate-fade-up">
+                    <div class="bg-white p-6 rounded-[2rem] mb-4 flex justify-between items-center shadow-sm border border-slate-100">
+                        <div><h2 class="text-lg font-black text-slate-800">${userData.firstName} ${userData.lastName}</h2><p class="text-[10px] text-blue-600 font-bold uppercase tracking-widest">Platun ${userData.platoon}</p></div>
+                        <div class="text-right text-[9px] font-black text-slate-400 uppercase leading-none">Akaun<br><span class="text-green-500 font-bold">AKTIF</span></div>
+                    </div>
+                    <div class="bg-blue-900 p-8 rounded-[2.5rem] text-white shadow-2xl relative overflow-hidden text-center">
+                        ${duty.off ? `<h1 class="text-7xl font-black italic opacity-20 py-10 tracking-tighter">REHAT</h1>` : `
+                        <p class="text-blue-300 font-bold uppercase text-[9px] tracking-[0.4em] mb-4">Tugasan Hari Ini</p>
+                        <h1 class="text-4xl font-black mb-1">${duty.loc}</h1>
+                        <p class="text-[10px] text-blue-200 font-bold mb-6 italic tracking-widest">${duty.shift} (BARIS ${duty.row})</p>
+                        <div class="bg-white/5 p-6 rounded-3xl border border-white/10 backdrop-blur-md">
+                            <p class="text-blue-200 text-[9px] font-black uppercase tracking-widest mb-1">No. Kaunter Anda</p>
+                            <h2 class="text-2xl font-black text-white uppercase">${kaunter}</h2>
+                        </div>`}
+                    </div>
+                </div>`;
+
+            } else if (page === 'jadual-induk') {
+                content.innerHTML = `<h2 class="text-[10px] font-black uppercase tracking-[0.3em] mb-6 text-slate-400 text-center underline">Jadual 14 Hari (Induk)</h2><div class="grid grid-cols-2 gap-3" id="induk-grid"></div>`;
+                const grid = document.getElementById('induk-grid');
+                for(let i=0; i<14; i++) {
+                    const d = new Date(); d.setDate(d.getDate() + i);
+                    const res = getDuty(d, userData.platoon);
+                    grid.innerHTML += `
+                    <div class="bg-white p-5 rounded-[2rem] ${res.off ? 'opacity-40 bg-slate-100' : 'shadow-sm animate-fade-up border border-slate-100'} text-center">
+                        <p class="text-[9px] font-bold text-slate-400 uppercase mb-1">${d.toLocaleDateString('ms-MY', {weekday:'short', day:'2-digit'})}</p>
+                        <p class="font-black text-[11px] text-blue-900 uppercase leading-tight">${res.off ? 'REHAT' : res.shift + '<br><span class="text-[9px] text-blue-500 font-extrabold tracking-tighter">' + res.loc + '</span>'}</p>
+                    </div>`;
+                }
+
+            } else if (page === 'admin') {
+                content.innerHTML = `
+                <div class="space-y-4 animate-fade-up">
+                    <div class="bg-white p-6 rounded-[2.5rem] border-2 border-dashed border-blue-100 shadow-sm text-center">
+                        <h3 class="text-[10px] font-black uppercase tracking-widest mb-4 text-blue-900 italic underline">Langkah 1: Update Excel</h3>
+                        <p class="text-[8px] text-slate-400 mb-4 uppercase">Format: Lajur A (Nama) | Lajur B (No_Kaunter)</p>
+                        <input type="file" id="excel-input" accept=".xlsx, .xls" class="block w-full text-xs text-slate-500 file:mr-4 file:py-3 file:px-6 file:rounded-2xl file:border-0 file:text-[10px] file:font-black file:bg-blue-900 file:text-white">
+                    </div>
+                    <div class="bg-blue-50 p-6 rounded-[2.5rem]">
+                        <h3 class="text-[10px] font-black uppercase tracking-widest mb-4 text-blue-900 italic underline text-center">Langkah 2: Kelulusan Pengguna</h3>
+                        <div id="adm-list" class="space-y-2"></div>
+                    </div>
+                </div>`;
+                
+                document.getElementById('excel-input').onchange = (e) => {
+                    const reader = new FileReader();
+                    reader.onload = async (evt) => {
+                        const wb = XLSX.read(evt.target.result, {type:'binary'});
+                        const data = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+                        await set(ref(rdb, 'excel_data'), data);
+                        alert("Excel Berjaya Dikemaskini!");
+                    };
+                    reader.readAsBinaryString(e.target.files[0]);
+                };
+
+                const snap = await get(child(ref(rdb), 'users'));
+                const list = document.getElementById('adm-list');
+                let count = 0;
+                snap.forEach(c => { 
+                    if(c.val().status === 'pending') {
+                        count++;
+                        list.innerHTML += `<div class="p-4 bg-white rounded-2xl flex justify-between items-center shadow-sm border border-blue-100">
+                            <div><p class="text-sm font-black text-slate-800">${c.val().firstName} ${c.val().lastName}</p><p class="text-[9px] font-bold text-blue-600">PLATUN ${c.val().platoon}</p></div>
+                            <button onclick="approveUser('${c.key}')" class="bg-green-600 text-white px-5 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-green-700 active:scale-90 transition-all">Lulus</button>
+                        </div>`;
+                    }
+                });
+                if(count === 0) list.innerHTML = `<p class="text-[9px] text-slate-400 font-bold text-center uppercase tracking-widest">Tiada Permohonan Baru.</p>`;
+            }
+        };
+
+        window.approveUser = async (id) => { 
+            if(confirm("Luluskan pegawai ini?")) {
+                await update(ref(rdb, 'users/' + id), { status: 'approved' }); 
+                showPage('admin'); 
+            }
+        };
+    </script>
+</body>
+</html>
