@@ -141,6 +141,13 @@
         document.getElementById('btn-logout').onclick = () => signOut(auth);
 
         window.showPage = async (page) => {
+              // --- TAMBAH BARIS INI ---
+    // Jika user cuba masuk ke page 'admin' secara paksa tapi role bukan admin
+    if (page === 'admin' && userData.role !== 'admin') {
+        alert("Akses Dilarang! Anda bukan Admin.");
+        return showPage('jadual-tugas'); // Tendang balik ke dashboard
+    }
+    // ------------------------
             const content = document.getElementById('dynamic-content');
             content.innerHTML = `<div class="flex justify-center py-20 text-blue-900 animate-pulse font-bold text-xs uppercase tracking-[0.3em]">Memproses Data...</div>`;
 
