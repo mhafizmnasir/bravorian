@@ -9,73 +9,83 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        .mobile-menu { transition: transform 0.3s ease-in-out; }
+        .mobile-menu.closed { transform: translateX(-100%); }
     </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-900">
 
-    <div id="auth-section" class="flex items-center justify-center min-h-screen p-4">
-        <div class="bg-white p-6 md:p-10 rounded-[2.5rem] shadow-2xl w-full max-w-md border border-slate-100">
+    <div id="auth-section" class="flex items-center justify-center min-h-screen p-6">
+        <div class="bg-white p-8 rounded-[2.5rem] shadow-2xl w-full max-w-md border border-slate-100">
             <div class="text-center mb-8">
-                <div class="w-16 h-16 bg-blue-900 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg shadow-blue-200">
-                    <span class="text-white font-black text-2xl">B</span>
+                <div class="inline-block p-4 bg-blue-50 rounded-2xl mb-4 text-blue-900">
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
                 </div>
-                <h1 class="text-2xl font-extrabold text-slate-800 tracking-tight uppercase">BSI-SYSTEM</h1>
-                <p id="auth-subtitle" class="text-slate-400 text-sm mt-1">Sila log masuk untuk semak tugasan</p>
+                <h1 class="text-2xl font-extrabold text-blue-900 tracking-tight uppercase">BSI SYSTEM PRO</h1>
+                <p id="auth-subtitle" class="text-slate-400 text-sm mt-1 uppercase font-bold tracking-widest text-[10px]">Portal Pengurusan Pegawai</p>
             </div>
             
-            <div id="register-fields" class="hidden space-y-3 mb-4">
-                <div class="grid grid-cols-2 gap-3">
-                    <input type="text" id="reg-fname" placeholder="Nama Depan" class="w-full p-4 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-blue-500 outline-none text-sm font-semibold">
-                    <input type="text" id="reg-lname" placeholder="Nama Belakang" class="w-full p-4 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-blue-500 outline-none text-sm font-semibold">
+            <div id="register-fields" class="hidden space-y-3 mb-3">
+                <div class="grid grid-cols-2 gap-2">
+                    <input type="text" id="reg-fname" placeholder="Nama Depan" class="p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none text-sm w-full">
+                    <input type="text" id="reg-lname" placeholder="Nama Akhir" class="p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none text-sm w-full">
                 </div>
-                <select id="reg-platoon" class="w-full p-4 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-blue-500 outline-none text-sm font-semibold appearance-none">
+                <select id="reg-platoon" class="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none text-sm">
                     <option value="">-- Pilih Platun --</option>
                 </select>
             </div>
 
             <div class="space-y-3">
-                <input type="email" id="email" placeholder="Email" class="w-full p-4 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-blue-500 outline-none text-sm font-semibold">
-                <input type="password" id="password" placeholder="Password" class="w-full p-4 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-blue-500 outline-none text-sm font-semibold">
+                <input type="email" id="email" placeholder="Email Rasmi" class="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none text-sm">
+                <input type="password" id="password" placeholder="Kata Laluan" class="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none text-sm">
             </div>
             
-            <button id="btn-action" class="w-full bg-blue-900 text-white font-bold py-4 rounded-[1.5rem] mt-6 hover:bg-slate-800 transition-all shadow-xl shadow-blue-100 uppercase text-xs tracking-widest">Log Masuk</button>
-            <button id="auth-toggle-btn" class="w-full mt-4 text-xs font-bold text-blue-600 uppercase tracking-tighter">Daftar Akaun Baru</button>
+            <button id="btn-action" class="w-full bg-blue-900 text-white font-bold py-4 rounded-2xl mt-6 hover:bg-blue-800 shadow-lg transition-all active:scale-95 uppercase tracking-widest text-sm">Log Masuk</button>
+            <button id="auth-toggle-btn" class="w-full mt-4 text-xs text-blue-600 font-bold hover:underline">Tiada akaun? Daftar sekarang</button>
         </div>
     </div>
 
     <div id="main-dashboard" class="hidden">
-        <nav class="bg-blue-900 text-white p-4 sticky top-0 z-50 shadow-lg">
-            <div class="max-w-7xl mx-auto flex justify-between items-center px-2">
-                <span class="font-black text-lg italic tracking-tighter">BSI-PRO</span>
-                <div class="hidden md:flex space-x-6 text-[10px] font-black uppercase tracking-widest">
-                    <button onclick="showPage('jadual-tugas')">Tugasan</button>
-                    <button onclick="showPage('jadual-induk')">Jadual Induk</button>
-                    <button id="admin-nav" onclick="showPage('admin')" class="hidden bg-amber-400 text-blue-900 px-3 py-1 rounded-full">Admin</button>
+        <nav class="bg-white border-b border-slate-100 p-4 sticky top-0 z-50 shadow-sm">
+            <div class="max-w-5xl mx-auto flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <button id="menu-open" class="md:hidden p-2 text-slate-600 bg-slate-50 rounded-xl">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                    <span class="font-extrabold text-blue-900 italic tracking-tighter text-xl">BSI-PRO</span>
                 </div>
-                <button id="btn-logout" class="bg-red-500/20 text-red-100 border border-red-500/50 px-4 py-2 rounded-xl text-[10px] font-bold uppercase">Keluar</button>
+                <button id="btn-logout" class="bg-red-50 text-red-600 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest">Keluar</button>
             </div>
         </nav>
 
-        <main class="max-w-4xl mx-auto p-4 md:p-8">
-            <div class="glass-card rounded-[2.5rem] p-6 shadow-sm border border-slate-100 mb-6 flex flex-col md:flex-row justify-between md:items-center space-y-4 md:space-y-0">
-                <div>
-                    <h2 id="welcome-msg" class="text-xl font-extrabold text-slate-800 uppercase tracking-tight"></h2>
-                    <p id="user-sub" class="text-[10px] text-blue-600 font-black uppercase tracking-[0.2em]"></p>
+        <div id="mobile-sidebar" class="fixed inset-0 bg-slate-900/60 z-[60] hidden backdrop-blur-sm">
+            <div class="mobile-menu closed bg-white w-72 h-full p-6 flex flex-col shadow-2xl">
+                <button id="menu-close" class="self-end p-2 mb-8 bg-slate-50 rounded-full"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+                <div class="space-y-3 font-bold uppercase text-[11px] tracking-[0.2em]">
+                    <button onclick="menuNav('jadual-tugas')" class="block w-full text-left p-4 hover:bg-blue-50 rounded-2xl transition-colors">Jadual Tugas</button>
+                    <button onclick="menuNav('jadual-induk')" class="block w-full text-left p-4 hover:bg-blue-50 rounded-2xl transition-colors">Jadual Induk</button>
+                    <button onclick="menuNav('settings')" class="block w-full text-left p-4 hover:bg-blue-50 rounded-2xl transition-colors text-slate-400">Tetapan Profil</button>
+                    <hr class="border-slate-100">
+                    <button id="admin-nav-mb" onclick="menuNav('admin')" class="hidden w-full text-left p-4 bg-red-50 text-red-600 rounded-2xl italic">Admin Panel</button>
                 </div>
-                <div class="bg-blue-50 px-4 py-2 rounded-2xl inline-block self-start md:self-auto">
-                    <p id="current-date-display" class="font-bold text-blue-900 text-sm"></p>
+            </div>
+        </div>
+
+        <main class="max-w-5xl mx-auto p-4 md:p-8">
+            <div class="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100 mb-6 flex justify-between items-center">
+                <div>
+                    <h2 id="welcome-msg" class="text-lg font-extrabold text-slate-800 leading-none mb-1">...</h2>
+                    <p id="user-sub" class="text-[10px] text-blue-600 font-black uppercase tracking-widest"></p>
+                </div>
+                <div class="text-right">
+                    <p class="text-[9px] font-bold text-slate-400 uppercase">Tarikh</p>
+                    <p id="today-date" class="text-xs font-black text-slate-700"></p>
                 </div>
             </div>
 
-            <div id="dynamic-content" class="glass-card rounded-[3rem] shadow-xl p-6 md:p-10 border border-slate-100 min-h-[500px]"></div>
+            <div id="dynamic-content">
+                </div>
         </main>
-        
-        <div class="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] bg-slate-900/90 backdrop-blur-xl rounded-[2rem] p-2 flex justify-around items-center shadow-2xl z-50 border border-white/10 text-white/50 text-[10px] font-bold uppercase">
-            <button onclick="showPage('jadual-tugas')" class="p-3 focus:text-white">Tugasan</button>
-            <button onclick="showPage('jadual-induk')" class="p-3 focus:text-white">Induk</button>
-            <button onclick="showPage('settings')" class="p-3 focus:text-white">Setting</button>
-        </div>
     </div>
 
     <script type="module">
@@ -83,6 +93,7 @@
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, updatePassword } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
         import { getDatabase, ref, set, get, child, update } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-database.js";
 
+        // --- KONFIGURASI FIREBASE ---
         const firebaseConfig = {
         apiKey: "AIzaSyCQ9SBXkEILe6PZdmLyGBSFK63XhPM_V7o",
         authDomain: "bravorians-bsi.firebaseapp.com",
@@ -97,6 +108,7 @@
         const auth = getAuth(app);
         const rdb = getDatabase(app);
 
+        // DATA JADUAL 2
         const JADUAL_2 = {
             1: ["ENTRY MC", "ENTRY KA", "ENTRY BAS"], 2: ["EXIT KB", "EXIT SBY#2", "EXIT MA"],
             3: ["ENTRY KC", "ENTRY BDL/Autogate", "ENTRY SBY#1"], 4: ["EXIT LORI", "EXIT BAS", "EXIT KD"],
@@ -112,10 +124,17 @@
             23: ["ENTRY BAS", "ENTRY KD", "ENTRY SBY#2"], 24: ["EXIT KA", "EXIT SBY#3", "EXIT BAS"]
         };
 
-        const PLATOON_START_ROW = { 2:2, 3:1, 4:20, 5:13, 6:16, 7:17, 8:6, 9:3, 10:10, 11:7, 12:24, 13:15, 14:22, 15:5, 16:14, 17:19, 18:8, 19:9, 20:12, 21:21, 22:4, 23:11, 24:18, 25:23 };
+        const PLATOON_START_ROW = { 2: 2, 3: 1, 4: 20, 5: 13, 6: 16, 7: 17, 8: 6, 9: 3, 10: 10, 11: 7, 12: 24, 13: 15, 14: 22, 15: 5, 16: 14, 17: 19, 18: 8, 19: 9, 20: 12, 21: 21, 22: 4, 23: 11, 24: 18, 25: 23 };
 
+        // UI Handlers
         const sel = document.getElementById('reg-platoon');
         for(let i=2; i<=25; i++) { let opt = document.createElement('option'); opt.value = i; opt.text = "Platun " + i; sel.appendChild(opt); }
+
+        const mobileSidebar = document.getElementById('mobile-sidebar');
+        const menuBody = document.querySelector('.mobile-menu');
+        document.getElementById('menu-open').onclick = () => { mobileSidebar.classList.remove('hidden'); setTimeout(() => menuBody.classList.remove('closed'), 10); };
+        document.getElementById('menu-close').onclick = () => { menuBody.classList.add('closed'); setTimeout(() => mobileSidebar.classList.add('hidden'), 300); };
+        window.menuNav = (p) => { document.getElementById('menu-close').click(); showPage(p); };
 
         let isLogin = true;
         let userData = null;
@@ -124,21 +143,21 @@
             isLogin = !isLogin;
             document.getElementById('register-fields').classList.toggle('hidden');
             document.getElementById('btn-action').innerText = isLogin ? "Log Masuk" : "Daftar Akaun";
-            document.getElementById('auth-toggle-btn').innerText = isLogin ? "Daftar Akaun Baru" : "Log Masuk Sini";
         };
 
         document.getElementById('btn-action').onclick = async () => {
             const email = document.getElementById('email').value;
             const pass = document.getElementById('password').value;
             if (isLogin) {
-                try { await signInWithEmailAndPassword(auth, email, pass); } catch(e) { alert("Ralat: " + e.message); }
+                try { await signInWithEmailAndPassword(auth, email, pass); } catch(e) { alert("Email atau Kata Laluan Salah!"); }
             } else {
-                const f = document.getElementById('reg-fname').value, l = document.getElementById('reg-lname').value, p = document.getElementById('reg-platoon').value;
-                if(!f || !p) return alert("Lengkapkan borang");
+                const f = document.getElementById('reg-fname').value;
+                const p = document.getElementById('reg-platoon').value;
+                if(!f || !p) return alert("Sila isi semua maklumat!");
                 try {
                     const res = await createUserWithEmailAndPassword(auth, email, pass);
-                    await set(ref(rdb, 'users/' + res.user.uid), { firstName: f, lastName: l, fullName: f + " " + l, platoon: parseInt(p), role: "user", status: "pending" });
-                    alert("Berjaya! Tunggu kelulusan."); location.reload();
+                    await set(ref(rdb, 'users/' + res.user.uid), { firstName: f, lastName: document.getElementById('reg-lname').value, platoon: parseInt(p), role: "user", status: "pending" });
+                    alert("Berjaya mendaftar. Sila tunggu kelulusan Admin."); location.reload();
                 } catch(e) { alert(e.message); }
             }
         };
@@ -151,11 +170,11 @@
                     document.getElementById('auth-section').classList.add('hidden');
                     document.getElementById('main-dashboard').classList.remove('hidden');
                     document.getElementById('welcome-msg').innerText = `${userData.firstName} ${userData.lastName}`;
-                    document.getElementById('user-sub').innerText = `Unit Platun ${userData.platoon}`;
-                    document.getElementById('current-date-display').innerText = new Date().toLocaleDateString('ms-MY', { day:'2-digit', month:'short', year:'numeric'});
-                    if(userData.role === 'admin') document.getElementById('admin-nav').classList.remove('hidden');
+                    document.getElementById('user-sub').innerText = `PLATUN ${userData.platoon} | PEGAWAI KP1`;
+                    document.getElementById('today-date').innerText = new Date().toLocaleDateString('ms-MY', { day:'2-digit', month:'short' });
+                    if(userData.role === 'admin') document.getElementById('admin-nav-mb').classList.remove('hidden');
                     showPage('jadual-tugas');
-                } else { signOut(auth); }
+                } else { signOut(auth); if(snap.exists()) alert("Akaun anda belum diaktifkan."); }
             } else {
                 document.getElementById('auth-section').classList.remove('hidden');
                 document.getElementById('main-dashboard').classList.add('hidden');
@@ -165,105 +184,93 @@
         document.getElementById('btn-logout').onclick = () => signOut(auth);
 
         function calculateDuty(targetDate, platoon) {
-            const baseDate = new Date(2026, 0, 3), diffDays = Math.floor((targetDate - baseDate) / (1000 * 60 * 60 * 24));
+            const baseDate = new Date(2026, 0, 3);
+            targetDate.setHours(0,0,0,0);
+            const diffDays = Math.floor((targetDate - baseDate) / (1000 * 60 * 60 * 24));
             if (diffDays < 0) return { off: true };
-            const cycleDay = diffDays % 4; if (cycleDay === 3) return { off: true };
-            const cycleCount = Math.floor(diffDays / 4), startRow = PLATOON_START_ROW[platoon];
-            let currentRow = ((startRow + cycleCount - 1) % 24) + 1;
-            const column = cycleDay, shiftName = ["PETANG", "PAGI", "MALAM"][column], location = JADUAL_2[currentRow][column];
-            return { off: false, shift: shiftName, baris: currentRow, kolum: column + 1, location: location };
+            const cycleDay = diffDays % 4; 
+            if (cycleDay === 3) return { off: true };
+            const cycleCount = Math.floor(diffDays / 4);
+            const currentRow = ((PLATOON_START_ROW[platoon] + cycleCount - 1) % 24) + 1;
+            const shiftName = ["PETANG", "PAGI", "MALAM"][cycleDay];
+            return { off: false, shift: shiftName, baris: currentRow, kolum: cycleDay + 1, location: JADUAL_2[currentRow][cycleDay] };
         }
 
         window.showPage = async (page) => {
             const content = document.getElementById('dynamic-content');
-            content.innerHTML = `<div class="animate-pulse flex space-y-4 flex-col"><div class="h-4 bg-slate-200 rounded w-1/4"></div><div class="h-32 bg-slate-100 rounded-3xl"></div></div>`;
+            content.innerHTML = `<div class="flex justify-center py-20"><div class="animate-spin h-8 w-8 border-4 border-blue-900 border-t-transparent rounded-full"></div></div>`;
 
             if (page === 'jadual-tugas') {
                 const duty = calculateDuty(new Date(), userData.platoon);
                 if (duty.off) {
-                    content.innerHTML = `<div class="text-center py-20"><h1 class="text-8xl font-black text-slate-100 uppercase">OFF</h1><p class="text-slate-400 font-bold uppercase tracking-widest mt-4">Nikmati Cuti Anda</p></div>`;
+                    content.innerHTML = `<div class="bg-white rounded-[2.5rem] p-16 text-center border border-slate-100 shadow-sm"><h1 class="text-7xl font-black text-slate-100 uppercase italic">OFF</h1><p class="text-slate-400 font-bold uppercase tracking-widest text-xs mt-4">Nikmati masa rehat anda</p></div>`;
                 } else {
-                    // Cari data kaunter dari Excel di Realtime Database
                     const excelSnap = await get(child(ref(rdb), 'excel_data'));
-                    let noKaunter = "Belum Diatur";
+                    let counterDetail = "Menunggu data Excel...";
                     if(excelSnap.exists()){
-                        const list = excelSnap.val();
-                        const match = Object.values(list).find(item => item.Nama.toLowerCase().trim() === userData.fullName.toLowerCase().trim());
-                        if(match) noKaunter = match.No_Kaunter;
+                        const match = excelSnap.val().find(item => String(item.Tugasan).trim() == duty.location);
+                        if(match) counterDetail = match.No_Kaunter;
                     }
 
                     content.innerHTML = `
-                        <div class="mb-8"><h2 class="text-2xl font-black text-slate-800 uppercase italic">Tugasan Hari Ini</h2></div>
-                        <div class="grid grid-cols-1 gap-6">
-                            <div class="bg-blue-900 p-8 rounded-[2.5rem] text-white shadow-2xl relative overflow-hidden">
-                                <p class="text-blue-300 font-bold uppercase text-[10px] tracking-widest mb-1">Tugasan Kaunter</p>
-                                <h1 class="text-3xl font-black mb-6 uppercase tracking-tight leading-none">${duty.location}</h1>
-                                <div class="space-y-4">
-                                    <div class="bg-white/10 p-4 rounded-2xl border border-white/5">
-                                        <p class="text-blue-200 text-[10px] font-bold uppercase">No. Kaunter / Kedudukan</p>
-                                        <p class="text-xl font-bold">${noKaunter}</p>
-                                    </div>
-                                    <div class="flex space-x-2">
-                                        <span class="bg-amber-400 text-blue-900 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest">${duty.shift}</span>
-                                        <span class="bg-white/20 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest">Baris ${duty.baris}</span>
-                                    </div>
+                        <div class="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                            <div class="bg-blue-900 p-8 rounded-[2.5rem] text-white shadow-2xl shadow-blue-200 relative overflow-hidden">
+                                <p class="text-blue-300 font-bold uppercase text-[10px] tracking-[0.4em] mb-4">Tugasan Hari Ini</p>
+                                <h1 class="text-4xl font-black mb-2 tracking-tight">${duty.location}</h1>
+                                <div class="flex gap-2 mb-8 font-black text-[9px] tracking-widest uppercase">
+                                    <span class="bg-white/10 px-3 py-1 rounded-lg border border-white/10 italic">${duty.shift}</span>
+                                    <span class="bg-white/10 px-3 py-1 rounded-lg border border-white/10">BARIS ${duty.baris}</span>
                                 </div>
+                                <div class="bg-white/5 p-6 rounded-3xl border border-white/10 backdrop-blur-md">
+                                    <p class="text-blue-200 text-[9px] font-black uppercase tracking-widest mb-2">No. Kaunter / Kod</p>
+                                    <h2 class="text-2xl font-black text-white uppercase">${counterDetail}</h2>
+                                </div>
+                                <div class="absolute -bottom-16 -right-16 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
                             </div>
                         </div>`;
                 }
             } else if (page === 'jadual-induk') {
-                content.innerHTML = `<h2 class="text-xl font-black mb-6 uppercase">Kitaran Kerja 30 Hari</h2><div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="induk-grid"></div>`;
-                const grid = document.getElementById('induk-grid');
-                for(let i=0; i<30; i++){
-                    const d = new Date(); d.setDate(d.getDate() + i); const res = calculateDuty(d, userData.platoon);
-                    grid.innerHTML += `<div class="p-4 border rounded-3xl ${res.off ? 'bg-red-50 border-red-100' : 'bg-green-50 border-green-100'}">
-                        <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">${d.toLocaleDateString('ms-MY', {day:'2-digit', month:'short'})}</p>
-                        <p class="font-black text-sm ${res.off ? 'text-red-600' : 'text-green-700'}">${res.off ? 'OFF' : res.shift}</p>
+                content.innerHTML = `<div class="grid grid-cols-2 gap-3" id="induk-grid"></div>`;
+                for(let i=0; i<14; i++) {
+                    const d = new Date(); d.setDate(d.getDate() + i);
+                    const res = calculateDuty(d, userData.platoon);
+                    document.getElementById('induk-grid').innerHTML += `
+                    <div class="bg-white p-5 rounded-3xl border border-slate-100 text-center ${res.off ? 'opacity-40' : 'shadow-sm'}">
+                        <p class="text-[9px] font-bold text-slate-400 uppercase mb-1">${d.toLocaleDateString('ms-MY', {weekday:'short', day:'2-digit'})}</p>
+                        <p class="font-black text-[11px] ${res.off ? 'text-slate-400' : 'text-blue-900'} uppercase">${res.off ? 'REHAT' : res.shift}</p>
                     </div>`;
                 }
             } else if (page === 'admin') {
                 content.innerHTML = `
-                    <h2 class="text-xl font-black mb-6 uppercase text-red-600">Admin Panel</h2>
-                    <div class="space-y-6">
-                        <div class="p-6 bg-slate-50 rounded-3xl border border-slate-200">
-                            <p class="text-xs font-bold uppercase mb-4">Muat Naik Fail Excel (.xlsx)</p>
-                            <input type="file" id="excel-input" accept=".xlsx, .xls" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-blue-900 file:text-white hover:file:bg-slate-800">
-                            <p class="text-[10px] text-slate-400 mt-3 font-bold uppercase italic">* Kolum Mesti: Nama, Tugasan, No_Kaunter</p>
+                    <div class="space-y-4">
+                        <div class="bg-white p-6 rounded-[2rem] border-2 border-dashed border-blue-100">
+                            <h3 class="text-xs font-black uppercase tracking-widest mb-4 text-blue-900 italic">Muat Naik Data Kaunter</h3>
+                            <input type="file" id="excel-input" accept=".xlsx, .xls" class="block w-full text-xs text-slate-500 file:mr-4 file:py-3 file:px-6 file:rounded-2xl file:border-0 file:text-[10px] file:font-black file:bg-blue-900 file:text-white">
+                            <p class="text-[9px] text-slate-400 mt-3 font-bold uppercase italic">* Sila pastikan kolum bertajuk 'Tugasan' & 'No_Kaunter' wujud.</p>
                         </div>
                         <div id="adm-list" class="space-y-2"></div>
                     </div>`;
                 
-                document.getElementById('excel-input').addEventListener('change', (e) => {
-                    const file = e.target.files[0];
+                document.getElementById('excel-input').onchange = (e) => {
                     const reader = new FileReader();
-                    reader.onload = async (event) => {
-                        const data = new Uint8Array(event.target.result);
-                        const workbook = XLSX.read(data, {type: 'array'});
-                        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                        const jsonData = XLSX.utils.sheet_to_json(firstSheet);
-                        
-                        // Simpan ke Realtime Database
-                        await set(ref(rdb, 'excel_data'), jsonData);
-                        alert("Data Excel Berjaya Dikemaskini!");
+                    reader.onload = async (evt) => {
+                        const wb = XLSX.read(evt.target.result, {type:'binary'});
+                        const data = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+                        await set(ref(rdb, 'excel_data'), data);
+                        alert("Database Kaunter Berjaya Dikemas kini!");
+                        showPage('admin');
                     };
-                    reader.readAsArrayBuffer(file);
-                });
+                    reader.readAsBinaryString(e.target.files[0]);
+                };
 
                 const snap = await get(child(ref(rdb), 'users'));
-                const list = document.getElementById('adm-list');
-                snap.forEach(c => {
-                    const u = c.val(); if(u.status === 'pending') {
-                        list.innerHTML += `<div class="p-4 border rounded-2xl flex justify-between items-center bg-white">
-                            <div><p class="font-bold text-sm">${u.firstName} ${u.lastName}</p><p class="text-[10px] font-bold text-slate-400 uppercase">Platun ${u.platoon}</p></div>
-                            <button onclick="approveUser('${c.key}')" class="bg-green-600 text-white px-4 py-2 rounded-xl text-[10px] font-bold uppercase">Lulus</button>
-                        </div>`;
-                    }
-                });
+                snap.forEach(c => { if(c.val().status === 'pending') {
+                    document.getElementById('adm-list').innerHTML += `<div class="p-4 bg-white rounded-2xl flex justify-between items-center border border-slate-100 shadow-sm"><div><p class="text-sm font-black">${c.val().firstName}</p><p class="text-[9px] font-bold text-blue-600 uppercase">PLATUN ${c.val().platoon}</p></div><button onclick="approve('${c.key}')" class="bg-green-600 text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest">Lulus</button></div>`;
+                }});
             }
         };
 
-        window.approveUser = async (uid) => { await update(ref(rdb, 'users/'+uid), {status:'approved'}); alert('Diluluskan!'); showPage('admin'); };
-        window.updateUserPass = async () => { /* Logic tukar password */ };
+        window.approve = async (id) => { await update(ref(rdb, 'users/'+id), {status:'approved'}); showPage('admin'); };
     </script>
 </body>
 </html>
