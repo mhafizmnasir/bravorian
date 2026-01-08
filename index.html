@@ -11,47 +11,38 @@
         body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
         .mobile-menu { transition: transform 0.3s ease-in-out; }
         .mobile-menu.closed { transform: translateX(-100%); }
-        .animate-fade-up { animation: fadeUp 0.5s ease-out; }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-up { animation: fadeUp 0.4s ease-out; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-900">
 
     <div id="auth-section" class="flex items-center justify-center min-h-screen p-6">
-        <div class="bg-white p-8 rounded-[2.5rem] shadow-2xl w-full max-w-md border border-slate-100">
-            <div class="text-center mb-8">
-                <div class="inline-block p-4 bg-blue-50 rounded-2xl mb-4 text-blue-900">
-                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-                </div>
-                <h1 class="text-2xl font-extrabold text-blue-900 tracking-tight uppercase">BSI SYSTEM PRO</h1>
-                <p id="auth-subtitle" class="text-slate-400 text-[10px] mt-1 uppercase font-black tracking-[0.2em]">SISTEM TUGASAN PEGAWAI</p>
-            </div>
-            
+        <div class="bg-white p-8 rounded-[2.5rem] shadow-2xl w-full max-w-md border border-slate-100 text-center">
+            <h1 class="text-2xl font-extrabold text-blue-900 tracking-tight uppercase mb-6">BSI SYSTEM PRO</h1>
             <div id="register-fields" class="hidden space-y-3 mb-3">
-                <input type="text" id="reg-fname" placeholder="Nama Penuh (Spt MyKad)" class="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none text-sm">
+                <input type="text" id="reg-fname" placeholder="Nama Penuh" class="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none text-sm">
                 <select id="reg-platoon" class="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none text-sm font-bold">
                     <option value="">-- Pilih Platun --</option>
                 </select>
             </div>
-
             <div class="space-y-3">
                 <input type="email" id="email" placeholder="Email" class="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none text-sm">
                 <input type="password" id="password" placeholder="Kata Laluan" class="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none text-sm">
             </div>
-            
             <button id="btn-action" class="w-full bg-blue-900 text-white font-black py-4 rounded-2xl mt-6 hover:bg-blue-800 shadow-lg active:scale-95 transition-all uppercase tracking-widest text-xs">Log Masuk</button>
             <button id="auth-toggle-btn" class="w-full mt-4 text-[10px] text-blue-600 font-black uppercase tracking-widest hover:underline">Daftar Akaun Baru</button>
         </div>
     </div>
 
     <div id="main-dashboard" class="hidden">
-        <nav class="bg-white border-b border-slate-100 p-4 sticky top-0 z-50">
+        <nav class="bg-white border-b border-slate-100 p-4 sticky top-0 z-50 shadow-sm">
             <div class="max-w-5xl mx-auto flex justify-between items-center">
                 <div class="flex items-center gap-3">
                     <button id="menu-open" class="md:hidden p-2 text-slate-600 bg-slate-50 rounded-xl">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
                     </button>
-                    <span class="font-extrabold text-blue-900 italic tracking-tighter text-xl">BSI-PRO</span>
+                    <span class="font-extrabold text-blue-900 italic tracking-tighter text-xl underline decoration-blue-200">BSI-PRO</span>
                 </div>
                 <button id="btn-logout" class="bg-red-50 text-red-600 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest">Logout</button>
             </div>
@@ -61,9 +52,9 @@
             <div class="mobile-menu closed bg-white w-72 h-full p-6 flex flex-col shadow-2xl">
                 <button id="menu-close" class="self-end p-2 mb-8 bg-slate-50 rounded-full"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
                 <div class="space-y-2 font-black uppercase text-[10px] tracking-[0.2em]">
-                    <button onclick="menuNav('jadual-tugas')" class="block w-full text-left p-4 hover:bg-blue-50 rounded-2xl">Jadual Tugas</button>
-                    <button onclick="menuNav('jadual-induk')" class="block w-full text-left p-4 hover:bg-blue-50 rounded-2xl">Kalendar Kerja</button>
-                    <button id="admin-nav-mb" onclick="menuNav('admin')" class="hidden w-full text-left p-4 bg-red-50 text-red-600 rounded-2xl italic">Admin (Update Excel)</button>
+                    <button onclick="menuNav('jadual-tugas')" class="block w-full text-left p-4 hover:bg-blue-50 rounded-2xl">Tugasan Hari Ini</button>
+                    <button onclick="menuNav('jadual-induk')" class="block w-full text-left p-4 hover:bg-blue-50 rounded-2xl">Kalendar Tugas (Induk)</button>
+                    <button id="admin-nav-mb" onclick="menuNav('admin')" class="hidden w-full text-left p-4 bg-red-50 text-red-600 rounded-2xl italic">Admin Panel</button>
                 </div>
             </div>
         </div>
@@ -85,74 +76,33 @@
         projectId: "bravorians-bsi",
         storageBucket: "bravorians-bsi.firebasestorage.app",
         messagingSenderId: "314220494464",
-        appId: "1:314220494464:web:d3b21e9b742e1db86f7065"
-        };
-
+        appId: "1:314220494464:web:d3b21e9b742e1db86f7065" };
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const rdb = getDatabase(app);
 
-        // DATA JADUAL 1 (OFF DAYS 2026)
-        const JADUAL_1_OFF = {
-            0: [2, 6, 10, 14, 18, 22, 26, 30], // Jan
-            1: [3, 7, 11, 15, 19, 23, 27],     // Feb
-            2: [3, 7, 11, 15, 19, 23, 27, 31], // Mac
-            // ... (Akan dikira secara dinamik oleh sistem)
-        };
-
-        const JADUAL_2 = {
-            1: ["ENTRY MC", "ENTRY KA", "ENTRY BAS"], 2: ["EXIT KB", "EXIT SBY#2", "EXIT MA"],
-            3: ["ENTRY KC", "ENTRY BDL/Autogate", "ENTRY SBY#1"], 4: ["EXIT LORI", "EXIT BAS", "EXIT KD"],
-            5: ["ENTRY MC", "ENTRY SBY#3", "ENTRY KB"], 6: ["EXIT MA", "EXIT SBY#1", "EXIT KC"],
-            7: ["ENTRY SBY#2", "ENTRY BAS", "ENTRY KD"], 8: ["EXIT BAS", "EXIT KA", "EXIT SBY#3"],
-            9: ["ENTRY KA", "ENTRY BAS", "ENTRY MC"], 10: ["EXIT SBY#2", "EXIT MA", "EXIT KB"],
-            11: ["ENTRY SBY#1", "ENTRY KC", "ENTRY BDL/Autogate"], 12: ["EXIT KD", "EXIT LORI", "EXIT BAS"],
-            13: ["ENTRY SBY#3", "ENTRY KB", "ENTRY MC"], 14: ["EXIT KC", "EXIT MA", "EXIT SBY#1"],
-            15: ["ENTRY KD", "ENTRY SBY#2", "ENTRY BAS"], 16: ["EXIT SBY#3", "EXIT BAS", "EXIT KA"],
-            17: ["ENTRY BAS", "ENTRY MC", "ENTRY KA"], 18: ["EXIT MA", "EXIT KB", "EXIT SBY#2"],
-            19: ["ENTRY BDL/Autogate", "ENTRY SBY#1", "ENTRY KC"], 20: ["EXIT BAS", "EXIT KD", "EXIT LORI"],
-            21: ["ENTRY KB", "ENTRY MC", "ENTRY SBY#3"], 22: ["EXIT SBY#1", "EXIT KC", "EXIT MA"],
-            23: ["ENTRY BAS", "ENTRY KD", "ENTRY SBY#2"], 24: ["EXIT KA", "EXIT SBY#3", "EXIT BAS"]
-        };
-
+        const JADUAL_2 = { 1: ["ENTRY MC", "ENTRY KA", "ENTRY BAS"], 2: ["EXIT KB", "EXIT SBY#2", "EXIT MA"], 3: ["ENTRY KC", "ENTRY BDL/Autogate", "ENTRY SBY#1"], 4: ["EXIT LORI", "EXIT BAS", "EXIT KD"], 5: ["ENTRY MC", "ENTRY SBY#3", "ENTRY KB"], 6: ["EXIT MA", "EXIT SBY#1", "EXIT KC"], 7: ["ENTRY SBY#2", "ENTRY BAS", "ENTRY KD"], 8: ["EXIT BAS", "EXIT KA", "EXIT SBY#3"], 9: ["ENTRY KA", "ENTRY BAS", "ENTRY MC"], 10: ["EXIT SBY#2", "EXIT MA", "EXIT KB"], 11: ["ENTRY SBY#1", "ENTRY KC", "ENTRY BDL/Autogate"], 12: ["EXIT KD", "EXIT LORI", "EXIT BAS"], 13: ["ENTRY SBY#3", "ENTRY KB", "ENTRY MC"], 14: ["EXIT KC", "EXIT MA", "EXIT SBY#1"], 15: ["ENTRY KD", "ENTRY SBY#2", "ENTRY BAS"], 16: ["EXIT SBY#3", "EXIT BAS", "EXIT KA"], 17: ["ENTRY BAS", "ENTRY MC", "ENTRY KA"], 18: ["EXIT MA", "EXIT KB", "EXIT SBY#2"], 19: ["ENTRY BDL/Autogate", "ENTRY SBY#1", "ENTRY KC"], 20: ["EXIT BAS", "EXIT KD", "EXIT LORI"], 21: ["ENTRY KB", "ENTRY MC", "ENTRY SBY#3"], 22: ["EXIT SBY#1", "EXIT KC", "EXIT MA"], 23: ["ENTRY BAS", "ENTRY KD", "ENTRY SBY#2"], 24: ["EXIT KA", "EXIT SBY#3", "EXIT BAS"] };
         const PLATOON_START_ROW = { 2: 2, 3: 1, 4: 20, 5: 13, 6: 16, 7: 17, 8: 6, 9: 3, 10: 10, 11: 7, 12: 24, 13: 15, 14: 22, 15: 5, 16: 14, 17: 19, 18: 8, 19: 9, 20: 12, 21: 21, 22: 4, 23: 11, 24: 18, 25: 23 };
 
-        // UI Handlers
+        function getDuty(date, platoon) {
+            const base = new Date(2026, 0, 3);
+            date.setHours(0,0,0,0);
+            const diffDays = Math.floor((date - base) / (1000 * 60 * 60 * 24));
+            if (diffDays < 0) return { off: true };
+            const cyclePos = diffDays % 4; 
+            if (cyclePos === 3) return { off: true };
+            const cycleCount = Math.floor(diffDays / 4);
+            const currentRow = ((PLATOON_START_ROW[platoon] + cycleCount - 1) % 24) + 1;
+            return { off: false, shift: ["PETANG", "PAGI", "MALAM"][cyclePos], loc: JADUAL_2[currentRow][cyclePos], row: currentRow };
+        }
+
         const sel = document.getElementById('reg-platoon');
         for(let i=2; i<=25; i++) { let opt = document.createElement('option'); opt.value = i; opt.text = "Platun " + i; sel.appendChild(opt); }
-
-        const mobileSidebar = document.getElementById('mobile-sidebar');
-        const menuBody = document.querySelector('.mobile-menu');
-        document.getElementById('menu-open').onclick = () => { mobileSidebar.classList.remove('hidden'); setTimeout(() => menuBody.classList.remove('closed'), 10); };
-        document.getElementById('menu-close').onclick = () => { menuBody.classList.add('closed'); setTimeout(() => mobileSidebar.classList.add('hidden'), 300); };
+        document.getElementById('menu-open').onclick = () => { document.getElementById('mobile-sidebar').classList.remove('hidden'); setTimeout(() => document.querySelector('.mobile-menu').classList.remove('closed'), 10); };
+        document.getElementById('menu-close').onclick = () => { document.querySelector('.mobile-menu').classList.add('closed'); setTimeout(() => document.getElementById('mobile-sidebar').classList.add('hidden'), 300); };
         window.menuNav = (p) => { document.getElementById('menu-close').click(); showPage(p); };
 
-        let isLogin = true;
         let userData = null;
-
-        document.getElementById('auth-toggle-btn').onclick = () => {
-            isLogin = !isLogin;
-            document.getElementById('register-fields').classList.toggle('hidden');
-            document.getElementById('btn-action').innerText = isLogin ? "Log Masuk" : "Daftar Akaun";
-        };
-
-        document.getElementById('btn-action').onclick = async () => {
-            const email = document.getElementById('email').value;
-            const pass = document.getElementById('password').value;
-            if (isLogin) {
-                try { await signInWithEmailAndPassword(auth, email, pass); } catch(e) { alert("Ralat Log Masuk"); }
-            } else {
-                const f = document.getElementById('reg-fname').value;
-                const p = document.getElementById('reg-platoon').value;
-                if(!f || !p) return alert("Sila isi nama dan platun!");
-                try {
-                    const res = await createUserWithEmailAndPassword(auth, email, pass);
-                    await set(ref(rdb, 'users/' + res.user.uid), { firstName: f, platoon: parseInt(p), role: "user", status: "pending" });
-                    alert("Berjaya mendaftar! Tunggu kelulusan."); location.reload();
-                } catch(e) { alert(e.message); }
-            }
-        };
-
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 const snap = await get(child(ref(rdb), `users/${user.uid}`));
@@ -169,88 +119,81 @@
             }
         });
 
+        document.getElementById('btn-action').onclick = async () => {
+            const email = document.getElementById('email').value, pass = document.getElementById('password').value;
+            if (document.getElementById('register-fields').classList.contains('hidden')) {
+                try { await signInWithEmailAndPassword(auth, email, pass); } catch(e) { alert("Ralat Log Masuk"); }
+            } else {
+                const f = document.getElementById('reg-fname').value, p = document.getElementById('reg-platoon').value;
+                try {
+                    const res = await createUserWithEmailAndPassword(auth, email, pass);
+                    await set(ref(rdb, 'users/' + res.user.uid), { firstName: f, platoon: parseInt(p), role: "user", status: "pending" });
+                    alert("Berjaya mendaftar! Tunggu kelulusan."); location.reload();
+                } catch(e) { alert(e.message); }
+            }
+        };
+
+        document.getElementById('auth-toggle-btn').onclick = () => {
+            document.getElementById('register-fields').classList.toggle('hidden');
+            document.getElementById('btn-action').innerText = document.getElementById('register-fields').classList.contains('hidden') ? "Log Masuk" : "Daftar";
+        };
+
         document.getElementById('btn-logout').onclick = () => signOut(auth);
-
-        // CORE LOGIC - JADUAL 1 & 2
-        function getDuty(date, platoon) {
-            const base = new Date(2026, 0, 3); // 3 Jan 2026 (Sabtu)
-            date.setHours(0,0,0,0);
-            
-            // Logik JADUAL 1 (Bekerja 3 hari, OFF 1 hari)
-            const diffDays = Math.floor((date - base) / (1000 * 60 * 60 * 24));
-            if (diffDays < 0) return { off: true };
-
-            const cyclePos = diffDays % 4; // 0:Petang, 1:Pagi, 2:Malam, 3:OFF
-            if (cyclePos === 3) return { off: true };
-
-            // Logik JADUAL 2 & 3 (Baris bertukar setiap kali habis 1 kitaran/lepas OFF)
-            const cycleCount = Math.floor(diffDays / 4);
-            const startRow = PLATOON_START_ROW[platoon];
-            const currentRow = ((startRow + cycleCount - 1) % 24) + 1;
-            
-            const shiftName = ["PETANG", "PAGI", "MALAM"][cyclePos];
-            const loc = JADUAL_2[currentRow][cyclePos];
-
-            return { off: false, shift: shiftName, row: currentRow, loc: loc, col: cyclePos + 1 };
-        }
 
         window.showPage = async (page) => {
             const content = document.getElementById('dynamic-content');
-            content.innerHTML = `<div class="flex justify-center py-20 animate-spin text-blue-900"><svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg></div>`;
+            content.innerHTML = `<div class="flex justify-center py-20 text-blue-900 animate-pulse font-bold text-xs uppercase tracking-[0.3em]">Memproses Data...</div>`;
 
             if (page === 'jadual-tugas') {
-                const now = new Date();
-                const duty = getDuty(now, userData.platoon);
+                const duty = getDuty(new Date(), userData.platoon);
                 const excelSnap = await get(child(ref(rdb), 'excel_data'));
-                let kaunter = "Tunggu Update Admin...";
-                if(excelSnap.exists()){
+                let kaunter = "Sila Hubungi Admin...";
+                if(excelSnap.exists() && !duty.off){
                     const match = excelSnap.val().find(i => String(i.Tugasan).trim() == duty.loc);
                     if(match) kaunter = match.No_Kaunter;
                 }
-
-                if (duty.off) {
-                    content.innerHTML = `<div class="bg-white rounded-[2.5rem] p-16 text-center shadow-sm border border-slate-100 animate-fade-up"><h1 class="text-8xl font-black text-slate-100 italic">OFF</h1><p class="text-slate-400 font-bold uppercase tracking-widest text-[10px] mt-4">Hari Rehat / Cuti</p></div>`;
-                } else {
-                    content.innerHTML = `
-                    <div class="animate-fade-up">
-                        <div class="bg-white p-6 rounded-[2rem] border border-slate-100 mb-4 flex justify-between items-center">
-                            <div><h2 class="text-lg font-black text-slate-800 uppercase">${userData.firstName}</h2><p class="text-[10px] text-blue-600 font-black tracking-widest uppercase">PLATUN ${userData.platoon} | KP1</p></div>
-                            <div class="text-right text-[10px] font-black text-slate-400 uppercase leading-none">Status<br><span class="text-green-500 italic">Bekerja</span></div>
-                        </div>
-                        <div class="bg-blue-900 p-8 rounded-[2.5rem] text-white shadow-2xl relative overflow-hidden">
-                            <p class="text-blue-300 font-bold uppercase text-[9px] tracking-[0.4em] mb-4">Tugasan Hari Ini</p>
-                            <h1 class="text-4xl font-black mb-1">${duty.loc}</h1>
-                            <div class="flex gap-2 mb-8 font-black text-[9px] tracking-widest uppercase italic">
-                                <span class="bg-white/10 px-3 py-1 rounded-lg border border-white/10">${duty.shift}</span>
-                                <span class="bg-white/10 px-3 py-1 rounded-lg border border-white/10">BARIS ${duty.row}</span>
-                            </div>
-                            <div class="bg-white/5 p-6 rounded-3xl border border-white/10 backdrop-blur-md">
-                                <p class="text-blue-200 text-[9px] font-black uppercase tracking-widest mb-1">Lokasi / Kaunter</p>
-                                <h2 class="text-2xl font-black text-white uppercase">${kaunter}</h2>
-                            </div>
-                        </div>
-                    </div>`;
-                }
+                content.innerHTML = `
+                <div class="animate-fade-up">
+                    <div class="bg-white p-6 rounded-[2rem] mb-4 flex justify-between items-center shadow-sm border border-slate-100">
+                        <div><h2 class="text-lg font-black text-slate-800">${userData.firstName}</h2><p class="text-[10px] text-blue-600 font-bold uppercase tracking-widest">Platun ${userData.platoon}</p></div>
+                        <div class="text-right text-[9px] font-black text-slate-400 uppercase leading-none">Status<br><span class="text-green-500 italic">APPROVED</span></div>
+                    </div>
+                    <div class="bg-blue-900 p-8 rounded-[2.5rem] text-white shadow-2xl relative overflow-hidden text-center">
+                        ${duty.off ? `<h1 class="text-7xl font-black italic opacity-20 py-10 tracking-tighter">REHAT</h1>` : `
+                        <p class="text-blue-300 font-bold uppercase text-[9px] tracking-[0.4em] mb-4">Tugasan Hari Ini</p>
+                        <h1 class="text-4xl font-black mb-1">${duty.loc}</h1>
+                        <p class="text-[10px] text-blue-200 font-bold mb-6 italic tracking-widest">BARIS ${duty.row} | ${duty.shift}</p>
+                        <div class="bg-white/5 p-6 rounded-3xl border border-white/10 backdrop-blur-md text-center">
+                            <p class="text-blue-200 text-[9px] font-black uppercase tracking-widest mb-1">Kod Kaunter</p>
+                            <h2 class="text-2xl font-black text-white uppercase">${kaunter}</h2>
+                        </div>`}
+                    </div>
+                </div>`;
             } else if (page === 'jadual-induk') {
-                content.innerHTML = `<h2 class="text-xs font-black uppercase tracking-[0.3em] mb-6 text-slate-400">Kalendar 14 Hari</h2><div class="grid grid-cols-2 gap-3" id="induk-grid"></div>`;
+                content.innerHTML = `<h2 class="text-[10px] font-black uppercase tracking-[0.3em] mb-6 text-slate-400">Kalendar Tugas (Induk)</h2><div class="grid grid-cols-2 gap-3" id="induk-grid"></div>`;
+                const grid = document.getElementById('induk-grid');
                 for(let i=0; i<14; i++) {
                     const d = new Date(); d.setDate(d.getDate() + i);
                     const res = getDuty(d, userData.platoon);
-                    document.getElementById('induk-grid').innerHTML += `
-                    <div class="bg-white p-5 rounded-3xl border border-slate-100 ${res.off ? 'opacity-40' : 'shadow-sm animate-fade-up'} text-center">
-                        <p class="text-[9px] font-bold text-slate-400 uppercase mb-1">${d.toLocaleDateString('ms-MY', {weekday:'short', day:'2-digit', month:'short'})}</p>
-                        <p class="font-black text-[11px] ${res.off ? 'text-slate-400' : 'text-blue-900'} uppercase">${res.off ? 'REHAT' : res.shift}</p>
+                    grid.innerHTML += `
+                    <div class="bg-white p-5 rounded-[2rem] ${res.off ? 'opacity-40 bg-slate-100' : 'shadow-sm animate-fade-up border border-slate-100'} text-center">
+                        <p class="text-[9px] font-bold text-slate-400 uppercase mb-1">${d.toLocaleDateString('ms-MY', {weekday:'short', day:'2-digit'})}</p>
+                        <p class="font-black text-[11px] text-blue-900 uppercase leading-tight">${res.off ? 'REHAT' : res.shift + '<br><span class="text-[9px] text-blue-500 font-extrabold tracking-tighter">' + res.loc + '</span>'}</p>
                     </div>`;
                 }
             } else if (page === 'admin') {
                 content.innerHTML = `
                 <div class="space-y-4 animate-fade-up">
-                    <div class="bg-blue-50 p-6 rounded-[2.5rem] border-2 border-dashed border-blue-200">
-                        <h3 class="text-[10px] font-black uppercase tracking-widest mb-4 text-blue-900">Update Lokasi Kaunter (Excel)</h3>
-                        <input type="file" id="excel-input" class="block w-full text-xs text-slate-500 file:mr-4 file:py-3 file:px-6 file:rounded-2xl file:border-0 file:text-[10px] file:font-black file:bg-blue-900 file:text-white">
-                        <p class="text-[9px] text-blue-400 mt-4 font-bold italic uppercase tracking-tighter">* Sila pastikan lajur bertajuk 'Tugasan' dan 'No_Kaunter' wujud.</p>
+                    <div class="bg-white p-6 rounded-[2.5rem] border-2 border-dashed border-blue-100 shadow-sm">
+                        <h3 class="text-[10px] font-black uppercase tracking-widest mb-4 text-blue-900 italic underline">Langkah 1: Muat Naik Excel</h3>
+                        <input type="file" id="excel-input" accept=".xlsx, .xls" class="block w-full text-xs text-slate-500 file:mr-4 file:py-3 file:px-6 file:rounded-2xl file:border-0 file:text-[10px] file:font-black file:bg-blue-900 file:text-white">
                     </div>
-                    <div id="adm-list" class="space-y-2"></div>
+                    <div class="bg-blue-50 p-6 rounded-[2.5rem]">
+                        <h3 class="text-[10px] font-black uppercase tracking-widest mb-4 text-blue-900 italic underline">Langkah 2: Kelulusan Pendaftaran</h3>
+                        <div id="adm-list" class="space-y-2">
+                            <p class="text-[9px] text-blue-400 font-bold text-center italic">Menyemak permohonan baru...</p>
+                        </div>
+                    </div>
                 </div>`;
                 
                 document.getElementById('excel-input').onchange = (e) => {
@@ -265,13 +208,29 @@
                 };
 
                 const snap = await get(child(ref(rdb), 'users'));
-                snap.forEach(c => { if(c.val().status === 'pending') {
-                    document.getElementById('adm-list').innerHTML += `<div class="p-4 bg-white rounded-2xl flex justify-between items-center border border-slate-100 shadow-sm animate-fade-up"><div><p class="text-sm font-black">${c.val().firstName}</p><p class="text-[9px] font-bold text-blue-600 uppercase">PLATUN ${c.val().platoon}</p></div><button onclick="approve('${c.key}')" class="bg-green-600 text-white px-5 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest">Lulus</button></div>`;
-                }});
+                const list = document.getElementById('adm-list');
+                list.innerHTML = "";
+                let count = 0;
+                snap.forEach(c => { 
+                    if(c.val().status === 'pending') {
+                        count++;
+                        list.innerHTML += `<div class="p-4 bg-white rounded-2xl flex justify-between items-center shadow-sm border border-blue-100">
+                            <div><p class="text-sm font-black text-slate-800">${c.val().firstName}</p><p class="text-[9px] font-bold text-blue-600">PLATUN ${c.val().platoon}</p></div>
+                            <button onclick="approveUser('${c.key}')" class="bg-green-600 text-white px-5 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-green-700 active:scale-95 transition-all">Lulus</button>
+                        </div>`;
+                    }
+                });
+                if(count === 0) list.innerHTML = `<p class="text-[9px] text-slate-400 font-bold text-center uppercase tracking-widest">Tiada permohonan baru.</p>`;
             }
         };
 
-        window.approve = async (id) => { await update(ref(rdb, 'users/'+id), {status:'approved'}); showPage('admin'); };
+        window.approveUser = async (id) => { 
+            if(confirm("Luluskan pendaftaran pegawai ini?")){
+                await update(ref(rdb, 'users/'+id), {status:'approved'}); 
+                alert("Pegawai telah diluluskan!");
+                showPage('admin'); 
+            }
+        };
     </script>
 </body>
 </html>
