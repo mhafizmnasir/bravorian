@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ms">
 <head>
     <meta charset="UTF-8">
@@ -80,7 +80,14 @@
         import { getDatabase, ref, set, get, child, update, onValue } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-database.js";
 
         // GANTIKAN DENGAN CONFIG ANDA SENDIRI
-        const firebaseConfig = { apiKey: "AIzaSyCQ9SBXkEILe6PZdmLyGBSFK63XhPM_V7o", authDomain: "bravorians-bsi.firebaseapp.com", databaseURL: "https://bravorians-bsi-default-rtdb.asia-southeast1.firebasedatabase.app", projectId: "bravorians-bsi", storageBucket: "bravorians-bsi.firebasestorage.app", appId: "1:314220494464:web:d3b21e9b742e1db86f7065" };
+        const firebaseConfig = {
+        apiKey: "AIzaSyCQ9SBXkEILe6PZdmLyGBSFK63XhPM_V7o",
+        authDomain: "bravorians-bsi.firebaseapp.com",
+        databaseURL: "https://bravorians-bsi-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "bravorians-bsi",
+        storageBucket: "bravorians-bsi.firebasestorage.app",
+        messagingSenderId: "314220494464",
+        appId: "1:314220494464:web:d3b21e9b742e1db86f7065" };
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const rdb = getDatabase(app);
@@ -257,5 +264,4 @@
                         <h3 class="text-[10px] font-black uppercase text-blue-900 mb-4 underline italic">Broadcast Pengumuman</h3>
                         <input type="text" id="ann-input" placeholder="Tulis mesej di sini..." class="w-full p-4 bg-slate-50 rounded-2xl text-xs mb-2 outline-none">
                         <div class="flex gap-2">
-                            <button onclick="updateAnn()" class="w-full bg-blue-900 text-white text-[9px] font-black py-3 rounded-xl uppercase">Update</button>
-                            <button onclick="clearAnn()" class="w-full bg-slate-200 text-slate-600 text-[9px] font-black py-3 rounded-xl uppercase"
+                            <button onclick="updateAnn()" class="w-full bg-blue-900 text-white text-[9px] font-black
