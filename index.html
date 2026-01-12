@@ -608,6 +608,43 @@
                 sel.appendChild(o);
             }
         }
+
+                    // Pastikan navigasi sidebar berfungsi dengan betul
+        document.getElementById('nav-today').onclick = () => {
+            showPage('jadual-tugas');
+            closeMenu();
+        };
+        
+        document.getElementById('nav-calendar').onclick = () => {
+            showPage('jadual-induk');
+            closeMenu();
+        };
+        
+        document.getElementById('nav-leave-gantian').onclick = () => {
+            showPage('leave-gantian');
+            closeMenu();
+        };
+        
+        document.getElementById('nav-leave-rekod').onclick = () => {
+            showPage('leave-rekod');
+            closeMenu();
+        };
+        
+        document.getElementById('nav-leave-timeoff').onclick = () => {
+            showPage('leave-timeoff');
+            closeMenu();
+        };
+        
+        document.getElementById('admin-nav').onclick = () => {
+            showPage('admin');
+            closeMenu();
+        };
+
+        // Memastikan sidebar tertutup apabila klik di luar (kawasan gelap)
+        sidebar.onclick = (e) => {
+            if (e.target === sidebar) closeMenu();
+        };
+            
     </script>
 </body>
 </html>
