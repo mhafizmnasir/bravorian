@@ -6,9 +6,9 @@
     <title>BRAVORIAN - BSI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -23,29 +23,24 @@
     <div id="loading-overlay" class="fixed inset-0 bg-white z-[100] flex items-center justify-center">
         <div class="text-center">
             <div class="w-12 h-12 border-4 border-blue-900 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <p class="text-[10px] font-black uppercase tracking-widest text-blue-900">Menyambung ke Sistem...</p>
+            <p class="text-[10px] font-black uppercase tracking-widest text-blue-900">Menyambung...</p>
         </div>
     </div>
 
     <div id="auth-section" class="hidden flex items-center justify-center min-h-screen p-6">
         <div class="bg-white p-8 rounded-[2.5rem] shadow-2xl w-full max-w-md border border-slate-100 text-center">
             <h1 class="text-2xl font-extrabold text-blue-900 tracking-tight uppercase mb-6 italic">BRAVORIAN</h1>
-            
             <div id="register-fields" class="hidden space-y-3 mb-3">
                 <div class="flex gap-2">
                     <input type="text" id="reg-firstname" placeholder="Nama Depan" class="w-1/2 p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none text-sm font-bold uppercase">
                     <input type="text" id="reg-lastname" placeholder="Nama Belakang" class="w-1/2 p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none text-sm font-bold uppercase">
                 </div>
-                <select id="reg-platoon" class="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none text-sm font-bold">
-                    <option value="">-- Pilih Platun --</option>
-                </select>
+                <select id="reg-platoon" class="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none text-sm font-bold"></select>
             </div>
-
             <div class="space-y-3">
                 <input type="email" id="email" placeholder="Email" class="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none text-sm">
                 <input type="password" id="password" placeholder="Kata Laluan" class="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none text-sm">
             </div>
-
             <button id="btn-action" class="w-full bg-blue-900 text-white font-black py-4 rounded-2xl mt-6 hover:bg-blue-800 shadow-lg active:scale-95 transition-all uppercase tracking-widest text-xs">Log Masuk</button>
             <button id="auth-toggle-btn" class="w-full mt-4 text-[10px] text-blue-600 font-black uppercase tracking-widest hover:underline">Daftar Akaun Baru</button>
             <button id="btn-forgot-pw" class="w-full mt-2 text-[10px] text-slate-400 font-bold uppercase tracking-widest hover:underline">Lupa Kata Laluan?</button>
@@ -64,7 +59,6 @@
                 <button id="btn-logout" class="bg-red-50 text-red-600 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest">Logout</button>
             </div>
         </nav>
-
         <div id="mobile-sidebar" class="fixed inset-0 bg-slate-900/60 z-[60] hidden backdrop-blur-sm">
             <div class="mobile-menu closed bg-white w-72 h-full p-6 flex flex-col shadow-2xl">
                 <button id="menu-close" class="self-end p-2 mb-8 bg-slate-50 rounded-full"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
@@ -75,15 +69,14 @@
                 </div>
             </div>
         </div>
-
         <main class="max-w-4xl mx-auto p-4 md:p-8">
             <div id="dynamic-content"></div>
         </main>
     </div>
 
     <script>
-        // CONFIGURASI FIREBASE
-        const firebaseConfig = { 
+        // Gunakan versi SDK yang paling serasi
+        var firebaseConfig = { 
             apiKey: "AIzaSyCQ9SBXkEILe6PZdmLyGBSFK63XhPM_V7o", 
             authDomain: "bravorians-bsi.firebaseapp.com", 
             databaseURL: "https://bravorians-bsi-default-rtdb.asia-southeast1.firebasedatabase.app", 
@@ -93,218 +86,162 @@
         };
         
         firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const rdb = firebase.database();
+        var auth = firebase.auth();
+        var rdb = firebase.database();
 
-        // LOGIK JADUAL (KEKAL SEPERTI ASAL)
-        const JADUAL_2 = { 1: ["ENTRY MC", "ENTRY KA", "ENTRY BAS"], 2: ["EXIT KB", "EXIT SBY#2", "EXIT MA"], 3: ["ENTRY KC", "ENTRY BDL/Autogate", "ENTRY SBY#1"], 4: ["EXIT LORI", "EXIT BAS", "EXIT KD"], 5: ["ENTRY MC", "ENTRY SBY#3", "ENTRY KB"], 6: ["EXIT MA", "EXIT SBY#1", "EXIT KC"], 7: ["ENTRY SBY#2", "ENTRY BAS", "ENTRY KD"], 8: ["EXIT BAS", "EXIT KA", "EXIT SBY#3"], 9: ["ENTRY KA", "ENTRY BAS", "ENTRY MC"], 10: ["EXIT SBY#2", "EXIT MA", "EXIT KB"], 11: ["ENTRY SBY#1", "ENTRY KC", "ENTRY BDL/Autogate"], 12: ["EXIT KD", "EXIT LORI", "EXIT BAS"], 13: ["ENTRY SBY#3", "ENTRY KB", "ENTRY MC"], 14: ["EXIT KC", "EXIT MA", "EXIT SBY#1"], 15: ["ENTRY KD", "ENTRY SBY#2", "ENTRY BAS"], 16: ["EXIT SBY#3", "EXIT BAS", "EXIT KA"], 17: ["ENTRY BAS", "ENTRY MC", "ENTRY KA"], 18: ["EXIT MA", "EXIT KB", "EXIT SBY#2"], 19: ["ENTRY BDL/Autogate", "ENTRY SBY#1", "ENTRY KC"], 20: ["EXIT BAS", "EXIT KD", "EXIT LORI"], 21: ["ENTRY KB", "ENTRY MC", "ENTRY SBY#3"], 22: ["EXIT SBY#1", "EXIT KC", "EXIT MA"], 23: ["ENTRY BAS", "ENTRY KD", "ENTRY SBY#2"], 24: ["EXIT KA", "EXIT SBY#3", "EXIT BAS"] };
-        const PLATOON_START_ROW = { 2: 2, 3: 1, 4: 20, 5: 13, 6: 16, 7: 17, 8: 6, 9: 3, 10: 10, 11: 7, 12: 24, 13: 15, 14: 22, 15: 5, 16: 14, 17: 19, 18: 8, 19: 9, 20: 12, 21: 21, 22: 4, 23: 11, 24: 18, 25: 23 };
+        var JADUAL_2 = { 1: ["ENTRY MC", "ENTRY KA", "ENTRY BAS"], 2: ["EXIT KB", "EXIT SBY#2", "EXIT MA"], 3: ["ENTRY KC", "ENTRY BDL/Autogate", "ENTRY SBY#1"], 4: ["EXIT LORI", "EXIT BAS", "EXIT KD"], 5: ["ENTRY MC", "ENTRY SBY#3", "ENTRY KB"], 6: ["EXIT MA", "EXIT SBY#1", "EXIT KC"], 7: ["ENTRY SBY#2", "ENTRY BAS", "ENTRY KD"], 8: ["EXIT BAS", "EXIT KA", "EXIT SBY#3"], 9: ["ENTRY KA", "ENTRY BAS", "ENTRY MC"], 10: ["EXIT SBY#2", "EXIT MA", "EXIT KB"], 11: ["ENTRY SBY#1", "ENTRY KC", "ENTRY BDL/Autogate"], 12: ["EXIT KD", "EXIT LORI", "EXIT BAS"], 13: ["ENTRY SBY#3", "ENTRY KB", "ENTRY MC"], 14: ["EXIT KC", "EXIT MA", "EXIT SBY#1"], 15: ["ENTRY KD", "ENTRY SBY#2", "ENTRY BAS"], 16: ["EXIT SBY#3", "EXIT BAS", "EXIT KA"], 17: ["ENTRY BAS", "ENTRY MC", "ENTRY KA"], 18: ["EXIT MA", "EXIT KB", "EXIT SBY#2"], 19: ["ENTRY BDL/Autogate", "ENTRY SBY#1", "ENTRY KC"], 20: ["EXIT BAS", "EXIT KD", "EXIT LORI"], 21: ["ENTRY KB", "ENTRY MC", "ENTRY SBY#3"], 22: ["EXIT SBY#1", "EXIT KC", "EXIT MA"], 23: ["ENTRY BAS", "ENTRY KD", "ENTRY SBY#2"], 24: ["EXIT KA", "EXIT SBY#3", "EXIT BAS"] };
+        var PLATOON_START_ROW = { 2: 2, 3: 1, 4: 20, 5: 13, 6: 16, 7: 17, 8: 6, 9: 3, 10: 10, 11: 7, 12: 24, 13: 15, 14: 22, 15: 5, 16: 14, 17: 19, 18: 8, 19: 9, 20: 12, 21: 21, 22: 4, 23: 11, 24: 18, 25: 23 };
 
         function getDuty(date, platoon) {
-            const base = new Date(2026, 0, 3);
-            const target = new Date(date);
+            var base = new Date(2026, 0, 3);
+            var target = new Date(date);
             target.setHours(0,0,0,0);
-            const diffDays = Math.floor((target - base) / (1000 * 60 * 60 * 24));
+            var diffDays = Math.floor((target - base) / (1000 * 60 * 60 * 24));
             if (diffDays < 0) return { off: true };
-            const cyclePos = diffDays % 4; 
+            var cyclePos = diffDays % 4; 
             if (cyclePos === 3) return { off: true };
-            const cycleCount = Math.floor(diffDays / 4);
-            const currentRow = ((PLATOON_START_ROW[platoon] + cycleCount - 1) % 24) + 1;
+            var cycleCount = Math.floor(diffDays / 4);
+            var currentRow = ((PLATOON_START_ROW[platoon] + cycleCount - 1) % 24) + 1;
             return { off: false, shift: ["PETANG", "PAGI", "MALAM"][cyclePos], loc: JADUAL_2[currentRow][cyclePos], row: currentRow };
         }
 
-        let userData = null;
+        var userData = null;
 
-        // AUTH LISTENER
-        auth.onAuthStateChanged(async (user) => {
+        auth.onAuthStateChanged(function(user) {
             document.getElementById('loading-overlay').classList.add('hidden');
             if (user) {
-                const snap = await rdb.ref(`users/${user.uid}`).get();
-                if (snap.exists()) {
-                    const data = snap.val();
-                    if (data.status === "approved") {
-                        userData = data;
-                        document.getElementById('auth-section').classList.add('hidden');
-                        document.getElementById('main-dashboard').classList.remove('hidden');
-                        if(userData.role === 'admin') document.getElementById('admin-nav-mb').classList.remove('hidden');
-                        showPage('jadual-tugas');
-                    } else {
-                        alert("Akaun anda masih menunggu kelulusan Admin.");
-                        auth.signOut();
+                rdb.ref('users/' + user.uid).once('value').then(function(snap) {
+                    if (snap.exists()) {
+                        var data = snap.val();
+                        if (data.status === "approved") {
+                            userData = data;
+                            document.getElementById('auth-section').classList.add('hidden');
+                            document.getElementById('main-dashboard').classList.remove('hidden');
+                            if(userData.role === 'admin') document.getElementById('admin-nav-mb').classList.remove('hidden');
+                            showPage('jadual-tugas');
+                        } else {
+                            alert("Menunggu kelulusan Admin.");
+                            auth.signOut();
+                        }
                     }
-                } else {
-                    auth.signOut();
-                }
+                });
             } else {
                 document.getElementById('auth-section').classList.remove('hidden');
                 document.getElementById('main-dashboard').classList.add('hidden');
             }
         });
 
-        // ACTIONS
-        document.getElementById('btn-action').onclick = async () => {
-            const email = document.getElementById('email').value.trim();
-            const pass = document.getElementById('password').value;
-            
+        document.getElementById('btn-action').onclick = function() {
+            var email = document.getElementById('email').value.trim();
+            var pass = document.getElementById('password').value;
             if (document.getElementById('register-fields').classList.contains('hidden')) {
-                try { await auth.signInWithEmailAndPassword(email, pass); } 
-                catch(e) { alert("Emel atau Kata Laluan Salah!"); }
+                auth.signInWithEmailAndPassword(email, pass).catch(function(e) { alert("Emel/Katalaluan Salah!"); });
             } else {
-                const fName = document.getElementById('reg-firstname').value.trim().toUpperCase();
-                const lName = document.getElementById('reg-lastname').value.trim().toUpperCase();
-                const p = document.getElementById('reg-platoon').value;
-                if(!fName || !lName || !p || !email || !pass) return alert("Sila lengkapkan semua maklumat!");
-                
-                try {
-                    const res = await auth.createUserWithEmailAndPassword(email, pass);
-                    await rdb.ref('users/' + res.user.uid).set({ 
-                        firstName: fName, lastName: lName, fullName: `${fName} ${lName}`,
+                var fName = document.getElementById('reg-firstname').value.trim().toUpperCase();
+                var lName = document.getElementById('reg-lastname').value.trim().toUpperCase();
+                var p = document.getElementById('reg-platoon').value;
+                if(!fName || !lName || !p || !email || !pass) return alert("Lengkapkan maklumat!");
+                auth.createUserWithEmailAndPassword(email, pass).then(function(res) {
+                    rdb.ref('users/' + res.user.uid).set({ 
+                        firstName: fName, lastName: lName, fullName: fName + " " + lName,
                         platoon: parseInt(p), role: "user", status: "pending" 
                     });
-                    alert("Pendaftaran Berjaya! Sila maklumkan Admin.");
-                    await auth.signOut();
+                    alert("Berjaya! Tunggu Admin luluskan.");
+                    auth.signOut();
                     location.reload();
-                } catch(e) { alert(e.message); }
+                }).catch(function(e) { alert(e.message); });
             }
         };
 
-        document.getElementById('btn-forgot-pw').onclick = async () => {
-            const email = document.getElementById('email').value.trim();
-            if (!email) return alert("Sila masukkan emel anda.");
-            try {
-                await auth.sendPasswordResetEmail(email);
-                alert("Pautan set semula kata laluan telah dihantar ke emel anda.");
-            } catch(e) { alert("Ralat: " + e.message); }
+        document.getElementById('btn-forgot-pw').onclick = function() {
+            var email = document.getElementById('email').value.trim();
+            if (!email) return alert("Masukkan emel.");
+            auth.sendPasswordResetEmail(email).then(function() { alert("Emel set semula dihantar."); });
         };
 
-        // NAVIGATION & UI
-        document.getElementById('auth-toggle-btn').onclick = () => {
-            const isReg = document.getElementById('register-fields').classList.toggle('hidden');
-            document.getElementById('btn-action').innerText = isReg ? "Daftar Akaun" : "Log Masuk";
-            document.getElementById('auth-toggle-btn').innerText = isReg ? "Log Masuk" : "Daftar Akaun Baru";
-        };
-
-        document.getElementById('menu-open').onclick = () => {
-            document.getElementById('mobile-sidebar').classList.remove('hidden');
-            setTimeout(() => document.querySelector('.mobile-menu').classList.remove('closed'), 10);
-        };
-
-        document.getElementById('menu-close').onclick = () => {
-            document.querySelector('.mobile-menu').classList.add('closed');
-            setTimeout(() => document.getElementById('mobile-sidebar').classList.add('hidden'), 300);
-        };
-
-        document.getElementById('btn-logout').onclick = () => auth.signOut();
-        document.getElementById('nav-today').onclick = () => { menuClose(); showPage('jadual-tugas'); };
-        document.getElementById('nav-calendar').onclick = () => { menuClose(); showPage('jadual-induk'); };
-        document.getElementById('admin-nav-mb').onclick = () => { menuClose(); showPage('admin'); };
-
-        function menuClose() { document.getElementById('menu-close').click(); }
-
-        async function showPage(page) {
-            const content = document.getElementById('dynamic-content');
-            content.innerHTML = `<div class="flex justify-center py-20 animate-pulse font-black text-xs text-blue-900">MEMUATKAN...</div>`;
+        function showPage(page) {
+            var content = document.getElementById('dynamic-content');
+            content.innerHTML = '<div class="text-center py-20 animate-pulse font-black text-xs text-blue-900 uppercase">Memuatkan...</div>';
 
             if (page === 'jadual-tugas') {
-                const duty = getDuty(new Date(), userData.platoon);
-                const excelSnap = await rdb.ref('excel_data').get();
-                let kaunter = "BELUM DIKEMASKINI";
-                
-                if(excelSnap.exists() && !duty.off){
-                    const match = excelSnap.val().find(i => String(i.Nama).trim().toUpperCase() === userData.fullName);
-                    if(match) kaunter = match.No_Kaunter;
-                }
-
-                // Feature: Rakan Setugas
-                let rakanHtml = "";
-                if (!duty.off) {
-                    const allUsersSnap = await rdb.ref('users').get();
-                    let rakanList = [];
-                    allUsersSnap.forEach(snap => {
-                        const user = snap.val();
-                        if (user.fullName !== userData.fullName && user.status === 'approved') {
-                            const rDuty = getDuty(new Date(), user.platoon);
-                            if (rDuty.loc === duty.loc && rDuty.shift === duty.shift) {
-                                rakanList.push(user.fullName);
-                            }
-                        }
-                    });
-                    if (rakanList.length > 0) {
-                        rakanHtml = `<div class="mt-6 text-left"><p class="text-[9px] font-black text-slate-400 uppercase mb-2 tracking-widest">Rakan Setugas (Zon Sama)</p><div class="flex flex-wrap gap-2">${rakanList.map(n => `<span class="bg-white/10 text-white border border-white/20 px-3 py-1 rounded-lg text-[9px] font-bold">${n}</span>`).join('')}</div></div>`;
+                var duty = getDuty(new Date(), userData.platoon);
+                rdb.ref('excel_data').once('value').then(function(excelSnap) {
+                    var kaunter = "BELUM DIKEMASKINI";
+                    if(excelSnap.exists() && !duty.off){
+                        var match = excelSnap.val().find(function(i) { return String(i.Nama).trim().toUpperCase() === userData.fullName; });
+                        if(match) kaunter = match.No_Kaunter;
                     }
-                }
 
-                content.innerHTML = `
-                <div class="animate-fade-up">
-                    <div class="bg-white p-6 rounded-[2rem] mb-4 flex justify-between items-center shadow-sm border border-slate-100">
-                        <div><h2 class="text-lg font-black text-slate-800">${userData.fullName}</h2><p class="text-[10px] text-blue-600 font-bold uppercase">Platun ${userData.platoon}</p></div>
-                        <div class="text-[9px] font-black text-green-500 uppercase">Aktif</div>
-                    </div>
-                    <div class="bg-blue-900 p-8 rounded-[2.5rem] text-white shadow-2xl text-center">
-                        ${duty.off ? `<h1 class="text-7xl font-black italic opacity-20 py-10">OFF</h1>` : `
-                        <p class="text-blue-300 font-bold uppercase text-[9px] tracking-widest mb-4">Tugasan Hari Ini</p>
-                        <h1 class="text-4xl font-black mb-1">${duty.loc}</h1>
-                        <p class="text-[10px] text-blue-200 font-bold mb-6">${duty.shift} (BARIS ${duty.row})</p>
-                        <div class="bg-white/10 p-6 rounded-3xl border border-white/10 backdrop-blur-md">
-                            <p class="text-blue-200 text-[9px] font-black uppercase mb-1">No. Kaunter</p>
-                            <h2 class="text-3xl font-black text-white">${kaunter}</h2>
-                        </div>
-                        ${rakanHtml}`}
-                    </div>
-                </div>`;
+                    rdb.ref('users').once('value').then(function(allUsersSnap) {
+                        var rakanList = [];
+                        if (!duty.off) {
+                            allUsersSnap.forEach(function(snap) {
+                                var u = snap.val();
+                                if (u.fullName !== userData.fullName && u.status === 'approved') {
+                                    var rDuty = getDuty(new Date(), u.platoon);
+                                    if (rDuty.loc === duty.loc && rDuty.shift === duty.shift) rakanList.push(u.fullName);
+                                }
+                            });
+                        }
+                        var rakanHtml = rakanList.length > 0 ? '<div class="mt-6 text-left"><p class="text-[9px] font-black text-slate-400 uppercase mb-2 tracking-widest">Rakan Setugas</p><div class="flex flex-wrap gap-2">' + rakanList.map(function(n){ return '<span class="bg-white/10 text-white border border-white/20 px-3 py-1 rounded-lg text-[9px] font-bold">'+n+'</span>'; }).join('') + '</div></div>' : '';
 
+                        content.innerHTML = '<div class="animate-fade-up"><div class="bg-white p-6 rounded-[2rem] mb-4 flex justify-between items-center shadow-sm border border-slate-100"><div><h2 class="text-lg font-black text-slate-800">'+userData.fullName+'</h2><p class="text-[10px] text-blue-600 font-bold uppercase">Platun '+userData.platoon+'</p></div><div class="text-[9px] font-black text-green-500 uppercase">Aktif</div></div><div class="bg-blue-900 p-8 rounded-[2.5rem] text-white shadow-2xl text-center">' + (duty.off ? '<h1 class="text-7xl font-black italic opacity-20 py-10">OFF</h1>' : '<p class="text-blue-300 font-bold uppercase text-[9px] tracking-widest mb-4">Tugasan Hari Ini</p><h1 class="text-4xl font-black mb-1">'+duty.loc+'</h1><p class="text-[10px] text-blue-200 font-bold mb-6">'+duty.shift+' (BARIS '+duty.row+')</p><div class="bg-white/10 p-6 rounded-3xl border border-white/10 backdrop-blur-md"><p class="text-blue-200 text-[9px] font-black uppercase mb-1">No. Kaunter</p><h2 class="text-3xl font-black text-white">'+kaunter+'</h2></div>' + rakanHtml) + '</div></div>';
+                    });
+                });
             } else if (page === 'jadual-induk') {
-                content.innerHTML = `<div class="grid grid-cols-2 gap-3" id="induk-grid"></div>`;
-                const grid = document.getElementById('induk-grid');
-                for(let i=0; i<14; i++) {
-                    const d = new Date(); d.setDate(d.getDate() + i);
-                    const res = getDuty(d, userData.platoon);
-                    grid.innerHTML += `
-                    <div class="bg-white p-5 rounded-[2rem] ${res.off ? 'opacity-40' : 'shadow-sm border border-slate-100'} text-center">
-                        <p class="text-[9px] font-bold text-slate-400 uppercase mb-1">${d.toLocaleDateString('ms-MY', {weekday:'short', day:'2-digit'})}</p>
-                        <p class="font-black text-[11px] text-blue-900 uppercase">${res.off ? 'OFF' : res.shift + '<br><span class="text-blue-500">' + res.loc + '</span>'}</p>
-                    </div>`;
+                var gridHtml = '<div class="grid grid-cols-2 gap-3">';
+                for(var i=0; i<14; i++) {
+                    var d = new Date(); d.setDate(d.getDate() + i);
+                    var res = getDuty(d, userData.platoon);
+                    gridHtml += '<div class="bg-white p-5 rounded-[2rem] '+(res.off ? 'opacity-40' : 'shadow-sm border border-slate-100')+' text-center"><p class="text-[9px] font-bold text-slate-400 uppercase mb-1">'+d.toLocaleDateString('ms-MY', {weekday:'short', day:'2-digit'})+'</p><p class="font-black text-[11px] text-blue-900 uppercase">'+(res.off ? 'OFF' : res.shift + '<br><span class="text-blue-500">' + res.loc + '</span>')+'</p></div>';
                 }
+                content.innerHTML = gridHtml + '</div>';
             } else if (page === 'admin') {
-                content.innerHTML = `<div class="space-y-4">
-                    <div class="bg-white p-6 rounded-[2.5rem] border-2 border-dashed border-blue-100 text-center">
-                        <input type="file" id="excel-input" accept=".xlsx, .xls" class="text-xs">
-                    </div>
-                    <div id="adm-list" class="space-y-2"></div>
-                </div>`;
-                
-                document.getElementById('excel-input').onchange = (e) => {
-                    const reader = new FileReader();
-                    reader.onload = async (evt) => {
-                        const wb = XLSX.read(evt.target.result, {type:'binary'});
-                        const data = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
-                        await rdb.ref('excel_data').set(data);
-                        alert("Excel dikemaskini!");
+                content.innerHTML = '<div class="space-y-4"><div class="bg-white p-6 rounded-[2.5rem] border-2 border-dashed border-blue-100 text-center"><input type="file" id="excel-input" accept=".xlsx, .xls" class="text-xs"></div><div id="adm-list" class="space-y-2"></div></div>';
+                document.getElementById('excel-input').onchange = function(e) {
+                    var reader = new FileReader();
+                    reader.onload = function(evt) {
+                        var wb = XLSX.read(evt.target.result, {type:'binary'});
+                        var data = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+                        rdb.ref('excel_data').set(data).then(function() { alert("Excel dikemaskini!"); });
                     };
                     reader.readAsBinaryString(e.target.files[0]);
                 };
-
-                const snap = await rdb.ref('users').get();
-                const list = document.getElementById('adm-list');
-                snap.forEach(c => { 
-                    if(c.val().status === 'pending') {
-                        const div = document.createElement('div');
-                        div.className = "p-4 bg-white rounded-2xl flex justify-between items-center border border-blue-100";
-                        div.innerHTML = `<div><p class="text-sm font-black">${c.val().fullName}</p></div>`;
-                        const btn = document.createElement('button');
-                        btn.className = "bg-green-600 text-white px-4 py-2 rounded-xl text-[9px] font-black uppercase";
-                        btn.innerText = "Lulus";
-                        btn.onclick = async () => { await rdb.ref('users/' + c.key).update({ status: 'approved' }); showPage('admin'); };
-                        div.appendChild(btn);
-                        list.appendChild(div);
-                    }
+                rdb.ref('users').once('value').then(function(snap) {
+                    var list = document.getElementById('adm-list');
+                    snap.forEach(function(c) { 
+                        if(c.val().status === 'pending') {
+                            var div = document.createElement('div');
+                            div.className = "p-4 bg-white rounded-2xl flex justify-between items-center border border-blue-100";
+                            div.innerHTML = '<div><p class="text-sm font-black">'+c.val().fullName+'</p></div>';
+                            var btn = document.createElement('button');
+                            btn.className = "bg-green-600 text-white px-4 py-2 rounded-xl text-[9px] font-black uppercase";
+                            btn.innerText = "Lulus";
+                            btn.onclick = function() { rdb.ref('users/' + c.key).update({ status: 'approved' }).then(function() { showPage('admin'); }); };
+                            div.appendChild(btn);
+                            list.appendChild(div);
+                        }
+                    });
                 });
             }
         }
 
-        const sel = document.getElementById('reg-platoon');
-        for(let i=2; i<=25; i++) { 
-            let opt = document.createElement('option'); 
-            opt.value = i; opt.text = "Platun " + i; 
-            sel.appendChild(opt); 
-        
+        // Dropdown & Menu Actions
+        var sel = document.getElementById('reg-platoon');
+        for(var i=2; i<=25; i++) { 
+            var opt = document.createElement('option'); opt.value = i; opt.text = "Platun " + i; sel.appendChild(opt); 
+        }
+        document.getElementById('auth-toggle-btn').onclick = function() {
+            var isReg = document.getElementById('register-fields').classList.toggle('hidden');
+            document.getElementById('btn-action').innerText = isReg ? "Daftar Akaun" : "Log Masuk";
+            document.getElementById('auth-toggle-btn').innerText = isReg ? "Log Masuk" : "Daftar Akaun Baru";
+        };
+        document.getElementById('menu-open').onclick = function() { document.getElementById('mobile-sidebar').classList.remove('hidden'); setTimeout(function(){ document.querySelector('.mobile-menu').classList.remove('closed'); }, 10); };
+        document.getElementById('menu-close').onclick = function() { document.querySelector('.mobile-menu').classList.add('closed'); setTimeout(function(){ document.getElementById('mobile-sidebar').classList.add('hidden'); }, 300); };
+        document.getElementById('btn-logout').onclick = function() { auth.signOut(); };
+        document.getElementById('nav-today').onclick = function() { document.getElementById('menu-close').click(); showPage('jadual-tugas'); };
+        document.getElementById('nav-calendar').onclick = function() { document.getElementById('menu-close').click(); showPage('jadual-induk'); };
+        document.getElementById('admin-nav-mb').onclick = function() { document.getElementById('menu-close').click(); showPage('admin'); };
+    </script>
+</body>
+</html>
