@@ -61,10 +61,6 @@
                 <div class="mb-10 pt-4"><h2 class="text-[9px] font-black text-blue-900 uppercase tracking-[0.3em] opacity-40 italic">Menu Utama</h2></div>
                 <div class="space-y-1 font-black text-[11px] uppercase text-slate-600 tracking-widest">
                     <button id="nav-home" class="block w-full text-left p-4 hover:bg-blue-50 rounded-2xl transition-all">Jadual Saya</button>
-                    <div id="admin-nav-section" class="hidden mt-6 pt-6 border-t border-slate-100">
-                        <p class="text-[8px] font-black text-red-500 mb-2 px-4 uppercase tracking-widest">Admin Control</p>
-                        <button id="nav-admin" class="block w-full text-left p-4 bg-red-50 text-red-600 rounded-2xl italic border border-red-100">Monitor Semua Nota</button>
-                    </div>
                 </div>
                 <div class="mt-auto pt-6 border-t border-slate-50 text-center">
                     <button id="btn-logout" class="text-[9px] font-black text-slate-400 uppercase hover:text-red-600">Log Keluar</button>
@@ -72,7 +68,9 @@
             </div>
         </div>
 
-        <main class="max-w-4xl mx-auto p-4 md:p-8"><div id="dynamic-content" class="space-y-12"></div></main>
+        <main class="max-w-4xl mx-auto p-4 md:p-8">
+            <div id="dynamic-content" class="space-y-12 pb-24"></div>
+        </main>
     </div>
 
     <script type="module">
@@ -92,14 +90,12 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        // DATA JADUAL (KEKAL)
         const JADUAL_2 = { 1: ["ENTRY MC", "ENTRY KA", "ENTRY BAS"], 2: ["EXIT KB", "EXIT SBY#2", "EXIT MA"], 3: ["ENTRY KC", "ENTRY BDL/Autogate", "ENTRY SBY#1"], 4: ["EXIT LORI", "EXIT BAS", "EXIT KD"], 5: ["ENTRY MC", "ENTRY SBY#3", "ENTRY KB"], 6: ["EXIT MA", "EXIT SBY#1", "EXIT KC"], 7: ["ENTRY SBY#2", "ENTRY BAS", "ENTRY KD"], 8: ["EXIT BAS", "EXIT KA", "EXIT SBY#3"], 9: ["ENTRY KA", "ENTRY BAS", "ENTRY MC"], 10: ["EXIT SBY#2", "EXIT MA", "EXIT KB"], 11: ["ENTRY SBY#1", "ENTRY KC", "ENTRY BDL/Autogate"], 12: ["EXIT KD", "EXIT LORI", "EXIT BAS"], 13: ["ENTRY SBY#3", "ENTRY KB", "ENTRY MC"], 14: ["EXIT KC", "EXIT MA", "EXIT SBY#1"], 15: ["ENTRY KD", "ENTRY SBY#2", "ENTRY BAS"], 16: ["EXIT SBY#3", "EXIT BAS", "EXIT KA"], 17: ["ENTRY BAS", "ENTRY MC", "ENTRY KA"], 18: ["EXIT MA", "EXIT KB", "EXIT SBY#2"], 19: ["ENTRY BDL/Autogate", "ENTRY SBY#1", "ENTRY KC"], 20: ["EXIT BAS", "EXIT KD", "EXIT LORI"], 21: ["ENTRY KB", "ENTRY MC", "ENTRY SBY#3"], 22: ["EXIT SBY#1", "EXIT KC", "EXIT MA"], 23: ["ENTRY BAS", "ENTRY KD", "ENTRY SBY#2"], 24: ["EXIT KA", "EXIT SBY#3", "EXIT BAS"] };
         const START_ROW = { 1:1, 2:2, 3:1, 4:20, 5:13, 6:16, 7:17, 8:6, 9:3, 10:10, 11:7, 12:24, 13:15, 14:22, 15:5, 16:14, 17:19, 18:8, 19:9, 20:12, 21:21, 22:4, 23:11, 24:18, 25:23 };
 
         let userData = null;
         let authMode = 'login';
 
-        // AUTH MONITOR
         onAuthStateChanged(auth, async (user) => {
             document.getElementById('loading-overlay').classList.add('hidden');
             if (user) {
@@ -109,9 +105,12 @@
                     document.getElementById('auth-section').classList.add('hidden');
                     document.getElementById('main-dashboard').classList.remove('hidden');
                     document.getElementById('user-initial').innerText = userData.firstName[0];
-                    if(userData.role === 'admin') document.getElementById('admin-nav-section').classList.remove('hidden');
                     renderYearlyCalendar();
-                } else { alert("Akaun belum diluluskan Admin."); signOut(auth); }
+                } else { 
+                    alert("Akaun belum diluluskan Admin."); 
+                    signOut(auth);
+                    location.reload(); 
+                }
             } else {
                 document.getElementById('auth-section').classList.remove('hidden');
                 document.getElementById('main-dashboard').classList.add('hidden');
@@ -135,14 +134,14 @@
             let html = "";
             const months = ["JANUARI", "FEBRUARI", "MAC", "APRIL", "MEI", "JUN", "JULAI", "OGOS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DISEMBER"];
             for (let m = 0; m < 12; m++) {
-                html += `<div class="month-group"><h3 class="text-blue-900 font-black text-xs mb-4 uppercase tracking-[0.4em] border-l-4 border-blue-900 pl-3">${months[m]}</h3><div class="space-y-2">`;
+                html += `<div class="month-group"><h3 class="text-blue-900 font-black text-xs mb-4 uppercase tracking-[0.4em] border-l-4 border-blue-900 pl-3">${months[m]} 2026</h3><div class="space-y-2">`;
                 let days = new Date(2026, m + 1, 0).getDate();
                 for (let d = 1; d <= days; d++) {
                     const dateStr = `2026-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
                     const dty = getDuty(new Date(2026, m, d), userData.platoon);
                     const border = dty.isOff ? 'border-slate-200 opacity-50' : (dty.shift === 'PAGI' ? 'border-yellow-400' : (dty.shift === 'PETANG' ? 'border-blue-500' : 'border-indigo-900'));
                     html += `<div onclick="addNote('${dateStr}')" class="bg-white p-4 rounded-2xl border-l-4 ${border} shadow-sm flex justify-between items-center active:scale-95 transition-all">
-                        <div class="flex flex-col"><span class="text-[8px] font-black text-slate-400 uppercase">${d} ${months[m].substring(0,3)}</span><span class="text-[10px] font-black text-blue-900 uppercase">${dty.location}</span></div>
+                        <div class="flex flex-col"><span class="text-[8px] font-black text-slate-400 uppercase">${d} ${months[m].substring(0,3)}</span><span class="text-[10px] font-black text-blue-900 uppercase tracking-tight">${dty.location}</span></div>
                         <div class="text-right"><span class="text-[9px] font-black uppercase ${dty.isOff ? 'text-slate-300' : 'text-blue-600'}">${dty.shift}</span>
                         ${notes[dateStr] ? `<p class="text-[7px] bg-red-50 text-red-600 px-2 py-0.5 rounded-full font-bold mt-1 italic uppercase">${notes[dateStr]}</p>` : ''}</div></div>`;
                 }
@@ -151,34 +150,11 @@
             cont.innerHTML = html;
         }
 
-        async function renderAdminMonitor() {
-            const cont = document.getElementById('dynamic-content');
-            const usersSnap = await get(ref(db, 'users'));
-            const notesSnap = await get(ref(db, 'notes'));
-            const users = usersSnap.val(); const notes = notesSnap.val();
-            let html = `<div class="space-y-6"><h1 class="text-xl font-black text-red-600 uppercase italic border-b-2 border-red-100 pb-2">Admin Monitor</h1>`;
-            for (let uid in users) {
-                if(notes && notes[uid]) {
-                    html += `<div class="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm">
-                        <h2 class="text-xs font-black text-slate-800 uppercase mb-3">${users[uid].fullName} (Platun ${users[uid].platoon})</h2>
-                        <div class="grid grid-cols-1 gap-2">`;
-                    for (let date in notes[uid]) {
-                        html += `<div class="flex justify-between text-[9px] bg-slate-50 p-3 rounded-xl border border-slate-100">
-                            <span class="font-bold text-slate-400">${date}</span><span class="font-black text-red-600 italic uppercase">${notes[uid][date]}</span></div>`;
-                    }
-                    html += `</div></div>`;
-                }
-            }
-            cont.innerHTML = html + "</div>";
-            closeMenu();
-        }
-
         window.addNote = async (date) => {
             const val = prompt("Tambah Nota (" + date + "):");
             if (val !== null) { await update(ref(db, `notes/${auth.currentUser.uid}`), { [date]: val }); renderYearlyCalendar(); }
         };
 
-        // AUTH ACTIONS
         document.getElementById('btn-action').onclick = async () => {
             const email = document.getElementById('email').value.trim();
             const pass = document.getElementById('password').value;
@@ -192,7 +168,7 @@
                 try {
                     const res = await createUserWithEmailAndPassword(auth, email, pass);
                     await set(ref(db, 'users/' + res.user.uid), { firstName: fn, lastName: ln, fullName: fn + " " + ln, platoon: parseInt(plt), role: "user", status: "pending" });
-                    alert("Berjaya mendaftar! Tunggu kelulusan Admin."); signOut(auth);
+                    alert("Berjaya mendaftar! Tunggu kelulusan Admin."); signOut(auth); location.reload();
                 } catch(e) { alert(e.message); }
             }
         };
@@ -212,8 +188,7 @@
         document.getElementById('menu-open').onclick = () => { sidebar.classList.remove('hidden'); setTimeout(() => container.classList.remove('closed'), 10); };
         sidebar.onclick = (e) => { if (e.target === sidebar) closeMenu(); };
         document.getElementById('nav-home').onclick = () => { renderYearlyCalendar(); closeMenu(); };
-        document.getElementById('nav-admin').onclick = renderAdminMonitor;
-        document.getElementById('btn-logout').onclick = () => signOut(auth);
+        document.getElementById('btn-logout').onclick = () => { signOut(auth); location.reload(); };
     </script>
 </body>
 </html>
