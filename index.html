@@ -386,16 +386,16 @@
         document.getElementById('admin-nav').onclick = () => { showAdminPage(); closeMenu(); };
         document.getElementById('btn-logout').onclick = () => { if(confirm("Log keluar?")) signOut(auth); };
 
-                                        // Jam Live Sebaris: HARI • TARIKH • MASA
+                                                // Jam Live Sebaris: HARI PENUH • TARIKH • MASA
         setInterval(() => {
             const clockEl = document.getElementById('live-clock');
             if(clockEl) {
                 const now = new Date();
-                const hari = now.toLocaleDateString('ms-MY', { weekday: 'short' }).toUpperCase();
+                // Tukar 'short' kepada 'long' untuk nama hari penuh
+                const hari = now.toLocaleDateString('ms-MY', { weekday: 'long' }).toUpperCase();
                 const tarikh = now.toLocaleDateString('ms-MY', { day: '2-digit', month: 'short' }).toUpperCase();
                 const masa = now.toLocaleTimeString('ms-MY', { hour12: false });
                 
-                // Paparan sebaris dengan pemisah dot
                 clockEl.innerHTML = `
                     <span class="text-[9px] font-black text-blue-600 tracking-tighter">
                         ${hari} • ${tarikh} • ${masa}
