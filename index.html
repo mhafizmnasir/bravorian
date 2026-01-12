@@ -2,94 +2,248 @@
 <html lang="ms">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>BRAVORIAN - BSI</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        .mobile-menu { transition: transform 0.3s ease-in-out; }
+        .mobile-menu.closed { transform: translateX(-100%); }
     </style>
 </head>
-<body class="bg-slate-50 min-h-screen">
+<body class="bg-slate-50 min-h-screen text-slate-900">
 
-    <div id="app-loading" class="fixed inset-0 bg-white z-[100] flex flex-col items-center justify-center p-6 text-center">
+    <div id="loading-overlay" class="fixed inset-0 bg-white z-[100] flex flex-col items-center justify-center p-6">
         <div class="w-12 h-12 border-4 border-blue-900 border-t-transparent rounded-full animate-spin mb-4"></div>
-        <p class="text-xs font-black uppercase text-blue-900 tracking-widest">Memulakan Sistem...</p>
-        <div id="debug-log" class="mt-4 text-[9px] text-red-500 font-mono max-w-xs overflow-auto"></div>
+        <p class="text-[10px] font-black uppercase tracking-widest text-blue-900">Memuatkan Sistem...</p>
     </div>
 
-    <div id="auth-ui" class="hidden flex items-center justify-center min-h-screen p-6">
+    <div id="auth-section" class="hidden flex items-center justify-center min-h-screen p-6">
         <div class="bg-white p-8 rounded-[2.5rem] shadow-2xl w-full max-w-md border border-slate-100 text-center">
-            <h1 class="text-2xl font-black text-blue-900 uppercase italic mb-6">BRAVORIAN</h1>
+            <h1 id="auth-title" class="text-2xl font-black text-blue-900 uppercase italic mb-2">BRAVORIAN</h1>
+            <p id="auth-subtitle" class="text-[9px] font-bold text-slate-400 uppercase mb-6 tracking-widest">Sultan Iskandar Building</p>
+            
+            <p id="forgot-note" class="hidden text-[10px] font-bold text-blue-600 bg-blue-50 p-4 rounded-2xl uppercase mb-6">Pautan reset akan dihantar ke emel anda.</p>
+
+            <div id="register-fields" class="hidden space-y-3 mb-3">
+                <div class="flex gap-2">
+                    <input type="text" id="reg-firstname" placeholder="NAMA DEPAN" class="w-1/2 p-4 bg-slate-50 border-none rounded-2xl text-xs font-bold uppercase outline-none focus:ring-2 focus:ring-blue-600">
+                    <input type="text" id="reg-lastname" placeholder="NAMA BELAKANG" class="w-1/2 p-4 bg-slate-50 border-none rounded-2xl text-xs font-bold uppercase outline-none focus:ring-2 focus:ring-blue-600">
+                </div>
+                <select id="reg-platoon" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-xs font-bold outline-none focus:ring-2 focus:ring-blue-600 uppercase"></select>
+            </div>
+
             <div class="space-y-3">
                 <input type="email" id="email" placeholder="EMAIL" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-xs font-bold outline-none focus:ring-2 focus:ring-blue-600">
                 <input type="password" id="password" placeholder="KATA LALUAN" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-xs font-bold outline-none focus:ring-2 focus:ring-blue-600">
             </div>
-            <button id="btn-login" class="w-full bg-blue-900 text-white font-black py-4 rounded-2xl mt-6 uppercase text-[10px] tracking-widest">Log Masuk</button>
-            <p id="error-msg" class="mt-4 text-[10px] text-red-500 font-bold uppercase"></p>
+
+            <button id="btn-action" class="w-full bg-blue-900 text-white font-black py-4 rounded-2xl mt-6 uppercase text-[10px] tracking-widest shadow-lg">Log Masuk</button>
+            
+            <div class="mt-6 space-y-3 pt-6 border-t border-slate-50">
+                <button id="auth-toggle-btn" class="w-full text-[9px] text-blue-600 font-black uppercase tracking-widest">Daftar Akaun Baru</button>
+                <button id="btn-forgot-pw" class="w-full text-[9px] text-slate-400 font-black uppercase tracking-widest">Lupa Kata Laluan?</button>
+            </div>
         </div>
     </div>
 
-    <div id="main-ui" class="hidden p-6 text-center">
-        <h1 class="text-xl font-black text-blue-900">SELAMAT DATANG</h1>
-        <button id="btn-logout" class="mt-4 bg-red-500 text-white px-6 py-2 rounded-xl text-xs font-bold uppercase">Logout</button>
+    <div id="main-dashboard" class="hidden">
+        <nav class="bg-white border-b border-slate-100 p-4 sticky top-0 z-50 shadow-sm flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <button id="menu-open" class="p-2 text-slate-600 bg-slate-50 rounded-xl">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+                <span class="font-black text-blue-900 italic uppercase">Bravorian</span>
+            </div>
+            <button id="btn-logout" class="bg-red-50 text-red-600 px-3 py-1.5 rounded-xl text-[9px] font-black uppercase">Logout</button>
+        </nav>
+
+        <div id="mobile-sidebar" class="fixed inset-0 bg-slate-900/60 z-[60] hidden backdrop-blur-sm">
+            <div class="mobile-menu closed bg-white w-72 h-full p-6 flex flex-col">
+                <button id="menu-close" class="self-end p-2 bg-slate-50 rounded-full mb-8 text-[10px] font-bold">TUTUP</button>
+                <div class="space-y-2 font-black text-[10px] uppercase text-slate-600 tracking-widest">
+                    <button id="nav-today" class="block w-full text-left p-4 hover:bg-blue-50 rounded-2xl">Tugasan Hari Ini</button>
+                    <button id="nav-calendar" class="block w-full text-left p-4 hover:bg-blue-50 rounded-2xl">Kalendar 14 Hari</button>
+                    <button id="admin-nav" class="hidden w-full text-left p-4 bg-red-50 text-red-600 rounded-2xl italic">Admin Panel</button>
+                </div>
+            </div>
+        </div>
+        <main class="max-w-4xl mx-auto p-4 md:p-8"><div id="dynamic-content"></div></main>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getDatabase, ref, get, set, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyCQ9SBXkEILe6PZdmLyGBSFK63XhPM_V7o",
-            authDomain: "bravorians-bsi.firebaseapp.com",
-            databaseURL: "https://bravorians-bsi-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "bravorians-bsi",
-            storageBucket: "bravorians-bsi.appspot.com",
-            appId: "1:314220494464:web:d3b21e9b742e1db86f7065"
+        const firebaseConfig = { 
+            apiKey: "AIzaSyCQ9SBXkEILe6PZdmLyGBSFK63XhPM_V7o", 
+            authDomain: "bravorians-bsi.firebaseapp.com", 
+            databaseURL: "https://bravorians-bsi-default-rtdb.asia-southeast1.firebasedatabase.app", 
+            projectId: "bravorians-bsi", 
+            storageBucket: "bravorians-bsi.firebasestorage.app", 
+            appId: "1:314220494464:web:d3b21e9b742e1db86f7065" 
         };
 
-        const log = (msg) => { document.getElementById('debug-log').innerText += "\n> " + msg; };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
 
-        try {
-            const app = initializeApp(firebaseConfig);
-            const auth = getAuth(app);
-            const db = getDatabase(app);
-            log("Firebase Berjaya Dimuatkan");
+        // DATA JADUAL
+        const JADUAL_2 = { 1: ["ENTRY MC", "ENTRY KA", "ENTRY BAS"], 2: ["EXIT KB", "EXIT SBY#2", "EXIT MA"], 3: ["ENTRY KC", "ENTRY BDL/Autogate", "ENTRY SBY#1"], 4: ["EXIT LORI", "EXIT BAS", "EXIT KD"], 5: ["ENTRY MC", "ENTRY SBY#3", "ENTRY KB"], 6: ["EXIT MA", "EXIT SBY#1", "EXIT KC"], 7: ["ENTRY SBY#2", "ENTRY BAS", "ENTRY KD"], 8: ["EXIT BAS", "EXIT KA", "EXIT SBY#3"], 9: ["ENTRY KA", "ENTRY BAS", "ENTRY MC"], 10: ["EXIT SBY#2", "EXIT MA", "EXIT KB"], 11: ["ENTRY SBY#1", "ENTRY KC", "ENTRY BDL/Autogate"], 12: ["EXIT KD", "EXIT LORI", "EXIT BAS"], 13: ["ENTRY SBY#3", "ENTRY KB", "ENTRY MC"], 14: ["EXIT KC", "EXIT MA", "EXIT SBY#1"], 15: ["ENTRY KD", "ENTRY SBY#2", "ENTRY BAS"], 16: ["EXIT SBY#3", "EXIT BAS", "EXIT KA"], 17: ["ENTRY BAS", "ENTRY MC", "ENTRY KA"], 18: ["EXIT MA", "EXIT KB", "EXIT SBY#2"], 19: ["ENTRY BDL/Autogate", "ENTRY SBY#1", "ENTRY KC"], 20: ["EXIT BAS", "EXIT KD", "EXIT LORI"], 21: ["ENTRY KB", "ENTRY MC", "ENTRY SBY#3"], 22: ["EXIT SBY#1", "EXIT KC", "EXIT MA"], 23: ["ENTRY BAS", "ENTRY KD", "ENTRY SBY#2"], 24: ["EXIT KA", "EXIT SBY#3", "EXIT BAS"] };
+        const START_ROW = { 1:1, 2:2, 3:1, 4:20, 5:13, 6:16, 7:17, 8:6, 9:3, 10:10, 11:7, 12:24, 13:15, 14:22, 15:5, 16:14, 17:19, 18:8, 19:9, 20:12, 21:21, 22:4, 23:11, 24:18, 25:23 };
 
-            onAuthStateChanged(auth, async (user) => {
-                document.getElementById('app-loading').classList.add('hidden');
-                if (user) {
-                    log("User dikesan: " + user.email);
-                    const snapshot = await get(ref(db, 'users/' + user.uid));
-                    if (snapshot.exists() && snapshot.val().status === "approved") {
-                        document.getElementById('main-ui').classList.remove('hidden');
-                        document.getElementById('auth-ui').classList.add('hidden');
-                    } else {
-                        alert("Akaun belum diluluskan Admin.");
-                        await signOut(auth);
-                    }
-                } else {
-                    document.getElementById('auth-ui').classList.remove('hidden');
-                    document.getElementById('main-ui').classList.add('hidden');
-                }
-            });
+        let userData = null;
+        let authMode = 'login';
 
-            document.getElementById('btn-login').onclick = async () => {
-                const e = document.getElementById('email').value;
-                const p = document.getElementById('password').value;
-                try {
-                    await signInWithEmailAndPassword(auth, e, p);
-                } catch (err) {
-                    document.getElementById('error-msg').innerText = "Ralat: " + err.message;
-                }
-            };
-
-            document.getElementById('btn-logout').onclick = () => signOut(auth);
-
-        } catch (e) {
-            log("RALAT KRITIKAL: " + e.message);
+        function getDuty(d, p) {
+            let b = new Date(2026, 0, 3); let t = new Date(d); t.setHours(0,0,0,0);
+            let diff = Math.floor((t - b) / 86400000);
+            if (diff < 0) return { off: true };
+            let cp = diff % 4; if (cp === 3) return { off: true };
+            let row = ((START_ROW[p] + Math.floor(diff/4) - 1) % 24) + 1;
+            return { off: false, shift: ["PETANG", "PAGI", "MALAM"][cp], loc: JADUAL_2[row][cp], row: row };
         }
+
+        // AUTH LOGIC
+        onAuthStateChanged(auth, async (user) => {
+            document.getElementById('loading-overlay').classList.add('hidden');
+            if (user) {
+                const snap = await get(ref(db, 'users/' + user.uid));
+                if (snap.exists() && snap.val().status === "approved") {
+                    userData = snap.val();
+                    document.getElementById('auth-section').classList.add('hidden');
+                    document.getElementById('main-dashboard').classList.remove('hidden');
+                    if(userData.role === 'admin') document.getElementById('admin-nav').classList.remove('hidden');
+                    showPage('jadual-tugas');
+                } else {
+                    alert("Akaun menunggu kelulusan Admin.");
+                    signOut(auth);
+                }
+            } else {
+                document.getElementById('auth-section').classList.remove('hidden');
+                document.getElementById('main-dashboard').classList.add('hidden');
+            }
+        });
+
+        async function showPage(p) {
+            const cont = document.getElementById('dynamic-content');
+            if (p === 'jadual-tugas') {
+                const dty = getDuty(new Date(), userData.platoon);
+                const exSnap = await get(ref(db, 'excel_data'));
+                let ktr = "TIADA DATA";
+                if(exSnap.exists() && !dty.off) {
+                    const m = exSnap.val().find(i => String(i.Nama).trim().toUpperCase() === userData.fullName);
+                    if(m) ktr = m.No_Kaunter;
+                }
+                cont.innerHTML = `
+                    <div class="bg-white p-6 rounded-[2rem] mb-4 border border-slate-100 shadow-sm flex justify-between items-center">
+                        <div><h2 class="text-sm font-black uppercase">${userData.fullName}</h2><p class="text-[9px] text-blue-600 font-bold uppercase">Platun ${userData.platoon}</p></div>
+                        <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    </div>
+                    <div class="bg-blue-900 p-10 rounded-[3rem] text-white text-center shadow-2xl relative overflow-hidden">
+                        ${dty.off ? '<h1 class="text-5xl font-black opacity-20 py-10 uppercase italic">Off Day</h1>' : `
+                            <p class="text-[9px] font-black text-blue-300 uppercase mb-4 tracking-[0.3em]">Tugasan Hari Ini</p>
+                            <h1 class="text-4xl font-black mb-1 tracking-tighter uppercase">${dty.loc}</h1>
+                            <p class="text-[10px] font-bold text-blue-200 mb-8 uppercase">${dty.shift} (BARIS ${dty.row})</p>
+                            <div class="bg-white/10 p-6 rounded-[2rem] border border-white/10 backdrop-blur-md inline-block min-w-[160px]">
+                                <p class="text-[8px] font-black text-blue-200 uppercase mb-1 tracking-widest">No. Kaunter</p>
+                                <h2 class="text-4xl font-black tracking-tight">${ktr}</h2>
+                            </div>
+                        `}
+                    </div>`;
+            } else if (p === 'jadual-induk') {
+                let g = '<div class="grid grid-cols-2 gap-3">';
+                for(let i=0; i<14; i++){
+                    let d = new Date(); d.setDate(d.getDate() + i); let r = getDuty(d, userData.platoon);
+                    g += `<div class="bg-white p-5 rounded-[2rem] border border-slate-100 text-center ${r.off?'opacity-30':'shadow-sm'}">
+                        <p class="text-[8px] font-bold text-slate-400 mb-1 uppercase">${d.toLocaleDateString('ms-MY',{weekday:'short',day:'2-digit'})}</p>
+                        <p class="text-[10px] font-black text-blue-900 uppercase leading-tight">${r.off?'OFF':r.shift+'<br><span class="text-blue-500">'+r.loc+'</span>'}</p>
+                    </div>`;
+                }
+                cont.innerHTML = g + '</div>';
+            } else if (p === 'admin') {
+                cont.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="bg-white p-8 rounded-[2rem] border-2 border-dashed border-blue-100 text-center">
+                            <p class="text-[9px] font-black uppercase text-slate-400 mb-4 tracking-widest">Upload Excel (No Kaunter)</p>
+                            <input type="file" id="excel-input" accept=".xlsx, .xls" class="text-[10px]">
+                        </div>
+                        <div id="adm-list" class="space-y-2"></div>
+                    </div>`;
+                document.getElementById('excel-input').onchange = (e) => {
+                    const reader = new FileReader();
+                    reader.onload = (evt) => {
+                        const data = XLSX.utils.sheet_to_json(XLSX.read(evt.target.result, {type:'binary'}).Sheets[XLSX.read(evt.target.result, {type:'binary'}).SheetNames[0]]);
+                        set(ref(db, 'excel_data'), data).then(() => alert("Berjaya Kemas kini!"));
+                    };
+                    reader.readAsBinaryString(e.target.files[0]);
+                };
+                const usersSnap = await get(ref(db, 'users'));
+                const list = document.getElementById('adm-list');
+                usersSnap.forEach(c => {
+                    if(c.val().status === 'pending') {
+                        const div = document.createElement('div');
+                        div.className = "p-4 bg-white rounded-2xl flex justify-between items-center border border-blue-50 shadow-sm";
+                        div.innerHTML = `<div><p class="text-xs font-black uppercase">${c.val().fullName}</p><p class="text-[9px] font-bold text-blue-500 uppercase">PLT ${c.val().platoon}</p></div>`;
+                        const btn = document.createElement('button');
+                        btn.className = "bg-green-600 text-white px-5 py-2.5 rounded-xl text-[9px] font-black uppercase";
+                        btn.innerText = "Luluskan";
+                        btn.onclick = () => update(ref(db, 'users/' + c.key), { status: 'approved' }).then(() => showPage('admin'));
+                        div.appendChild(btn);
+                        list.appendChild(div);
+                    }
+                });
+            }
+            closeMenu();
+        }
+
+        // UI ACTIONS
+        document.getElementById('btn-action').onclick = async () => {
+            const email = document.getElementById('email').value.trim();
+            const pass = document.getElementById('password').value;
+            if (authMode === 'login') {
+                try { await signInWithEmailAndPassword(auth, email, pass); } catch(e) { alert("Emel atau Kata Laluan salah."); }
+            } else if (authMode === 'register') {
+                const fn = document.getElementById('reg-firstname').value.trim().toUpperCase();
+                const ln = document.getElementById('reg-lastname').value.trim().toUpperCase();
+                const plt = document.getElementById('reg-platoon').value;
+                if(!fn || !ln || !plt || !email || !pass) return alert("Sila isi semua ruangan.");
+                try {
+                    const res = await createUserWithEmailAndPassword(auth, email, pass);
+                    await set(ref(db, 'users/' + res.user.uid), { firstName: fn, lastName: ln, fullName: fn + " " + ln, platoon: parseInt(plt), role: "user", status: "pending" });
+                    alert("Daftar berjaya! Tunggu kelulusan Admin.");
+                    signOut(auth);
+                } catch(e) { alert(e.message); }
+            } else {
+                try { await sendPasswordResetEmail(auth, email); alert("Pautan dihantar!"); updateAuthUI('login'); } catch(e) { alert(e.message); }
+            }
+        };
+
+        function updateAuthUI(mode) {
+            authMode = mode;
+            document.getElementById('register-fields').classList.toggle('hidden', mode !== 'register');
+            document.getElementById('password').classList.toggle('hidden', mode === 'forgot');
+            document.getElementById('forgot-note').classList.toggle('hidden', mode !== 'forgot');
+            document.getElementById('auth-title').innerText = mode === 'register' ? 'DAFTAR AKAUN' : (mode === 'forgot' ? 'RESET PASSWORD' : 'BRAVORIAN');
+            document.getElementById('btn-action').innerText = mode === 'register' ? 'Daftar Sekarang' : (mode === 'forgot' ? 'Hantar Emel' : 'Log Masuk');
+        }
+
+        document.getElementById('auth-toggle-btn').onclick = () => updateAuthUI(authMode === 'register' ? 'login' : 'register');
+        document.getElementById('btn-forgot-pw').onclick = () => updateAuthUI('forgot');
+        document.getElementById('btn-logout').onclick = () => signOut(auth);
+        document.getElementById('nav-today').onclick = () => showPage('jadual-tugas');
+        document.getElementById('nav-calendar').onclick = () => showPage('jadual-induk');
+        document.getElementById('admin-nav').onclick = () => showPage('admin');
+
+        // SIDEBAR HELPERS
+        const sel = document.getElementById('reg-platoon');
+        for(let i=1; i<=25; i++){ const o = document.createElement('option'); o.value = i; o.text = "PLATUN " + i; sel.appendChild(o); }
+        document.getElementById('menu-open').onclick = () => { document.getElementById('mobile-sidebar').classList.remove('hidden'); setTimeout(() => document.querySelector('.mobile-menu').classList.remove('closed'), 10); };
+        document.getElementById('menu-close').onclick = closeMenu;
+        function closeMenu() { document.querySelector('.mobile-menu').classList.add('closed'); setTimeout(() => document.getElementById('mobile-sidebar').classList.add('hidden'), 300); }
     </script>
 </body>
 </html>
