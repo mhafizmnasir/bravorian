@@ -27,24 +27,37 @@
 
     <div id="auth-section" class="hidden flex items-center justify-center min-h-screen p-6">
         <div class="bg-white p-8 rounded-[2.5rem] shadow-2xl w-full max-w-md border border-slate-100 text-center">
-            <h1 class="text-2xl font-black text-blue-900 tracking-tighter uppercase mb-6 italic">BRAVORIAN</h1>
+            <h1 id="auth-title" class="text-2xl font-black text-blue-900 tracking-tighter uppercase mb-2 italic">BRAVORIAN</h1>
+            <p id="auth-subtitle" class="text-[9px] font-bold text-slate-400 uppercase mb-6 tracking-widest">Sultan Iskandar Building</p>
             
+            <p id="forgot-note" class="hidden text-[10px] font-bold text-blue-600 bg-blue-50 p-4 rounded-2xl uppercase mb-6 leading-relaxed">
+                Sila masukkan emel anda. Pautan set semula kata laluan akan dihantar ke emel tersebut.
+            </p>
+
             <div id="register-fields" class="hidden space-y-3 mb-3">
                 <div class="flex gap-2">
                     <input type="text" id="reg-firstname" placeholder="NAMA DEPAN" class="w-1/2 p-4 bg-slate-50 border-none rounded-2xl text-xs font-bold uppercase outline-none focus:ring-2 focus:ring-blue-600">
                     <input type="text" id="reg-lastname" placeholder="NAMA BELAKANG" class="w-1/2 p-4 bg-slate-50 border-none rounded-2xl text-xs font-bold uppercase outline-none focus:ring-2 focus:ring-blue-600">
                 </div>
-                <select id="reg-platoon" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-xs font-bold outline-none focus:ring-2 focus:ring-blue-600"></select>
+                <select id="reg-platoon" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-xs font-bold outline-none focus:ring-2 focus:ring-blue-600 uppercase"></select>
             </div>
 
             <div class="space-y-3">
-                <input type="email" id="email" placeholder="EMAIL" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-xs font-bold outline-none focus:ring-2 focus:ring-blue-600">
-                <input type="password" id="password" placeholder="KATA LALUAN" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-xs font-bold outline-none focus:ring-2 focus:ring-blue-600">
+                <input type="email" id="email" placeholder="EMAIL" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-xs font-bold outline-none focus:ring-2 focus:ring-blue-600 uppercase">
+                <div id="password-container" class="relative">
+                    <input type="password" id="password" placeholder="KATA LALUAN" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-xs font-bold outline-none focus:ring-2 focus:ring-blue-600">
+                    <button id="toggle-pw-visibility" class="absolute right-4 top-4 text-slate-400">
+                        <svg id="eye-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                    </button>
+                </div>
             </div>
 
             <button id="btn-action" class="w-full bg-blue-900 text-white font-black py-4 rounded-2xl mt-6 uppercase text-[10px] tracking-widest shadow-lg active:scale-95 transition-all">Log Masuk</button>
-            <button id="auth-toggle-btn" class="w-full mt-4 text-[9px] text-blue-600 font-black uppercase tracking-widest">Daftar Akaun Baru</button>
-            <button id="btn-forgot-pw" class="w-full mt-2 text-[9px] text-slate-400 font-black uppercase tracking-widest hover:underline">Lupa Kata Laluan?</button>
+            
+            <div class="mt-6 space-y-3">
+                <button id="auth-toggle-btn" class="w-full text-[9px] text-blue-600 font-black uppercase tracking-widest">Daftar Akaun Baru</button>
+                <button id="btn-forgot-pw" class="w-full text-[9px] text-slate-400 font-black uppercase tracking-widest hover:underline">Lupa Kata Laluan?</button>
+            </div>
         </div>
     </div>
 
@@ -55,30 +68,26 @@
                     <button id="menu-open" class="p-2 text-slate-600 bg-slate-50 rounded-xl">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
                     </button>
-                    <span class="font-black text-blue-900 italic uppercase tracking-tighter">Bravorian</span>
+                    <span class="font-black text-blue-900 italic uppercase">Bravorian</span>
                 </div>
                 <button id="btn-logout" class="bg-red-50 text-red-600 px-3 py-1.5 rounded-xl text-[9px] font-black uppercase">Logout</button>
             </div>
         </nav>
-
         <div id="mobile-sidebar" class="fixed inset-0 bg-slate-900/60 z-[60] hidden backdrop-blur-sm">
             <div class="mobile-menu closed bg-white w-72 h-full p-6 flex flex-col">
                 <button id="menu-close" class="self-end p-2 bg-slate-50 rounded-full mb-8 text-[10px] font-bold">TUTUP</button>
-                <div class="space-y-2 font-black text-[10px] uppercase tracking-[0.2em] text-slate-600">
+                <div class="space-y-2 font-black text-[10px] uppercase text-slate-600">
                     <button onclick="changePage('jadual-tugas')" class="block w-full text-left p-4 hover:bg-blue-50 rounded-2xl">Tugasan Hari Ini</button>
                     <button onclick="changePage('jadual-induk')" class="block w-full text-left p-4 hover:bg-blue-50 rounded-2xl">Kalendar 14 Hari</button>
                     <button id="admin-nav" onclick="changePage('admin')" class="hidden w-full text-left p-4 bg-red-50 text-red-600 rounded-2xl italic">Admin Panel</button>
                 </div>
             </div>
         </div>
-
-        <main class="max-w-4xl mx-auto p-4 md:p-8">
-            <div id="dynamic-content"></div>
-        </main>
+        <main class="max-w-4xl mx-auto p-4 md:p-8"><div id="dynamic-content"></div></main>
     </div>
 
     <script>
-        // 1. CONFIG FIREBASE
+        // 1. FIREBASE CONFIG
         var firebaseConfig = { 
             apiKey: "AIzaSyCQ9SBXkEILe6PZdmLyGBSFK63XhPM_V7o", 
             authDomain: "bravorians-bsi.firebaseapp.com", 
@@ -91,7 +100,7 @@
         var auth = firebase.auth();
         var rdb = firebase.database();
 
-        // 2. DATA JADUAL (KEKAL LOGIK ASAL)
+        // 2. LOGIC JADUAL
         var JADUAL_2 = { 1: ["ENTRY MC", "ENTRY KA", "ENTRY BAS"], 2: ["EXIT KB", "EXIT SBY#2", "EXIT MA"], 3: ["ENTRY KC", "ENTRY BDL/Autogate", "ENTRY SBY#1"], 4: ["EXIT LORI", "EXIT BAS", "EXIT KD"], 5: ["ENTRY MC", "ENTRY SBY#3", "ENTRY KB"], 6: ["EXIT MA", "EXIT SBY#1", "EXIT KC"], 7: ["ENTRY SBY#2", "ENTRY BAS", "ENTRY KD"], 8: ["EXIT BAS", "EXIT KA", "EXIT SBY#3"], 9: ["ENTRY KA", "ENTRY BAS", "ENTRY MC"], 10: ["EXIT SBY#2", "EXIT MA", "EXIT KB"], 11: ["ENTRY SBY#1", "ENTRY KC", "ENTRY BDL/Autogate"], 12: ["EXIT KD", "EXIT LORI", "EXIT BAS"], 13: ["ENTRY SBY#3", "ENTRY KB", "ENTRY MC"], 14: ["EXIT KC", "EXIT MA", "EXIT SBY#1"], 15: ["ENTRY KD", "ENTRY SBY#2", "ENTRY BAS"], 16: ["EXIT SBY#3", "EXIT BAS", "EXIT KA"], 17: ["ENTRY BAS", "ENTRY MC", "ENTRY KA"], 18: ["EXIT MA", "EXIT KB", "EXIT SBY#2"], 19: ["ENTRY BDL/Autogate", "ENTRY SBY#1", "ENTRY KC"], 20: ["EXIT BAS", "EXIT KD", "EXIT LORI"], 21: ["ENTRY KB", "ENTRY MC", "ENTRY SBY#3"], 22: ["EXIT SBY#1", "EXIT KC", "EXIT MA"], 23: ["ENTRY BAS", "ENTRY KD", "ENTRY SBY#2"], 24: ["EXIT KA", "EXIT SBY#3", "EXIT BAS"] };
         var START_ROW = { 2: 2, 3: 1, 4: 20, 5: 13, 6: 16, 7: 17, 8: 6, 9: 3, 10: 10, 11: 7, 12: 24, 13: 15, 14: 22, 15: 5, 16: 14, 17: 19, 18: 8, 19: 9, 20: 12, 21: 21, 22: 4, 23: 11, 24: 18, 25: 23 };
 
@@ -105,8 +114,92 @@
         }
 
         var uData = null;
+        var authMode = 'login';
 
-        // 3. AUTHENTICATION LISTENER
+        // 3. AUTH UI UPDATER
+        function updateAuthUI(mode) {
+            authMode = mode;
+            var regFields = document.getElementById('register-fields');
+            var pwCont = document.getElementById('password-container');
+            var note = document.getElementById('forgot-note');
+            var btnAction = document.getElementById('btn-action');
+            var title = document.getElementById('auth-title');
+            var subtitle = document.getElementById('auth-subtitle');
+            var toggleBtn = document.getElementById('auth-toggle-btn');
+            var forgotBtn = document.getElementById('btn-forgot-pw');
+
+            regFields.classList.add('hidden');
+            pwCont.classList.remove('hidden');
+            note.classList.add('hidden');
+            subtitle.classList.remove('hidden');
+
+            if (mode === 'register') {
+                title.innerText = "DAFTAR AKAUN";
+                subtitle.classList.add('hidden');
+                regFields.classList.remove('hidden');
+                btnAction.innerText = "Daftar Sekarang";
+                toggleBtn.innerText = "Sudah ada akaun? Log Masuk";
+                forgotBtn.classList.remove('hidden');
+            } else if (mode === 'forgot') {
+                title.innerText = "RESET KATA LALUAN";
+                subtitle.classList.add('hidden');
+                pwCont.classList.add('hidden');
+                note.classList.remove('hidden');
+                btnAction.innerText = "Hantar Pautan Emel";
+                toggleBtn.innerText = "Kembali ke Log Masuk";
+                forgotBtn.classList.add('hidden');
+            } else {
+                title.innerText = "BRAVORIAN";
+                btnAction.innerText = "Log Masuk";
+                toggleBtn.innerText = "Daftar Akaun Baru";
+                forgotBtn.classList.remove('hidden');
+            }
+        }
+
+        // 4. EVENT LISTENERS (AUTH)
+        document.getElementById('auth-toggle-btn').onclick = function() {
+            if (authMode === 'login' || authMode === 'forgot') updateAuthUI('register');
+            else updateAuthUI('login');
+        };
+
+        document.getElementById('btn-forgot-pw').onclick = function() {
+            updateAuthUI('forgot');
+        };
+
+        document.getElementById('toggle-pw-visibility').onclick = function() {
+            var pwInput = document.getElementById('password');
+            if (pwInput.type === "password") pwInput.type = "text";
+            else pwInput.type = "password";
+        };
+
+        document.getElementById('btn-action').onclick = function() {
+            var email = document.getElementById('email').value.trim();
+            var pass = document.getElementById('password').value;
+
+            if (authMode === 'login') {
+                auth.signInWithEmailAndPassword(email, pass).catch(function(e){ alert("Ralat: Emel atau Kata Laluan salah."); });
+            } 
+            else if (authMode === 'register') {
+                var fn = document.getElementById('reg-firstname').value.trim().toUpperCase();
+                var ln = document.getElementById('reg-lastname').value.trim().toUpperCase();
+                var plt = document.getElementById('reg-platoon').value;
+                if(!fn || !ln || !plt || !email || !pass) return alert("Sila isi semua ruangan.");
+                auth.createUserWithEmailAndPassword(email, pass).then(function(res){
+                    rdb.ref('users/' + res.user.uid).set({ firstName: fn, lastName: ln, fullName: fn + " " + ln, platoon: parseInt(plt), role: "user", status: "pending" });
+                    alert("Berjaya mendaftar! Tunggu kelulusan Admin.");
+                    auth.signOut(); location.reload();
+                }).catch(function(e){ alert(e.message); });
+            }
+            else if (authMode === 'forgot') {
+                if (!email) return alert("Sila masukkan emel.");
+                auth.sendPasswordResetEmail(email).then(function() {
+                    alert("Pautan set semula kata laluan telah dihantar ke emel: " + email);
+                    updateAuthUI('login');
+                }).catch(function(e) { alert("Ralat: " + e.message); });
+            }
+        };
+
+        // 5. DASHBOARD & NAVIGATION
         auth.onAuthStateChanged(function(user) {
             document.getElementById('loading-overlay').classList.add('hidden');
             if (user) {
@@ -117,10 +210,7 @@
                         document.getElementById('main-dashboard').classList.remove('hidden');
                         if(uData.role === 'admin') document.getElementById('admin-nav').classList.remove('hidden');
                         changePage('jadual-tugas');
-                    } else {
-                        alert("Akaun " + (s.exists() ? s.val().fullName : "") + " belum diluluskan Admin.");
-                        auth.signOut();
-                    }
+                    } else { alert("Menunggu kelulusan Admin."); auth.signOut(); }
                 });
             } else {
                 document.getElementById('auth-section').classList.remove('hidden');
@@ -128,43 +218,13 @@
             }
         });
 
-        // 4. BUTANG ACTIONS
-        document.getElementById('btn-action').onclick = function() {
-            var email = document.getElementById('email').value.trim();
-            var pass = document.getElementById('password').value;
-            if (document.getElementById('register-fields').classList.contains('hidden')) {
-                auth.signInWithEmailAndPassword(email, pass).catch(function(e){ alert("Ralat: Emel atau Kata Laluan salah."); });
-            } else {
-                var fn = document.getElementById('reg-firstname').value.trim().toUpperCase();
-                var ln = document.getElementById('reg-lastname').value.trim().toUpperCase();
-                var plt = document.getElementById('reg-platoon').value;
-                if(!fn || !ln || !plt || !email || !pass) return alert("Sila isi semua ruangan.");
-                auth.createUserWithEmailAndPassword(email, pass).then(function(res){
-                    rdb.ref('users/' + res.user.uid).set({ firstName: fn, lastName: ln, fullName: fn + " " + ln, platoon: parseInt(plt), role: "user", status: "pending" });
-                    alert("Pendaftaran Berjaya! Sila maklumkan Admin untuk kelulusan.");
-                    auth.signOut(); location.reload();
-                }).catch(function(e){ alert(e.message); });
-            }
-        };
-
-        document.getElementById('btn-forgot-pw').onclick = function() {
-            var email = document.getElementById('email').value.trim();
-            if (!email) return alert("Sila taip EMEL anda dahulu di kotak di atas.");
-            auth.sendPasswordResetEmail(email).then(function() {
-                alert("Pautan set semula kata laluan telah dihantar ke emel anda. Sila semak Inbox atau Spam.");
-            }).catch(function(e) { alert("Ralat: " + e.message); });
-        };
-
-        // 5. NAVIGATION LOGIC
         function changePage(p) {
             closeMenu();
             var cont = document.getElementById('dynamic-content');
-            cont.innerHTML = '<div class="text-center py-20 animate-pulse font-black text-[10px] text-slate-400">MEMUATKAN...</div>';
-
             if (p === 'jadual-tugas') {
                 var dty = getDuty(new Date(), uData.platoon);
                 rdb.ref('excel_data').once('value').then(function(ex) {
-                    var ktr = "BELUM DIKEMASKINI";
+                    var ktr = "TIADA DATA";
                     if(ex.exists() && !dty.off) {
                         var m = ex.val().find(function(i){ return String(i.Nama).trim().toUpperCase() === uData.fullName; });
                         if(m) ktr = m.No_Kaunter;
@@ -180,63 +240,34 @@
                                 }
                             });
                         }
-                        var rHtml = rkn.length > 0 ? '<div class="mt-8 text-left"><p class="text-[8px] font-black text-blue-300 uppercase mb-3 tracking-[0.2em] opacity-60 text-center">Rakan Setugas (Zon Sama)</p><div class="flex flex-wrap justify-center gap-2">' + rkn.map(function(n){ return '<span class="bg-white/10 px-3 py-1.5 rounded-xl text-[9px] font-bold border border-white/10">'+n+'</span>'; }).join('') + '</div></div>' : '';
-                        
-                        cont.innerHTML = `
-                            <div class="bg-white p-6 rounded-[2rem] mb-4 flex justify-between items-center shadow-sm border border-slate-100">
-                                <div><h2 class="text-sm font-black text-slate-800 uppercase">${uData.fullName}</h2><p class="text-[9px] text-blue-600 font-bold uppercase tracking-widest">Platun ${uData.platoon}</p></div>
-                                <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                            </div>
-                            <div class="bg-blue-900 p-10 rounded-[3rem] text-white text-center shadow-2xl relative overflow-hidden">
-                                ${dty.off ? '<h1 class="text-7xl font-black opacity-10 py-12 italic uppercase">Off Day</h1>' : `
-                                    <p class="text-[9px] font-black text-blue-300 uppercase mb-4 tracking-[0.3em]">Tugasan Hari Ini</p>
-                                    <h1 class="text-4xl font-black mb-1 tracking-tighter">${dty.loc}</h1>
-                                    <p class="text-[10px] font-bold text-blue-200 mb-8">${dty.shift} (BARIS ${dty.row})</p>
-                                    <div class="bg-white/10 p-6 rounded-[2rem] border border-white/10 backdrop-blur-md inline-block min-w-[160px]">
-                                        <p class="text-[8px] font-black text-blue-200 uppercase mb-1 tracking-widest">No. Kaunter</p>
-                                        <h2 class="text-4xl font-black tracking-tight">${ktr}</h2>
-                                    </div>
-                                    ${rHtml}
-                                `}
-                            </div>`;
+                        var rHtml = rkn.length > 0 ? '<div class="mt-8"><p class="text-[8px] font-black text-blue-300 uppercase mb-3 text-center">Rakan Zon Sama</p><div class="flex flex-wrap justify-center gap-2">' + rkn.map(function(n){ return '<span class="bg-white/10 px-3 py-1.5 rounded-xl text-[9px] font-bold border border-white/10">'+n+'</span>'; }).join('') + '</div></div>' : '';
+                        cont.innerHTML = '<div class="bg-white p-6 rounded-[2rem] mb-4 flex justify-between items-center border border-slate-100 shadow-sm"><div><h2 class="text-sm font-black uppercase text-slate-800">'+uData.fullName+'</h2><p class="text-[9px] text-blue-600 font-bold uppercase">Platun '+uData.platoon+'</p></div><div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div></div><div class="bg-blue-900 p-10 rounded-[3rem] text-white text-center shadow-2xl relative overflow-hidden">' + (dty.off ? '<h1 class="text-7xl font-black opacity-10 py-12 italic uppercase">Off Day</h1>' : '<p class="text-[9px] font-black text-blue-300 uppercase mb-4 tracking-[0.3em]">Tugasan Hari Ini</p><h1 class="text-4xl font-black mb-1 tracking-tighter">'+dty.loc+'</h1><p class="text-[10px] font-bold text-blue-200 mb-8">'+dty.shift+' (BARIS '+dty.row+')</p><div class="bg-white/10 p-6 rounded-[2rem] border border-white/10 backdrop-blur-md inline-block min-w-[160px]"><p class="text-[8px] font-black text-blue-200 uppercase mb-1 tracking-widest">No. Kaunter</p><h2 class="text-4xl font-black tracking-tight">'+ktr+'</h2></div>' + rHtml) + '</div>';
                     });
                 });
             } else if (p === 'jadual-induk') {
                 var g = '<div class="grid grid-cols-2 gap-3">';
                 for(var i=0; i<14; i++){
                     var d = new Date(); d.setDate(d.getDate() + i); var r = getDuty(d, uData.platoon);
-                    g += `<div class="bg-white p-5 rounded-[2rem] border border-slate-100 text-center ${r.off?'opacity-30':'shadow-sm'}">
-                            <p class="text-[8px] font-bold text-slate-400 mb-1 uppercase">${d.toLocaleDateString('ms-MY',{weekday:'short',day:'2-digit'})}</p>
-                            <p class="text-[10px] font-black text-blue-900 uppercase leading-tight">${r.off?'OFF':r.shift+'<br><span class="text-blue-500">'+r.loc+'</span>'}</p>
-                          </div>`;
+                    g += '<div class="bg-white p-5 rounded-[2rem] border border-slate-100 text-center '+(r.off?'opacity-30':'shadow-sm')+'"><p class="text-[8px] font-bold text-slate-400 mb-1 uppercase">'+d.toLocaleDateString('ms-MY',{weekday:'short',day:'2-digit'})+'</p><p class="text-[10px] font-black text-blue-900 uppercase leading-tight">'+(r.off?'OFF':r.shift+'<br><span class="text-blue-500">'+r.loc+'</span>')+'</p></div>';
                 }
                 cont.innerHTML = g + '</div>';
             } else if (p === 'admin') {
-                cont.innerHTML = `
-                    <div class="space-y-4">
-                        <div class="bg-white p-8 rounded-[2rem] border-2 border-dashed border-blue-100 text-center">
-                            <p class="text-[10px] font-black uppercase text-slate-400 mb-4 tracking-widest">Update No. Kaunter (Excel)</p>
-                            <input type="file" id="excel-input" accept=".xlsx, .xls" class="text-[10px]">
-                        </div>
-                        <div id="adm-list" class="space-y-2"></div>
-                    </div>`;
-                
+                cont.innerHTML = '<div class="space-y-4"><div class="bg-white p-8 rounded-[2rem] border-2 border-dashed border-blue-100 text-center"><input type="file" id="excel-input" accept=".xlsx, .xls" class="text-[10px]"></div><div id="adm-list" class="space-y-2"></div></div>';
                 document.getElementById('excel-input').onchange = function(e) {
                     var reader = new FileReader();
                     reader.onload = function(evt) {
                         var wb = XLSX.read(evt.target.result, {type:'binary'});
                         var data = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
-                        rdb.ref('excel_data').set(data).then(function() { alert("Data Excel berjaya dikemaskini!"); });
+                        rdb.ref('excel_data').set(data).then(function() { alert("Excel Update!"); });
                     };
                     reader.readAsBinaryString(e.target.files[0]);
                 };
-
                 rdb.ref('users').once('value').then(function(snap) {
                     var list = document.getElementById('adm-list');
                     snap.forEach(function(c) { 
                         if(c.val().status === 'pending') {
                             var div = document.createElement('div');
-                            div.className = "p-4 bg-white rounded-2xl flex justify-between items-center border border-blue-50 shadow-sm";
+                            div.className = "p-4 bg-white rounded-2xl flex justify-between items-center border border-blue-50";
                             div.innerHTML = '<div><p class="text-xs font-black uppercase">'+c.val().fullName+'</p><p class="text-[9px] font-bold text-blue-500 uppercase">PLT '+c.val().platoon+'</p></div>';
                             var btn = document.createElement('button');
                             btn.className = "bg-green-600 text-white px-4 py-2 rounded-xl text-[9px] font-black uppercase";
@@ -246,24 +277,4 @@
                             list.appendChild(div);
                         }
                     });
-                });
-            }
-        }
-
-        // 6. UI HELPERS
-        var sel = document.getElementById('reg-platoon');
-        for(var i=2; i<=25; i++){ var o = document.createElement('option'); o.value = i; o.text = "PLATUN " + i; sel.appendChild(o); }
-        
-        document.getElementById('auth-toggle-btn').onclick = function() {
-            var isReg = document.getElementById('register-fields').classList.toggle('hidden');
-            document.getElementById('btn-action').innerText = isReg ? "DAFTAR AKAUN" : "LOG MASUK";
-            document.getElementById('auth-toggle-btn').innerText = isReg ? "LOG MASUK" : "DAFTAR AKAUN BARU";
-        };
-
-        document.getElementById('menu-open').onclick = function() { document.getElementById('mobile-sidebar').classList.remove('hidden'); setTimeout(function(){ document.querySelector('.mobile-menu').classList.remove('closed'); }, 10); };
-        document.getElementById('menu-close').onclick = function() { closeMenu(); };
-        function closeMenu() { document.querySelector('.mobile-menu').classList.add('closed'); setTimeout(function(){ document.getElementById('mobile-sidebar').classList.add('hidden'); }, 300); }
-        document.getElementById('btn-logout').onclick = function(){ auth.signOut(); };
-    </script>
-</body>
-</html>
+         
