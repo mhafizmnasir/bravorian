@@ -16,7 +16,19 @@
         @media print {
             body * { visibility: hidden; }
             #print-area, #print-area * { visibility: visible; }
-            #print-area { position: absolute; left: 0; top: 0; width: 210mm; height: 297mm; padding: 20mm; background: white; color: black; }
+            #print-area { 
+                position: absolute; 
+                left: 0; 
+                top: 0; 
+                width: 210mm; 
+                height: 297mm; 
+                padding: 25mm; 
+                background: white; 
+                color: black; 
+                visibility: visible !important;
+                display: block !important;
+            }
+            .no-print { display: none !important; }
         }
     </style>
 </head>
@@ -29,8 +41,8 @@
 
     <div id="auth-section" class="hidden flex items-center justify-center min-h-screen p-6">
         <div class="bg-white p-8 rounded-[2.5rem] shadow-2xl w-full max-w-md border border-slate-100 text-center">
-            <h1 id="auth-title" class="text-2xl font-black text-blue-900 uppercase italic mb-2 tracking-tighter">BRAVORIAN</h1>
-            <p class="text-[9px] font-bold text-slate-400 uppercase mb-6 tracking-widest italic">Sultan Iskandar Building</p>
+            <h1 id="auth-title" class="text-2xl font-black text-blue-900 uppercase italic mb-2 tracking-tighter text-center">BRAVORIAN</h1>
+            <p class="text-[9px] font-bold text-slate-400 uppercase mb-6 tracking-widest italic text-center">Sultan Iskandar Building</p>
             <div id="register-fields" class="hidden space-y-3 mb-3 text-left">
                 <div class="flex gap-2">
                     <input type="text" id="reg-firstname" placeholder="NAMA DEPAN" class="w-1/2 p-4 bg-slate-50 border-none rounded-2xl text-[10px] font-bold uppercase outline-none focus:ring-2 focus:ring-blue-600">
@@ -48,7 +60,7 @@
     </div>
 
     <div id="main-dashboard" class="hidden">
-        <nav class="bg-white border-b border-slate-100 p-4 sticky top-0 z-50 shadow-sm flex justify-between items-center">
+        <nav class="bg-white border-b border-slate-100 p-4 sticky top-0 z-50 shadow-sm flex justify-between items-center no-print">
             <div class="flex items-center gap-3">
                 <button id="menu-open" class="p-2 text-slate-600 bg-slate-50 rounded-xl">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
@@ -58,7 +70,7 @@
             <button id="btn-logout" class="bg-red-50 text-red-600 px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest">Logout</button>
         </nav>
 
-        <div id="mobile-sidebar" class="fixed inset-0 bg-slate-900/60 z-[60] hidden backdrop-blur-sm">
+        <div id="mobile-sidebar" class="fixed inset-0 bg-slate-900/60 z-[60] hidden backdrop-blur-sm no-print">
             <div id="sidebar-container" class="mobile-menu closed bg-white w-72 h-full p-8 flex flex-col overflow-y-auto">
                 <div class="mb-10"><h2 class="text-[10px] font-black text-blue-900 uppercase tracking-[0.2em] opacity-40 italic">Menu Utama</h2></div>
                 <div class="space-y-2 font-black text-[11px] uppercase text-slate-600 tracking-widest">
@@ -77,10 +89,11 @@
             </div>
         </div>
 
-        <main class="max-w-4xl mx-auto p-4 md:p-8">
+        <main class="max-w-4xl mx-auto p-4 md:p-8 no-print">
             <div id="dynamic-content"></div>
-            <div id="print-area" class="hidden"></div>
         </main>
+        
+        <div id="print-area" class="hidden"></div>
     </div>
 
     <script type="module">
@@ -88,7 +101,6 @@
         import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getDatabase, ref, get, set, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        // Konfigurasi Firebase anda
         const firebaseConfig = { 
             apiKey: "AIzaSyCQ9SBXkEILe6PZdmLyGBSFK63XhPM_V7o", 
             authDomain: "bravorians-bsi.firebaseapp.com", 
@@ -135,7 +147,7 @@
             }
         });
 
-        // FUNGSI PERMOHONAN CUTI (BARU)
+        // FUNGSI PERMOHONAN CUTI
         window.showLeavePage = (type) => {
             const cont = document.getElementById('dynamic-content');
             const titles = { gantian: "Cuti Gantian", rekod: "Cuti Rekod", timeoff: "Time Off" };
@@ -143,30 +155,30 @@
             let inputs = `
                 <div class="space-y-4 bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm">
                     <h2 class="font-black text-blue-900 uppercase text-sm mb-4">Mohon ${titles[type]}</h2>
-                    <div><label class="text-[9px] font-bold text-slate-400 uppercase">Tarikh</label>
+                    <div><label class="text-[9px] font-bold text-slate-400 uppercase">Tarikh Permohonan</label>
                     <input type="date" id="leave-date" class="w-full p-4 bg-slate-50 rounded-2xl text-xs font-bold outline-none mt-1"></div>
             `;
 
             if (type === 'timeoff') {
                 inputs += `
-                    <div><label class="text-[9px] font-bold text-slate-400 uppercase">Jumlah Jam</label>
-                    <input type="number" id="leave-amount" placeholder="Contoh: 2" class="w-full p-4 bg-slate-50 rounded-2xl text-xs font-bold outline-none mt-1"></div>
+                    <div><label class="text-[9px] font-bold text-slate-400 uppercase">Jumlah Jam Time Off</label>
+                    <input type="number" id="leave-amount" placeholder="0" class="w-full p-4 bg-slate-50 rounded-2xl text-xs font-bold outline-none mt-1"></div>
                     <div><label class="text-[9px] font-bold text-slate-400 uppercase">Baki Time Off</label>
-                    <input type="text" id="leave-balance" class="w-full p-4 bg-slate-50 rounded-2xl text-xs font-bold outline-none mt-1"></div>
+                    <input type="text" id="leave-balance" placeholder="Sila masukkan baki jam" class="w-full p-4 bg-slate-50 rounded-2xl text-xs font-bold outline-none mt-1"></div>
                 `;
             } else {
                 inputs += `
-                    <div><label class="text-[9px] font-bold text-slate-400 uppercase">Jumlah Hari</label>
-                    <input type="number" id="leave-amount" placeholder="Contoh: 1" class="w-full p-4 bg-slate-50 rounded-2xl text-xs font-bold outline-none mt-1"></div>
-                    <div><label class="text-[9px] font-bold text-slate-400 uppercase">Baki Cuti</label>
-                    <input type="text" id="leave-balance" class="w-full p-4 bg-slate-50 rounded-2xl text-xs font-bold outline-none mt-1"></div>
-                    <div><label class="text-[9px] font-bold text-slate-400 uppercase">Nama Pengganti (Pilihan)</label>
-                    <input type="text" id="leave-sub" placeholder="Sila masukkan nama" class="w-full p-4 bg-slate-50 rounded-2xl text-xs font-bold outline-none mt-1"></div>
+                    <div><label class="text-[9px] font-bold text-slate-400 uppercase">Jumlah Cuti Diambil (Hari)</label>
+                    <input type="number" id="leave-amount" placeholder="0" class="w-full p-4 bg-slate-50 rounded-2xl text-xs font-bold outline-none mt-1"></div>
+                    <div><label class="text-[9px] font-bold text-slate-400 uppercase">Baki ${titles[type]}</label>
+                    <input type="text" id="leave-balance" placeholder="Sila masukkan baki hari" class="w-full p-4 bg-slate-50 rounded-2xl text-xs font-bold outline-none mt-1"></div>
+                    <div><label class="text-[9px] font-bold text-slate-400 uppercase">Nama Pengganti (Jika Ada)</label>
+                    <input type="text" id="leave-sub" placeholder="Masukkan nama (tidak wajib)" class="w-full p-4 bg-slate-50 rounded-2xl text-xs font-bold outline-none mt-1"></div>
                 `;
             }
 
             inputs += `
-                <button onclick="printLeave('${type}')" class="w-full bg-blue-900 text-white font-black py-4 rounded-2xl mt-4 uppercase text-[10px] tracking-widest shadow-lg">Cetak Template (A4)</button>
+                <button onclick="printLeave('${type}')" class="w-full bg-blue-900 text-white font-black py-4 rounded-2xl mt-4 uppercase text-[10px] tracking-widest shadow-lg active:scale-95 transition-all">Cetak Templat A4</button>
                 </div>
             `;
             
@@ -175,44 +187,73 @@
         };
 
         window.printLeave = (type) => {
-            const date = document.getElementById('leave-date').value;
+            const dateInput = document.getElementById('leave-date').value;
             const amt = document.getElementById('leave-amount').value;
             const bal = document.getElementById('leave-balance').value;
             const sub = document.getElementById('leave-sub')?.value || "TIADA";
             const titles = { gantian: "CUTI GANTIAN", rekod: "CUTI REKOD", timeoff: "TIME OFF" };
 
-            if(!date || !amt || !bal) return alert("Sila lengkapkan maklumat.");
+            if(!dateInput || !amt || !bal) return alert("Sila lengkapkan semua maklumat.");
+            
+            // Format tarikh
+            const d = new Date(dateInput);
+            const dateFormatted = d.toLocaleDateString('ms-MY', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
             const printArea = document.getElementById('print-area');
             printArea.innerHTML = `
-                <div style="text-align: center; border-bottom: 2px solid black; padding-bottom: 10px; margin-bottom: 20px;">
-                    <h1 style="font-size: 18px; font-weight: 800; margin: 0;">BORANG PERMOHONAN ${titles[type]}</h1>
-                    <p style="font-size: 10px; margin: 5px 0 0 0;">PEJABAT IMIGRESEN BANGUNAN SULTAN ISKANDAR</p>
-                </div>
-                <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
-                    <tr><td style="padding: 10px; border: 1px solid black; width: 40%;"><strong>Nama Pemohon</strong></td><td style="padding: 10px; border: 1px solid black;">${userData.fullName}</td></tr>
-                    <tr><td style="padding: 10px; border: 1px solid black;"><strong>Platun</strong></td><td style="padding: 10px; border: 1px solid black;">${userData.platoon}</td></tr>
-                    <tr><td style="padding: 10px; border: 1px solid black;"><strong>Tarikh Cuti</strong></td><td style="padding: 10px; border: 1px solid black;">${date}</td></tr>
-                    <tr><td style="padding: 10px; border: 1px solid black;"><strong>Jumlah ${type==='timeoff'?'Jam':'Hari'} Diambil</strong></td><td style="padding: 10px; border: 1px solid black;">${amt} ${type==='timeoff'?'JAM':'HARI'}</td></tr>
-                    <tr><td style="padding: 10px; border: 1px solid black;"><strong>Baki ${titles[type]}</strong></td><td style="padding: 10px; border: 1px solid black;">${bal}</td></tr>
-                    ${type !== 'timeoff' ? `<tr><td style="padding: 10px; border: 1px solid black;"><strong>Nama Pengganti</strong></td><td style="padding: 10px; border: 1px solid black;">${sub}</td></tr>` : ''}
-                </table>
-                <div style="margin-top: 50px; display: flex; justify-content: space-between; font-size: 12px;">
-                    <div style="text-align: center; width: 40%;"><p>........................................</p><p>Tandatangan Pemohon</p></div>
-                    <div style="text-align: center; width: 40%;"><p>........................................</p><p>Tandatangan Penyelia</p></div>
+                <div style="font-family: Arial, sans-serif; line-height: 1.6; color: black;">
+                    <div style="text-align: center; border-bottom: 2px solid black; padding-bottom: 10px; margin-bottom: 30px;">
+                        <h1 style="font-size: 20px; font-weight: bold; margin: 0; text-transform: uppercase;">BORANG PERMOHONAN ${titles[type]}</h1>
+                        <p style="font-size: 12px; margin: 5px 0 0 0;">PEJABAT IMIGRESEN BANGUNAN SULTAN ISKANDAR, JOHOR BAHRU</p>
+                    </div>
+
+                    <div style="margin-bottom: 40px;">
+                        <p><strong>MAKLUMAT PEMOHON</strong></p>
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                            <tr><td style="width: 30%; padding: 8px; border: 1px solid #000;">NAMA PENUH</td><td style="padding: 8px; border: 1px solid #000; text-transform: uppercase;">${userData.fullName}</td></tr>
+                            <tr><td style="padding: 8px; border: 1px solid #000;">PLATUN</td><td style="padding: 8px; border: 1px solid #000;">PLATUN ${userData.platoon}</td></tr>
+                        </table>
+                    </div>
+
+                    <div style="margin-bottom: 40px;">
+                        <p><strong>BUTIRAN PERMOHONAN</strong></p>
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                            <tr><td style="width: 30%; padding: 8px; border: 1px solid #000;">TARIKH MOHON</td><td style="padding: 8px; border: 1px solid #000;">${dateFormatted}</td></tr>
+                            <tr><td style="padding: 8px; border: 1px solid #000;">JUMLAH AMBIL</td><td style="padding: 8px; border: 1px solid #000;">${amt} ${type==='timeoff'?'JAM':'HARI'}</td></tr>
+                            <tr><td style="padding: 8px; border: 1px solid #000;">BAKI TERKINI</td><td style="padding: 8px; border: 1px solid #000;">${bal} ${type==='timeoff'?'JAM':'HARI'}</td></tr>
+                            ${type !== 'timeoff' ? `<tr><td style="padding: 8px; border: 1px solid #000;">NAMA PENGGANTI</td><td style="padding: 8px; border: 1px solid #000; text-transform: uppercase;">${sub}</td></tr>` : ''}
+                        </table>
+                    </div>
+
+                    <div style="margin-top: 80px; display: flex; justify-content: space-between;">
+                        <div style="text-align: center; width: 45%;">
+                            <p>__________________________</p>
+                            <p style="font-size: 11px;">Tandatangan Pemohon</p>
+                            <p style="font-size: 11px;">Tarikh: ${new Date().toLocaleDateString('ms-MY')}</p>
+                        </div>
+                        <div style="text-align: center; width: 45%;">
+                            <p>__________________________</p>
+                            <p style="font-size: 11px;">Tandatangan Penyelia / Ketua Platun</p>
+                            <p style="font-size: 11px;">Cop Rasmi:</p>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 50px; border: 1px dashed #ccc; padding: 15px; font-size: 10px;">
+                        <p><strong>Nota:</strong> Sila pastikan borang ini dilampirkan bersama dokumen sokongan (jika perlu) sebelum diserahkan kepada penyelia untuk kelulusan.</p>
+                    </div>
                 </div>
             `;
             window.print();
         };
 
-        // NAVIGATION LOGIC ASAL
+        // NAVIGATION LOGIC ASAL (KEKAL)
         async function showPage(p, targetMonth = new Date().getMonth()) {
             const cont = document.getElementById('dynamic-content');
             if (p === 'jadual-tugas') {
                 const dty = getDuty(new Date(), userData.platoon);
                 cont.innerHTML = `
                     <div class="bg-white p-6 rounded-[2rem] mb-4 border border-slate-100 shadow-sm flex justify-between items-center">
-                        <div><h2 class="text-xs font-black uppercase">${userData.fullName}</h2><p class="text-[9px] text-blue-600 font-bold uppercase tracking-widest">Platun ${userData.platoon}</p></div>
+                        <div><h2 class="text-xs font-black uppercase text-center">${userData.fullName}</h2><p class="text-[9px] text-blue-600 font-bold uppercase tracking-widest text-center">Platun ${userData.platoon}</p></div>
                     </div>
                     <div class="bg-blue-900 p-10 rounded-[3rem] text-white text-center shadow-2xl relative overflow-hidden">
                         ${dty.off ? '<h1 class="text-5xl font-black opacity-20 py-10 italic uppercase">Off Day</h1>' : `
@@ -227,31 +268,4 @@
                 const year = 2026; const daysInMonth = new Date(year, parseInt(targetMonth) + 1, 0).getDate();
                 for(let i=1; i<=daysInMonth; i++){
                     let d = new Date(year, targetMonth, i); let r = getDuty(d, userData.platoon);
-                    html += `<div class="${r.off?'bg-slate-100':'bg-white'} p-3 rounded-2xl border border-slate-100 text-center shadow-sm min-h-[85px] flex flex-col justify-center"><p class="text-[7px] font-bold text-slate-400 mb-1 uppercase">${d.toLocaleDateString('ms-MY',{weekday:'short',day:'2-digit'})}</p><p class="text-[8px] font-black ${r.off?'text-slate-400':'text-blue-900'} uppercase leading-tight">${r.off?'OFF':r.shift}</p><p class="text-[7px] font-bold text-blue-500 uppercase mt-1 tracking-tighter">${r.off?'':r.loc}</p></div>`;
-                }
-                cont.innerHTML = html + '</div>';
-                document.getElementById('month-select').onchange = (e) => showPage('jadual-induk', e.target.value);
-            }
-            closeMenu();
-        }
-
-        // SIDEBAR ACTIONS
-        const sidebar = document.getElementById('mobile-sidebar');
-        const container = document.getElementById('sidebar-container');
-        function openMenu() { sidebar.classList.remove('hidden'); setTimeout(() => container.classList.remove('closed'), 10); }
-        function closeMenu() { container.classList.add('closed'); setTimeout(() => sidebar.classList.add('hidden'), 300); }
-        document.getElementById('menu-open').onclick = openMenu;
-        document.getElementById('nav-today').onclick = () => showPage('jadual-tugas');
-        document.getElementById('nav-calendar').onclick = () => showPage('jadual-induk');
-        document.getElementById('btn-logout').onclick = () => signOut(auth);
-
-        // AUTH ACTIONS (Kekal)
-        document.getElementById('btn-action').onclick = async () => {
-            const email = document.getElementById('email').value.trim();
-            const pass = document.getElementById('password').value;
-            if (authMode === 'login') {
-                try { await signInWithEmailAndPassword(auth, email, pass); } catch(e) { alert("Ralat Log Masuk."); }
-            } else {
-                const fn = document.getElementById('reg-firstname').value.trim().toUpperCase();
-                const ln = document.getElementById('reg-lastname').value.trim().toUpperCase();
-                const plt = document.getElementById('reg-platoon
+                    html += `<div class="${r.off?'bg-slate-100':'bg-white'} p-3 rounded-2xl border border-slate-100 text-center shadow-sm min-h-[85px] flex f
