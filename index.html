@@ -13,7 +13,7 @@
         @media print {
             body * { visibility: hidden; }
             #print-area, #print-area * { visibility: visible; }
-            #print-area { position: absolute; left: 0; top: 0; width: 210mm; padding: 20mm; background: white; }
+            #print-area { position: absolute; left: 0; top: 0; width: 210mm; padding: 20mm; background: white; color: black; display: block !important; }
         }
     </style>
 </head>
@@ -21,22 +21,22 @@
 
     <div id="loading-overlay" class="fixed inset-0 bg-white z-[100] flex flex-col items-center justify-center p-6 text-center">
         <div class="w-10 h-10 border-4 border-blue-900 border-t-transparent rounded-full animate-spin mb-4"></div>
-        <p class="text-[10px] font-black uppercase tracking-widest text-blue-900">Sila Tunggu...</p>
+        <p class="text-[10px] font-black uppercase tracking-widest text-blue-900">Menyemak Sesi...</p>
     </div>
 
     <div id="auth-section" class="hidden flex items-center justify-center min-h-screen p-6">
         <div class="bg-white p-8 rounded-[2.5rem] shadow-2xl w-full max-w-md border border-slate-100 text-center">
             <h1 class="text-2xl font-black text-blue-900 uppercase italic mb-2 tracking-tighter">BRAVORIAN</h1>
             <p class="text-[9px] font-bold text-slate-400 uppercase mb-6 tracking-widest italic">Sultan Iskandar Building</p>
-            <input type="email" id="email" placeholder="EMAIL" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-[10px] font-bold mb-3 outline-none focus:ring-2 focus:ring-blue-600">
+            <input type="email" id="email" placeholder="ALAMAT EMEL" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-[10px] font-bold mb-3 outline-none focus:ring-2 focus:ring-blue-600">
             <input type="password" id="password" placeholder="KATA LALUAN" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-[10px] font-bold mb-6 outline-none focus:ring-2 focus:ring-blue-600">
             <button id="btn-login" class="w-full bg-blue-900 text-white font-black py-4 rounded-2xl uppercase text-[10px] tracking-widest shadow-lg">Log Masuk</button>
-            <p id="error-msg" class="mt-4 text-[9px] text-red-500 font-mono"></p>
+            <p id="error-msg" class="mt-4 text-[9px] text-red-500 font-bold uppercase"></p>
         </div>
     </div>
 
     <div id="main-dashboard" class="hidden">
-        <nav class="bg-white border-b border-slate-100 p-4 sticky top-0 z-50 flex justify-between items-center">
+        <nav class="bg-white border-b border-slate-100 p-4 sticky top-0 z-50 flex justify-between items-center no-print">
             <div class="flex items-center gap-3">
                 <button id="menu-open" class="p-2 text-slate-600 bg-slate-50 rounded-xl">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
@@ -46,13 +46,12 @@
             <button id="btn-logout" class="bg-red-50 text-red-600 px-3 py-1.5 rounded-xl text-[9px] font-black uppercase">Logout</button>
         </nav>
 
-        <div id="mobile-sidebar" class="fixed inset-0 bg-slate-900/60 z-[60] hidden backdrop-blur-sm">
+        <div id="mobile-sidebar" class="fixed inset-0 bg-slate-900/60 z-[60] hidden backdrop-blur-sm no-print">
             <div id="sidebar-container" class="mobile-menu closed bg-white w-72 h-full p-8 flex flex-col overflow-y-auto">
                 <div class="mb-10"><h2 class="text-[10px] font-black text-blue-900 uppercase tracking-widest opacity-40 italic">Menu Utama</h2></div>
                 <div class="space-y-2 font-black text-[11px] uppercase text-slate-600 tracking-widest">
                     <button id="nav-today" class="block w-full text-left p-4 hover:bg-blue-50 rounded-2xl">Tugasan Hari Ini</button>
                     <button id="nav-calendar" class="block w-full text-left p-4 hover:bg-blue-50 rounded-2xl">Kalendar Bulanan</button>
-                    
                     <div class="pt-4 mt-2 border-t border-slate-100">
                         <p class="px-4 text-[8px] text-slate-400 mb-2 italic">Permohonan Cuti</p>
                         <button onclick="showLeave('gantian')" class="block w-full text-left p-4 hover:bg-blue-50 rounded-2xl">Cuti Gantian</button>
@@ -63,7 +62,7 @@
             </div>
         </div>
 
-        <main class="max-w-4xl mx-auto p-4 md:p-8"><div id="dynamic-content"></div></main>
+        <main class="max-w-4xl mx-auto p-4 md:p-8 no-print"><div id="dynamic-content"></div></main>
         <div id="print-area" class="hidden"></div>
     </div>
 
@@ -85,38 +84,68 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
+        // LOGIK JADUAL 2 & START ROW
+        const JADUAL_2 = { 1: ["ENTRY MC", "ENTRY KA", "ENTRY BAS"], 2: ["EXIT KB", "EXIT SBY#2", "EXIT MA"], 3: ["ENTRY KC", "ENTRY BDL/Autogate", "ENTRY SBY#1"], 4: ["EXIT LORI", "EXIT BAS", "EXIT KD"], 5: ["ENTRY MC", "ENTRY SBY#3", "ENTRY KB"], 6: ["EXIT MA", "EXIT SBY#1", "EXIT KC"], 7: ["ENTRY SBY#2", "ENTRY BAS", "ENTRY KD"], 8: ["EXIT BAS", "EXIT KA", "EXIT SBY#3"], 9: ["ENTRY KA", "ENTRY BAS", "ENTRY MC"], 10: ["EXIT SBY#2", "EXIT MA", "EXIT KB"], 11: ["ENTRY SBY#1", "ENTRY KC", "ENTRY BDL/Autogate"], 12: ["EXIT KD", "EXIT LORI", "EXIT BAS"], 13: ["ENTRY SBY#3", "ENTRY KB", "ENTRY MC"], 14: ["EXIT KC", "EXIT MA", "EXIT SBY#1"], 15: ["ENTRY KD", "ENTRY SBY#2", "ENTRY BAS"], 16: ["EXIT SBY#3", "EXIT BAS", "EXIT KA"], 17: ["ENTRY BAS", "ENTRY MC", "ENTRY KA"], 18: ["EXIT MA", "EXIT KB", "EXIT SBY#2"], 19: ["ENTRY BDL/Autogate", "ENTRY SBY#1", "ENTRY KC"], 20: ["EXIT BAS", "EXIT KD", "EXIT LORI"], 21: ["ENTRY KB", "ENTRY MC", "ENTRY SBY#3"], 22: ["EXIT SBY#1", "EXIT KC", "EXIT MA"], 23: ["ENTRY BAS", "ENTRY KD", "ENTRY SBY#2"], 24: ["EXIT KA", "EXIT SBY#3", "EXIT BAS"] };
+        const START_ROW = { 1:1, 2:2, 3:1, 4:20, 5:13, 6:16, 7:17, 8:6, 9:3, 10:10, 11:7, 12:24, 13:15, 14:22, 15:5, 16:14, 17:19, 18:8, 19:9, 20:12, 21:21, 22:4, 23:11, 24:18, 25:23 };
+
+        function getDuty(d, p) {
+            let b = new Date(2026, 0, 3); let t = new Date(d); t.setHours(0,0,0,0);
+            let diff = Math.floor((t - b) / 86400000);
+            if (diff < 0) return { off: true };
+            let cp = diff % 4; if (cp === 3) return { off: true };
+            let row = ((START_ROW[p] + Math.floor(diff/4) - 1) % 24) + 1;
+            return { off: false, shift: ["PETANG", "PAGI", "MALAM"][cp], loc: JADUAL_2[row][cp], row: row };
+        }
+
         let userData = null;
 
         onAuthStateChanged(auth, async (user) => {
             document.getElementById('loading-overlay').classList.add('hidden');
             if (user) {
-                const snap = await get(ref(db, 'users/' + user.uid));
-                if (snap.exists() && snap.val().status === "approved") {
-                    userData = snap.val();
-                    document.getElementById('auth-section').classList.add('hidden');
-                    document.getElementById('main-dashboard').classList.remove('hidden');
-                    showToday();
-                } else {
-                    alert("Akaun anda belum diluluskan oleh Admin.");
-                    signOut(auth);
-                }
+                try {
+                    const snap = await get(ref(db, 'users/' + user.uid));
+                    if (snap.exists() && snap.val().status === "approved") {
+                        userData = snap.val();
+                        document.getElementById('auth-section').classList.add('hidden');
+                        document.getElementById('main-dashboard').classList.remove('hidden');
+                        showToday();
+                    } else {
+                        alert("Akaun dalam proses kelulusan.");
+                        signOut(auth);
+                    }
+                } catch(e) { alert("Ralat Database: " + e.message); }
             } else {
                 document.getElementById('auth-section').classList.remove('hidden');
                 document.getElementById('main-dashboard').classList.add('hidden');
             }
         });
 
-        // FUNGSI MENU (SAMA SEPERTI ASAL)
+        // FUNGSI UTAMA
+        function showToday() {
+            const dty = getDuty(new Date(), userData.platoon);
+            document.getElementById('dynamic-content').innerHTML = `
+                <div class="bg-white p-6 rounded-[2rem] mb-4 border border-slate-100 shadow-sm flex justify-between items-center">
+                    <div><h2 class="text-xs font-black uppercase">${userData.fullName}</h2><p class="text-[9px] text-blue-600 font-bold uppercase">Platun ${userData.platoon}</p></div>
+                </div>
+                <div class="bg-blue-900 p-10 rounded-[3rem] text-white text-center shadow-2xl">
+                    ${dty.off ? '<h1 class="text-5xl font-black opacity-20 py-10 italic uppercase">Off Day</h1>' : `
+                        <p class="text-[9px] font-black uppercase mb-4 opacity-60 tracking-widest">Tugasan Hari Ini</p>
+                        <h1 class="text-4xl font-black mb-1 uppercase tracking-tighter">${dty.loc}</h1>
+                        <p class="text-[10px] font-bold uppercase opacity-60">${dty.shift} • BARIS ${dty.row}</p>
+                    `}
+                </div>`;
+            closeMenu();
+        }
+
         window.showLeave = (type) => {
-            const cont = document.getElementById('dynamic-content');
-            const titles = { gantian: "Cuti Gantian", rekod: "Cuti Rekod", timeoff: "Time Off" };
-            cont.innerHTML = `
+            const t = { gantian: "Cuti Gantian", rekod: "Cuti Rekod", timeoff: "Time Off" };
+            document.getElementById('dynamic-content').innerHTML = `
                 <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 space-y-4">
-                    <h2 class="font-black text-blue-900 uppercase text-xs">Borang ${titles[type]}</h2>
+                    <h2 class="font-black text-blue-900 uppercase text-xs">Borang ${t[type]}</h2>
                     <input type="date" id="l-date" class="w-full p-4 bg-slate-50 rounded-xl text-xs font-bold outline-none">
                     <input type="number" id="l-amt" placeholder="Jumlah Diambil" class="w-full p-4 bg-slate-50 rounded-xl text-xs font-bold outline-none">
                     <input type="text" id="l-bal" placeholder="Baki" class="w-full p-4 bg-slate-50 rounded-xl text-xs font-bold outline-none">
-                    ${type!=='timeoff'?'<input type="text" id="l-sub" placeholder="Nama Pengganti (Pilihan)" class="w-full p-4 bg-slate-50 rounded-xl text-xs font-bold outline-none">':''}
+                    ${type!=='timeoff'?'<input type="text" id="l-sub" placeholder="Nama Pengganti" class="w-full p-4 bg-slate-50 rounded-xl text-xs font-bold outline-none">':''}
                     <button onclick="doPrint('${type}')" class="w-full bg-blue-900 text-white font-black py-4 rounded-xl text-[10px] uppercase shadow-lg">Cetak (A4)</button>
                 </div>`;
             closeMenu();
@@ -127,52 +156,52 @@
             const amt = document.getElementById('l-amt').value;
             const bal = document.getElementById('l-bal').value;
             const sub = document.getElementById('l-sub')?.value || "TIADA";
-            if(!date || !amt || !bal) return alert("Sila isi semua maklumat.");
+            if(!date || !amt || !bal) return alert("Sila lengkapkan maklumat.");
             
             document.getElementById('print-area').innerHTML = `
                 <div style="text-align:center; border-bottom:2px solid black; padding-bottom:10px; margin-bottom:20px;">
                     <h1 style="font-size:18px; font-weight:bold; margin:0;">BORANG PERMOHONAN ${type.toUpperCase()}</h1>
                     <p style="font-size:10px;">BSI JOHOR BAHRU</p>
                 </div>
-                <div style="font-size:14px; line-height:2;">
+                <div style="font-size:14px; line-height:2.5;">
                     <p><strong>NAMA:</strong> ${userData.fullName.toUpperCase()}</p>
                     <p><strong>PLATUN:</strong> ${userData.platoon}</p>
-                    <p><strong>TARIKH CUTI:</strong> ${date}</p>
-                    <p><strong>JUMLAH DIHANTAR:</strong> ${amt} ${type==='timeoff'?'JAM':'HARI'}</p>
-                    <p><strong>BAKI TERKINI:</strong> ${bal}</p>
-                    ${type!=='timeoff'?'<p><strong>NAMA PENGGANTI:</strong> '+sub.toUpperCase()+'</p>':''}
+                    <p><strong>TARIKH:</strong> ${date}</p>
+                    <p><strong>JUMLAH:</strong> ${amt} ${type==='timeoff'?'JAM':'HARI'}</p>
+                    <p><strong>BAKI:</strong> ${bal}</p>
+                    ${type!=='timeoff'?'<p><strong>PENGGANTI:</strong> '+sub.toUpperCase()+'</p>':''}
                 </div>
-                <div style="margin-top:60px; display:flex; justify-content:space-between;">
-                    <div style="text-align:center; width:40%; border-top:1px solid black;">Tandatangan Pemohon</div>
-                    <div style="text-align:center; width:40%; border-top:1px solid black;">Tandatangan Penyelia</div>
+                <div style="margin-top:80px; display:flex; justify-content:space-between;">
+                    <div style="text-align:center; width:45%; border-top:1px solid black;">Tandatangan Pemohon</div>
+                    <div style="text-align:center; width:45%; border-top:1px solid black;">Penyelia / Ketua Platun</div>
                 </div>`;
             window.print();
         };
 
-        function showToday() {
-            document.getElementById('dynamic-content').innerHTML = `
-                <div class="bg-blue-900 p-10 rounded-[3rem] text-white text-center shadow-2xl">
-                    <p class="text-[9px] font-black uppercase mb-4 opacity-60">Selamat Datang</p>
-                    <h1 class="text-3xl font-black mb-1 uppercase tracking-tighter">${userData.fullName}</h1>
-                    <p class="text-[10px] font-bold uppercase tracking-widest">Platun ${userData.platoon}</p>
-                </div>`;
-        }
-
-        // Sidebar logic
+        // Navigation
         const sidebar = document.getElementById('mobile-sidebar');
         const container = document.getElementById('sidebar-container');
         function openMenu() { sidebar.classList.remove('hidden'); setTimeout(() => container.classList.remove('closed'), 10); }
         function closeMenu() { container.classList.add('closed'); setTimeout(() => sidebar.classList.add('hidden'), 300); }
         document.getElementById('menu-open').onclick = openMenu;
-        document.getElementById('nav-today').onclick = () => { showToday(); closeMenu(); };
+        document.getElementById('nav-today').onclick = showToday;
         document.getElementById('btn-logout').onclick = () => signOut(auth);
 
+        // Auth Logic
         document.getElementById('btn-login').onclick = async () => {
-            const e = document.getElementById('email').value;
+            const e = document.getElementById('email').value.trim();
             const p = document.getElementById('password').value;
             const err = document.getElementById('error-msg');
-            err.innerText = "Sila tunggu...";
-            try { await signInWithEmailAndPassword(auth, e, p); } catch(e) { err.innerText = "Ralat: " + e.code; }
+            if(!e || !p) { err.innerText = "Sila isi emel & kata laluan"; return; }
+            try {
+                err.innerText = "Menyemak...";
+                await signInWithEmailAndPassword(auth, e, p);
+            } catch(e) {
+                if(e.code === 'auth/invalid-email') err.innerText = "Format emel salah!";
+                else if(e.code === 'auth/user-not-found') err.innerText = "Akaun tidak wujud!";
+                else if(e.code === 'auth/wrong-password') err.innerText = "Kata laluan salah!";
+                else err.innerText = "RALAT: " + e.code;
+            }
         };
     </script>
 </body>
