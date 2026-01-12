@@ -179,10 +179,10 @@
         };
         async function showPage(p, targetMonth = new Date().getMonth()) {
             const cont = document.getElementById('dynamic-content');
-                        // 1. HALAMAN JADUAL TUGAS HARI INI (DENGAN NAMA & HARI)
-                        // 1. HALAMAN JADUAL TUGAS HARI INI
+                                    // 1. HALAMAN JADUAL TUGAS HARI INI (BERSIH & KEMAS)
             if (p === 'jadual-tugas') {
-                const dty = getDuty(new Date(), userData.platoon);
+                const now = new Date();
+                const dty = getDuty(now, userData.platoon);
                 const exSnap = await get(ref(db, 'excel_data'));
                 let ktr = "OFF";
                 
@@ -193,7 +193,7 @@
                 }
 
                 cont.innerHTML = `
-                    <div class="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm mb-6 flex justify-between items-center animate-pulse-once">
+                    <div class="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm mb-6 flex justify-between items-center">
                         <div>
                             <h2 class="text-sm font-black text-blue-900 uppercase tracking-tight">${userData.fullName}</h2>
                             <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1">Pegawai Imigresen • Platun ${userData.platoon}</p>
@@ -386,17 +386,17 @@
         document.getElementById('admin-nav').onclick = () => { showAdminPage(); closeMenu(); };
         document.getElementById('btn-logout').onclick = () => { if(confirm("Log keluar?")) signOut(auth); };
 
-                        // Jam & Tarikh Live di Navigasi
+                                // Jam Live dengan Hari dan Tarikh di atas Masa
         setInterval(() => {
             const clockEl = document.getElementById('live-clock');
             if(clockEl) {
-                const kini = new Date();
-                const hari = kini.toLocaleDateString('ms-MY', { weekday: 'long' }).toUpperCase();
-                const tarikh = kini.toLocaleDateString('ms-MY', { day: '2-digit', month: 'short' }).toUpperCase();
-                const masa = kini.toLocaleTimeString('ms-MY', { hour12: false });
+                const now = new Date();
+                const hari = now.toLocaleDateString('ms-MY', { weekday: 'long' }).toUpperCase();
+                const tarikh = now.toLocaleDateString('ms-MY', { day: '2-digit', month: 'short' }).toUpperCase();
+                const masa = now.toLocaleTimeString('ms-MY', { hour12: false });
                 
-                // Hari & Tarikh di atas, Jam di bawah
-                clockEl.innerHTML = `${hari}, ${tarikh}<br><span class="text-[10px] text-blue-600 font-black">${masa}</span>`;
+                // Memasukkan Hari & Tarikh di baris atas, Masa di baris bawah
+                clockEl.innerHTML = `<span class="block text-[7px] mb-0.5">${hari}, ${tarikh}</span><span class="text-[10px] text-blue-600">${masa}</span>`;
             }
         }, 1000);
 
