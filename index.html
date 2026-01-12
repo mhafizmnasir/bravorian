@@ -390,10 +390,20 @@
         document.getElementById('admin-nav').onclick = () => { showAdminPage(); closeMenu(); };
         document.getElementById('btn-logout').onclick = () => { if(confirm("Log keluar?")) signOut(auth); };
 
+                // Jam & Tarikh Live di Navigasi
         setInterval(() => {
             const clockEl = document.getElementById('live-clock');
-            if(clockEl) clockEl.innerText = new Date().toLocaleTimeString('ms-MY', { hour12: false });
+            if(clockEl) {
+                const kini = new Date();
+                const hari = kini.toLocaleDateString('ms-MY', { weekday: 'long' }).toUpperCase();
+                const tarikh = kini.toLocaleDateString('ms-MY', { day: '2-digit', month: 'short' }).toUpperCase();
+                const masa = kini.toLocaleTimeString('ms-MY', { hour12: false });
+                
+                // Hari & Tarikh di atas, Jam di bawah
+                clockEl.innerHTML = `${hari}, ${tarikh}<br><span class="text-[10px] text-blue-600 font-black">${masa}</span>`;
+            }
         }, 1000);
+
           document.getElementById('btn-action').onclick = async () => {
             const email = document.getElementById('email').value.trim();
             const pass = document.getElementById('password').value;
