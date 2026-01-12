@@ -179,28 +179,53 @@
         };
         async function showPage(p, targetMonth = new Date().getMonth()) {
             const cont = document.getElementById('dynamic-content');
+                        // 1. HALAMAN JADUAL TUGAS HARI INI (DENGAN NAMA & HARI)
             if (p === 'jadual-tugas') {
-                const dty = getDuty(new Date(), userData.platoon);
+                const now = new Date();
+                const hariIni = now.toLocaleDateString('ms-MY', { weekday: 'long' });
+                const tarikhIni = now.toLocaleDateString('ms-MY', { day: '2-digit', month: 'long', year: 'numeric' });
+                
+                const dty = getDuty(now, userData.platoon);
                 const exSnap = await get(ref(db, 'excel_data'));
                 let ktr = "OFF";
+                
                 if(exSnap.exists() && !dty.off) {
                     const listData = exSnap.val();
                     const match = listData.find(i => String(i.Nama || i.NAMA || "").trim().toUpperCase() === userData.fullName.toUpperCase());
                     ktr = match ? (match.No_Kaunter || match["NO KAUNTER"] || match.KAUNTER || "SET") : "TIADA DATA";
                 }
+
                 cont.innerHTML = `
-                    <div class="bg-blue-900 p-10 rounded-[3rem] text-white text-center shadow-2xl">
-                        ${dty.off ? `<h1 class="text-4xl font-black opacity-30 italic">OFF DAY</h1>` : `
-                            <p class="text-[9px] font-black text-blue-300 uppercase tracking-[0.4em] mb-4">Tugasan Hari Ini</p>
-                            <h1 class="text-4xl font-black mb-1 italic">${dty.loc}</h1>
-                            <p class="text-[10px] font-bold text-blue-200 mb-8">${dty.shift} • BARIS ${dty.row}</p>
-                            <div class="bg-white/10 p-6 rounded-[2.5rem] backdrop-blur-xl">
-                                <p class="text-[8px] font-black text-blue-200 uppercase mb-2">No. Kaunter</p>
-                                <h2 class="text-5xl font-black text-yellow-400 italic">${ktr}</h2>
+                    <div class="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm mb-6 flex justify-between items-center animate-pulse-once">
+                        <div>
+                            <p class="text-[8px] font-black uppercase text-blue-600 tracking-[0.2em] mb-1">${hariIni} • ${tarikhIni}</p>
+                            <h2 class="text-sm font-black text-blue-900 uppercase tracking-tight">${userData.fullName}</h2>
+                            <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1">Pegawai Imigresen • Platun ${userData.platoon}</p>
+                        </div>
+                        <div class="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-900 font-black text-sm border border-blue-100">
+                            ${userData.platoon}
+                        </div>
+                    </div>
+                    
+                    <div class="bg-blue-900 p-10 rounded-[3rem] text-white text-center shadow-2xl relative overflow-hidden">
+                        ${dty.off ? `
+                            <div class="py-10">
+                                <h1 class="text-5xl font-black opacity-20 italic uppercase tracking-tighter">OFF DAY</h1>
+                                <p class="text-blue-300 text-[10px] font-bold uppercase mt-4 tracking-widest">Selamat Berehat, Tuan</p>
+                            </div>
+                        ` : `
+                            <p class="text-[9px] font-black text-blue-300 uppercase mb-4 tracking-[0.4em]">Lokasi Tugasan</p>
+                            <h1 class="text-4xl font-black mb-1 tracking-tighter uppercase italic">${dty.loc}</h1>
+                            <p class="text-[10px] font-bold text-blue-200 mb-10 uppercase tracking-widest italic">${dty.shift} • BARIS ${dty.row}</p>
+                            
+                            <div class="bg-white/10 p-8 rounded-[2.5rem] border border-white/20 backdrop-blur-xl inline-block min-w-[200px]">
+                                <p class="text-[8px] font-black text-blue-200 uppercase mb-2 tracking-widest">No. Kaunter Aktif</p>
+                                <h2 class="text-6xl font-black tracking-tighter italic text-yellow-400">${ktr}</h2>
                             </div>
                         `}
                     </div>`;
-            } 
+            }
+
             else if (p === 'jadual-induk') {
                 const months = ["JANUARI", "FEBRUARI", "MAC", "APRIL", "MEI", "JUN", "JULAI", "OGOS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DISEMBER"];
                 let html = `<div class="bg-white p-4 rounded-3xl mb-4 shadow-sm"><select id="month-select" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-[10px] font-black uppercase">
