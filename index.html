@@ -269,9 +269,23 @@
                 document.getElementById('auth-title').innerText = 'LUPA KATA LALUAN';
                 document.getElementById('btn-action').innerText = 'Hantar Emel Pautan';
                 document.getElementById('auth-toggle-btn').innerText = 'Kembali ke Log Masuk';
-            } else if(isReg) {
+                            } else if(isReg) {
                 document.getElementById('auth-title').innerText = 'DAFTAR AKAUN';
                 document.getElementById('btn-action').innerText = 'Daftar Sekarang';
                 document.getElementById('auth-toggle-btn').innerText = 'Sudah Ada Akaun? Log Masuk';
             } else {
-                document.getElementById('auth-title').innerText = 'BRAVORI
+                document.getElementById('auth-title').innerText = 'BRAVORIAN';
+                document.getElementById('btn-action').innerText = 'Log Masuk';
+                document.getElementById('auth-toggle-btn').innerText = 'Daftar Akaun Baru';
+            }
+            document.getElementById('btn-forgot-pw').classList.toggle('hidden', isReset);
+        }
+
+        document.getElementById('auth-toggle-btn').onclick = () => { if(authMode === 'login') toggleAuthMode('register'); else toggleAuthMode('login'); };
+        document.getElementById('btn-forgot-pw').onclick = () => toggleAuthMode('reset');
+
+        const sel = document.getElementById('reg-platoon');
+        for(let i=1; i<=25; i++){ const o = document.createElement('option'); o.value = i; o.text = "PLATUN " + i; sel.appendChild(o); }
+    </script>
+</body>
+</html>
