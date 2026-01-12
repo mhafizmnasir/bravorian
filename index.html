@@ -3,40 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BRAVORIAN - BSI SYSTEM</title>
+    <title>BRAVORIAN - BSI</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-        .mobile-menu { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .mobile-menu { transition: transform 0.3s ease-in-out; }
         .mobile-menu.closed { transform: translateX(-100%); }
-        /* Animasi halus untuk kad jadual */
-        .duty-card { transition: transform 0.1s ease; }
-        .duty-card:active { transform: scale(0.97); }
     </style>
 </head>
-<body class="bg-slate-50 min-h-screen text-slate-900 overflow-x-hidden">
+<body class="bg-slate-50 min-h-screen text-slate-900">
 
-    <div id="loading-overlay" class="fixed inset-0 bg-white z-[100] flex flex-col items-center justify-center p-6 text-center">
+    <div id="loading-overlay" class="fixed inset-0 bg-white z-[100] flex flex-col items-center justify-center p-6">
         <div class="w-12 h-12 border-4 border-blue-900 border-t-transparent rounded-full animate-spin mb-4"></div>
-        <p class="text-[10px] font-black uppercase tracking-[0.3em] text-blue-900 italic">Bravorian BSI System</p>
+        <p class="text-[10px] font-black uppercase tracking-widest text-blue-900">Memuatkan Sistem...</p>
     </div>
 
-    <div id="auth-section" class="hidden min-h-screen flex items-center justify-center p-6 bg-slate-50">
-        <div class="bg-white p-8 rounded-[2.5rem] shadow-2xl w-full max-w-md border border-slate-100">
-            <div class="text-center mb-8">
-                <h1 id="auth-title" class="text-3xl font-black text-blue-900 uppercase italic tracking-tighter">BRAVORIAN</h1>
-                <p id="auth-subtitle" class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Sultan Iskandar Building</p>
-            </div>
+    <div id="auth-section" class="hidden flex items-center justify-center min-h-screen p-6">
+        <div class="bg-white p-8 rounded-[2.5rem] shadow-2xl w-full max-w-md border border-slate-100 text-center">
+            <h1 id="auth-title" class="text-2xl font-black text-blue-900 uppercase italic mb-2 tracking-tighter">BRAVORIAN</h1>
+            <p id="auth-subtitle" class="text-[9px] font-bold text-slate-400 uppercase mb-6 tracking-widest italic">Sultan Iskandar Building</p>
             
-            <div id="register-fields" class="hidden space-y-3 mb-3">
+            <div id="register-fields" class="hidden space-y-3 mb-3 text-left">
                 <div class="flex gap-2">
                     <input type="text" id="reg-firstname" placeholder="NAMA DEPAN" class="w-1/2 p-4 bg-slate-50 border-none rounded-2xl text-[10px] font-bold uppercase outline-none focus:ring-2 focus:ring-blue-600">
                     <input type="text" id="reg-lastname" placeholder="NAMA BELAKANG" class="w-1/2 p-4 bg-slate-50 border-none rounded-2xl text-[10px] font-bold uppercase outline-none focus:ring-2 focus:ring-blue-600">
                 </div>
-                <select id="reg-platoon" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-[10px] font-bold outline-none focus:ring-2 focus:ring-blue-600 uppercase">
-                    <option value="">PILIH PLATUN</option>
-                </select>
+                <select id="reg-platoon" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-[10px] font-bold outline-none focus:ring-2 focus:ring-blue-600 uppercase"></select>
             </div>
 
             <div class="space-y-3">
@@ -45,40 +39,42 @@
             </div>
 
             <button id="btn-action" class="w-full bg-blue-900 text-white font-black py-4 rounded-2xl mt-6 uppercase text-[10px] tracking-widest shadow-lg active:scale-95 transition-all">Log Masuk</button>
-            <button id="auth-toggle-btn" class="w-full text-[9px] text-blue-600 font-black uppercase tracking-widest mt-6">Daftar Akaun Baru</button>
+            
+            <div class="mt-6 space-y-3 pt-6 border-t border-slate-50">
+                <button id="auth-toggle-btn" class="w-full text-[9px] text-blue-600 font-black uppercase tracking-widest">Daftar Akaun Baru</button>
+                <button id="btn-forgot-pw" class="w-full text-[9px] text-slate-400 font-black uppercase tracking-widest hover:underline">Lupa Kata Laluan?</button>
+            </div>
         </div>
     </div>
 
     <div id="main-dashboard" class="hidden">
-        <nav class="bg-white/80 backdrop-blur-md border-b border-slate-100 p-4 sticky top-0 z-50 flex justify-between items-center px-6">
+        <nav class="bg-white border-b border-slate-100 p-4 sticky top-0 z-50 shadow-sm flex justify-between items-center">
             <div class="flex items-center gap-3">
                 <button id="menu-open" class="p-2 text-slate-600 bg-slate-50 rounded-xl">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"></path></svg>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
                 </button>
-                <div class="flex flex-col">
-                    <span class="font-black text-blue-900 italic uppercase tracking-tighter leading-none">Bravorian</span>
-                    <span class="text-[7px] font-bold text-slate-400 uppercase tracking-widest mt-1">Jadual Tahunan 2026</span>
-                </div>
+                <span class="font-black text-blue-900 italic uppercase tracking-tighter">Bravorian</span>
             </div>
-            <div id="user-initial" class="w-8 h-8 bg-blue-900 rounded-full flex items-center justify-center text-white text-[10px] font-black uppercase">?</div>
+            <button id="btn-logout" class="bg-red-50 text-red-600 px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest">Logout</button>
         </nav>
 
-        <div id="mobile-sidebar" class="fixed inset-0 bg-slate-900/40 z-[60] hidden backdrop-blur-sm">
-            <div id="sidebar-container" class="mobile-menu closed bg-white w-72 h-full p-8 flex flex-col shadow-2xl">
-                <div class="mb-10 pt-4"><h2 class="text-[9px] font-black text-blue-900 uppercase tracking-[0.3em] opacity-40 italic">Menu Utama</h2></div>
-                <div class="space-y-1 font-black text-[11px] uppercase text-slate-600 tracking-widest">
-                    <button id="nav-home" class="block w-full text-left p-4 bg-blue-50 text-blue-900 rounded-2xl transition-all">Jadual Saya</button>
+        <div id="mobile-sidebar" class="fixed inset-0 bg-slate-900/60 z-[60] hidden backdrop-blur-sm">
+            <div id="sidebar-container" class="mobile-menu closed bg-white w-72 h-full p-8 flex flex-col">
+                <div class="mb-10">
+                    <h2 class="text-[10px] font-black text-blue-900 uppercase tracking-[0.2em] opacity-40 italic">Menu Utama</h2>
+                </div>
+                <div class="space-y-2 font-black text-[11px] uppercase text-slate-600 tracking-widest">
+                    <button id="nav-today" class="block w-full text-left p-4 hover:bg-blue-50 rounded-2xl transition-all">Tugasan Hari Ini</button>
+                    <button id="nav-calendar" class="block w-full text-left p-4 hover:bg-blue-50 rounded-2xl transition-all">Kalendar 14 Hari</button>
+                    <button id="admin-nav" class="hidden w-full text-left p-4 bg-red-50 text-red-600 rounded-2xl italic border border-red-100 mt-4">Admin Panel</button>
                 </div>
                 <div class="mt-auto pt-6 border-t border-slate-50 text-center">
-                    <button id="btn-logout" class="text-[9px] font-black text-slate-400 uppercase hover:text-red-600 transition-colors">Log Keluar</button>
+                    <p class="text-[8px] font-bold text-slate-300 uppercase tracking-widest italic">BSI Johor Bahru</p>
                 </div>
             </div>
         </div>
 
-        <main class="max-w-4xl mx-auto p-4 md:p-8">
-            <div id="dynamic-content" class="space-y-12 pb-24">
-                </div>
-        </main>
+        <main class="max-w-4xl mx-auto p-4 md:p-8"><div id="dynamic-content"></div></main>
     </div>
 
     <script type="module">
@@ -86,12 +82,12 @@
         import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getDatabase, ref, get, set, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        // Konfigurasi Firebase anda
         const firebaseConfig = { 
             apiKey: "AIzaSyCQ9SBXkEILe6PZdmLyGBSFK63XhPM_V7o", 
             authDomain: "bravorians-bsi.firebaseapp.com", 
             databaseURL: "https://bravorians-bsi-default-rtdb.asia-southeast1.firebasedatabase.app", 
             projectId: "bravorians-bsi", 
+            storageBucket: "bravorians-bsi.firebasestorage.app", 
             appId: "1:314220494464:web:d3b21e9b742e1db86f7065" 
         };
 
@@ -99,14 +95,23 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        // DATA JADUAL (KEKAL SEPERTI JADUAL 1 & 2)
+        // LOGIK JADUAL
         const JADUAL_2 = { 1: ["ENTRY MC", "ENTRY KA", "ENTRY BAS"], 2: ["EXIT KB", "EXIT SBY#2", "EXIT MA"], 3: ["ENTRY KC", "ENTRY BDL/Autogate", "ENTRY SBY#1"], 4: ["EXIT LORI", "EXIT BAS", "EXIT KD"], 5: ["ENTRY MC", "ENTRY SBY#3", "ENTRY KB"], 6: ["EXIT MA", "EXIT SBY#1", "EXIT KC"], 7: ["ENTRY SBY#2", "ENTRY BAS", "ENTRY KD"], 8: ["EXIT BAS", "EXIT KA", "EXIT SBY#3"], 9: ["ENTRY KA", "ENTRY BAS", "ENTRY MC"], 10: ["EXIT SBY#2", "EXIT MA", "EXIT KB"], 11: ["ENTRY SBY#1", "ENTRY KC", "ENTRY BDL/Autogate"], 12: ["EXIT KD", "EXIT LORI", "EXIT BAS"], 13: ["ENTRY SBY#3", "ENTRY KB", "ENTRY MC"], 14: ["EXIT KC", "EXIT MA", "EXIT SBY#1"], 15: ["ENTRY KD", "ENTRY SBY#2", "ENTRY BAS"], 16: ["EXIT SBY#3", "EXIT BAS", "EXIT KA"], 17: ["ENTRY BAS", "ENTRY MC", "ENTRY KA"], 18: ["EXIT MA", "EXIT KB", "EXIT SBY#2"], 19: ["ENTRY BDL/Autogate", "ENTRY SBY#1", "ENTRY KC"], 20: ["EXIT BAS", "EXIT KD", "EXIT LORI"], 21: ["ENTRY KB", "ENTRY MC", "ENTRY SBY#3"], 22: ["EXIT SBY#1", "EXIT KC", "EXIT MA"], 23: ["ENTRY BAS", "ENTRY KD", "ENTRY SBY#2"], 24: ["EXIT KA", "EXIT SBY#3", "EXIT BAS"] };
         const START_ROW = { 1:1, 2:2, 3:1, 4:20, 5:13, 6:16, 7:17, 8:6, 9:3, 10:10, 11:7, 12:24, 13:15, 14:22, 15:5, 16:14, 17:19, 18:8, 19:9, 20:12, 21:21, 22:4, 23:11, 24:18, 25:23 };
+
+        function getDuty(d, p) {
+            let b = new Date(2026, 0, 3); let t = new Date(d); t.setHours(0,0,0,0);
+            let diff = Math.floor((t - b) / 86400000);
+            if (diff < 0) return { off: true };
+            let cp = diff % 4; if (cp === 3) return { off: true };
+            let row = ((START_ROW[p] + Math.floor(diff/4) - 1) % 24) + 1;
+            return { off: false, shift: ["PETANG", "PAGI", "MALAM"][cp], loc: JADUAL_2[row][cp], row: row };
+        }
 
         let userData = null;
         let authMode = 'login';
 
-        // PANTAU STATUS PENGGUNA (LOGIN/LOGOUT)
+        // AUTH HANDLER
         onAuthStateChanged(auth, async (user) => {
             document.getElementById('loading-overlay').classList.add('hidden');
             if (user) {
@@ -115,10 +120,10 @@
                     userData = snap.val();
                     document.getElementById('auth-section').classList.add('hidden');
                     document.getElementById('main-dashboard').classList.remove('hidden');
-                    document.getElementById('user-initial').innerText = userData.firstName ? userData.firstName[0] : 'U';
-                    renderYearlyCalendar();
-                } else { 
-                    alert("Akaun belum diluluskan oleh Admin."); 
+                    if(userData.role === 'admin') document.getElementById('admin-nav').classList.remove('hidden');
+                    showPage('jadual-tugas');
+                } else {
+                    alert("Akaun belum diluluskan Admin.");
                     signOut(auth);
                 }
             } else {
@@ -127,137 +132,129 @@
             }
         });
 
-        // FUNGSI KIRA TUGASAN (Pusingan 4 Hari)
-        function getDuty(date, platoon) {
-            const baseDate = new Date(2026, 0, 3); // Rujukan: 3 Jan 2026 = Petang (Baris 1)
-            const targetDate = new Date(date); targetDate.setHours(0,0,0,0);
-            const diffDays = Math.floor((targetDate - baseDate) / 86400000);
-            const cyclePos = ((diffDays % 4) + 4) % 4; // 0:Petang, 1:Pagi, 2:Malam, 3:Off
-            const rowOffset = Math.floor(diffDays / 4);
-            const currentRow = ((START_ROW[platoon] + rowOffset - 1) % 24 + 24) % 24 + 1;
-            
-            const shifts = ["PETANG", "PAGI", "MALAM", "OFF"];
-            return {
-                shift: shifts[cyclePos],
-                location: cyclePos === 3 ? "OFF" : JADUAL_2[currentRow][cyclePos],
-                isOff: cyclePos === 3
-            };
-        }
-
-        // PAPARAN JADUAL TAHUNAN (12 BULAN)
-        async function renderYearlyCalendar() {
+        async function showPage(p) {
             const cont = document.getElementById('dynamic-content');
-            const notesSnap = await get(ref(db, `notes/${auth.currentUser.uid}`));
-            const notes = notesSnap.exists() ? notesSnap.val() : {};
-            
-            let html = "";
-            const months = ["JANUARI", "FEBRUARI", "MAC", "APRIL", "MEI", "JUN", "JULAI", "OGOS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DISEMBER"];
-
-            for (let m = 0; m < 12; m++) {
-                html += `<div class="month-group">
-                    <h3 class="text-blue-900 font-black text-xs mb-4 uppercase tracking-[0.4em] border-l-4 border-blue-900 pl-3">${months[m]} 2026</h3>
-                    <div class="space-y-2">`;
-                
-                let daysCount = new Date(2026, m + 1, 0).getDate();
-                for (let d = 1; d <= daysCount; d++) {
-                    const dateObj = new Date(2026, m, d);
-                    const dateStr = `2026-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-                    const dty = getDuty(dateObj, userData.platoon);
-                    
-                    const borderStyle = dty.isOff ? 'border-slate-200 opacity-50' : (dty.shift === 'PAGI' ? 'border-yellow-400' : (dty.shift === 'PETANG' ? 'border-blue-500' : 'border-indigo-900'));
-
-                    html += `
-                        <div onclick="addNote('${dateStr}')" class="duty-card bg-white p-4 rounded-2xl border-l-4 ${borderStyle} shadow-sm flex justify-between items-center">
-                            <div class="flex flex-col">
-                                <span class="text-[8px] font-black text-slate-400 uppercase">${dateObj.toLocaleDateString('ms-MY', {weekday:'short'})} ${d}</span>
-                                <span class="text-[10px] font-black text-blue-900 uppercase tracking-tight">${dty.location}</span>
-                            </div>
-                            <div class="text-right">
-                                <span class="text-[9px] font-black uppercase ${dty.isOff ? 'text-slate-300' : 'text-blue-600'}">${dty.shift}</span>
-                                ${notes[dateStr] ? `<p class="text-[7px] bg-red-50 text-red-600 px-2 py-0.5 rounded-full font-bold mt-1 uppercase italic">${notes[dateStr]}</p>` : ''}
-                            </div>
-                        </div>`;
+            if (p === 'jadual-tugas') {
+                const dty = getDuty(new Date(), userData.platoon);
+                const exSnap = await get(ref(db, 'excel_data'));
+                let ktr = "TIADA DATA";
+                if(exSnap.exists() && !dty.off) {
+                    const m = exSnap.val().find(i => String(i.Nama).trim().toUpperCase() === userData.fullName);
+                    if(m) ktr = m.No_Kaunter;
                 }
-                html += `</div></div>`;
+                cont.innerHTML = `
+                    <div class="bg-white p-6 rounded-[2rem] mb-4 border border-slate-100 shadow-sm flex justify-between items-center">
+                        <div><h2 class="text-xs font-black uppercase">${userData.fullName}</h2><p class="text-[9px] text-blue-600 font-bold uppercase tracking-widest">Platun ${userData.platoon}</p></div>
+                        <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.5)]"></div>
+                    </div>
+                    <div class="bg-blue-900 p-10 rounded-[3rem] text-white text-center shadow-2xl relative overflow-hidden">
+                        ${dty.off ? '<h1 class="text-5xl font-black opacity-20 py-10 italic uppercase">Off Day</h1>' : `
+                            <p class="text-[9px] font-black text-blue-300 uppercase mb-4 tracking-[0.3em]">Tugasan Hari Ini</p>
+                            <h1 class="text-4xl font-black mb-1 tracking-tighter uppercase">${dty.loc}</h1>
+                            <p class="text-[10px] font-bold text-blue-200 mb-8 uppercase tracking-widest">${dty.shift} • BARIS ${dty.row}</p>
+                            <div class="bg-white/10 p-6 rounded-[2.5rem] border border-white/10 backdrop-blur-md inline-block min-w-[160px]">
+                                <p class="text-[8px] font-black text-blue-200 uppercase mb-1 tracking-widest">No. Kaunter</p>
+                                <h2 class="text-4xl font-black tracking-tight italic">${ktr}</h2>
+                            </div>
+                        `}
+                    </div>`;
+            } else if (p === 'jadual-induk') {
+                let g = '<div class="grid grid-cols-2 gap-3">';
+                for(let i=0; i<14; i++){
+                    let d = new Date(); d.setDate(d.getDate() + i); let r = getDuty(d, userData.platoon);
+                    g += `<div class="bg-white p-5 rounded-[2rem] border border-slate-100 text-center ${r.off?'opacity-30':'shadow-sm'}">
+                        <p class="text-[8px] font-bold text-slate-400 mb-1 uppercase">${d.toLocaleDateString('ms-MY',{weekday:'short',day:'2-digit'})}</p>
+                        <p class="text-[10px] font-black text-blue-900 uppercase leading-tight">${r.off?'CUTI':r.shift+'<br><span class="text-blue-500">'+r.loc+'</span>'}</p>
+                    </div>`;
+                }
+                cont.innerHTML = g + '</div>';
+            } else if (p === 'admin') {
+                cont.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="bg-white p-8 rounded-[2rem] border-2 border-dashed border-blue-100 text-center">
+                            <p class="text-[9px] font-black uppercase text-slate-400 mb-4 tracking-widest italic">Kemaskini No. Kaunter (Excel)</p>
+                            <input type="file" id="excel-input" accept=".xlsx, .xls" class="text-[10px]">
+                        </div>
+                        <div id="adm-list" class="space-y-2"></div>
+                    </div>`;
+                document.getElementById('excel-input').onchange = (e) => {
+                    const reader = new FileReader();
+                    reader.onload = (evt) => {
+                        const data = XLSX.utils.sheet_to_json(XLSX.read(evt.target.result, {type:'binary'}).Sheets[XLSX.read(evt.target.result, {type:'binary'}).SheetNames[0]]);
+                        set(ref(db, 'excel_data'), data).then(() => alert("Data Berjaya dikemaskini!"));
+                    };
+                    reader.readAsBinaryString(e.target.files[0]);
+                };
+                const usersSnap = await get(ref(db, 'users'));
+                const list = document.getElementById('adm-list');
+                usersSnap.forEach(c => {
+                    if(c.val().status === 'pending') {
+                        const div = document.createElement('div');
+                        div.className = "p-4 bg-white rounded-2xl flex justify-between items-center border border-blue-50 shadow-sm";
+                        div.innerHTML = `<div><p class="text-xs font-black uppercase text-slate-800">${c.val().fullName}</p><p class="text-[9px] font-bold text-blue-500 uppercase">PLT ${c.val().platoon}</p></div>`;
+                        const btn = document.createElement('button');
+                        btn.className = "bg-blue-900 text-white px-5 py-2.5 rounded-xl text-[9px] font-black uppercase shadow-lg";
+                        btn.innerText = "Luluskan";
+                        btn.onclick = () => update(ref(db, 'users/' + c.key), { status: 'approved' }).then(() => showPage('admin'));
+                        div.appendChild(btn);
+                        list.appendChild(div);
+                    }
+                });
             }
-            cont.innerHTML = html;
+            closeMenu();
         }
 
-        // FUNGSI TAMBAH NOTA
-        window.addNote = async (date) => {
-            const val = prompt("Tambah Nota Tugasan (" + date + "):");
-            if (val !== null) {
-                await update(ref(db, `notes/${auth.currentUser.uid}`), { [date]: val });
-                renderYearlyCalendar();
-            }
-        };
+        // SIDEBAR ACTIONS
+        const sidebar = document.getElementById('mobile-sidebar');
+        const container = document.getElementById('sidebar-container');
+        
+        function openMenu() {
+            sidebar.classList.remove('hidden');
+            setTimeout(() => container.classList.remove('closed'), 10);
+        }
 
-        // KAWALAN LOG MASUK / DAFTAR
+        function closeMenu() {
+            container.classList.add('closed');
+            setTimeout(() => sidebar.classList.add('hidden'), 300);
+        }
+
+        // Tap di luar untuk tutup
+        sidebar.onclick = (e) => { if (e.target === sidebar) closeMenu(); };
+
+        document.getElementById('menu-open').onclick = openMenu;
+        document.getElementById('nav-today').onclick = () => showPage('jadual-tugas');
+        document.getElementById('nav-calendar').onclick = () => showPage('jadual-induk');
+        document.getElementById('admin-nav').onclick = () => showPage('admin');
+        document.getElementById('btn-logout').onclick = () => signOut(auth);
+
+        // AUTH ACTIONS
         document.getElementById('btn-action').onclick = async () => {
             const email = document.getElementById('email').value.trim();
             const pass = document.getElementById('password').value;
-            
             if (authMode === 'login') {
-                try { 
-                    await signInWithEmailAndPassword(auth, email, pass); 
-                } catch(e) { 
-                    alert("Gagal Log Masuk. Sila semak emel dan kata laluan."); 
-                }
-            } else {
+                try { await signInWithEmailAndPassword(auth, email, pass); } catch(e) { alert("Emel atau Kata Laluan salah."); }
+            } else if (authMode === 'register') {
                 const fn = document.getElementById('reg-firstname').value.trim().toUpperCase();
                 const ln = document.getElementById('reg-lastname').value.trim().toUpperCase();
                 const plt = document.getElementById('reg-platoon').value;
-                if(!fn || !ln || !plt) return alert("Sila lengkapkan semua maklumat.");
-                
+                if(!fn || !ln || !plt || !email || !pass) return alert("Sila isi semua ruangan.");
                 try {
                     const res = await createUserWithEmailAndPassword(auth, email, pass);
-                    await set(ref(db, 'users/' + res.user.uid), {
-                        firstName: fn,
-                        lastName: ln,
-                        fullName: fn + " " + ln,
-                        platoon: parseInt(plt),
-                        role: "user",
-                        status: "pending" // Perlu Admin approve di Firebase
-                    });
-                    alert("Pendaftaran berjaya! Sila tunggu kelulusan Admin.");
+                    await set(ref(db, 'users/' + res.user.uid), { firstName: fn, lastName: ln, fullName: fn + " " + ln, platoon: parseInt(plt), role: "user", status: "pending" });
+                    alert("Berjaya mendaftar! Tunggu kelulusan Admin.");
                     signOut(auth);
-                } catch(e) { 
-                    alert("Ralat Daftar: " + e.message); 
-                }
+                } catch(e) { alert(e.message); }
             }
         };
 
-        // PILIHAN PLATUN (1-25)
         const sel = document.getElementById('reg-platoon');
-        for(let i=1; i<=25; i++){ 
-            const o = document.createElement('option'); o.value = i; o.text = "PLATUN " + i; sel.appendChild(o); 
-        }
-
+        for(let i=1; i<=25; i++){ const o = document.createElement('option'); o.value = i; o.text = "PLATUN " + i; sel.appendChild(o); }
         document.getElementById('auth-toggle-btn').onclick = () => {
             authMode = (authMode === 'login' ? 'register' : 'login');
             document.getElementById('register-fields').classList.toggle('hidden', authMode !== 'register');
             document.getElementById('auth-title').innerText = authMode === 'login' ? 'BRAVORIAN' : 'DAFTAR AKAUN';
             document.getElementById('btn-action').innerText = authMode === 'login' ? 'Log Masuk' : 'Daftar Sekarang';
-            document.getElementById('auth-toggle-btn').innerText = authMode === 'login' ? 'Daftar Akaun Baru' : 'Dah ada akaun? Log Masuk';
         };
-
-        // KAWALAN SIDEBAR
-        const sidebar = document.getElementById('mobile-sidebar');
-        const container = document.getElementById('sidebar-container');
-        const closeMenu = () => { 
-            container.classList.add('closed'); 
-            setTimeout(() => sidebar.classList.add('hidden'), 300); 
-        };
-        
-        document.getElementById('menu-open').onclick = () => { 
-            sidebar.classList.remove('hidden'); 
-            setTimeout(() => container.classList.remove('closed'), 10); 
-        };
-        
-        sidebar.onclick = (e) => { if (e.target === sidebar) closeMenu(); };
-        document.getElementById('nav-home').onclick = () => { renderYearlyCalendar(); closeMenu(); };
-        document.getElementById('btn-logout').onclick = () => { signOut(auth); location.reload(); };
-
     </script>
 </body>
 </html>
