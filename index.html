@@ -6,11 +6,15 @@
     <title>BRAVORIAN - BSI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
         .mobile-menu { transition: transform 0.3s ease-in-out; }
         .mobile-menu.closed { transform: translateX(-100%); }
+        /* Custom styling untuk SweetAlert supaya sepadan dengan tema anda */
+        .swal2-popup { border-radius: 2rem !important; font-family: 'Plus Jakarta Sans', sans-serif !important; }
+        .swal2-confirm { background-color: #1e3a8a !important; border-radius: 1rem !important; font-weight: 800 !important; text-transform: uppercase !important; font-size: 10px !important; letter-spacing: 0.1em !important; padding: 1rem 2rem !important; }
     </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-900">
@@ -79,14 +83,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { 
-            getAuth, 
-            onAuthStateChanged, 
-            signInWithEmailAndPassword, 
-            createUserWithEmailAndPassword, 
-            signOut,
-            sendPasswordResetEmail 
-        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getDatabase, ref, get, set, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         const firebaseConfig = { 
@@ -102,7 +99,7 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        // LOGIK JADUAL (KEKAL SEPERTI ASAL)
+        // LOGIK JADUAL (KEKAL)
         const JADUAL_2 = { 1: ["ENTRY MC", "ENTRY KA", "ENTRY BAS"], 2: ["EXIT KB", "EXIT SBY#2", "EXIT MA"], 3: ["ENTRY KC", "ENTRY BDL/Autogate", "ENTRY SBY#1"], 4: ["EXIT LORI", "EXIT BAS", "EXIT KD"], 5: ["ENTRY MC", "ENTRY SBY#3", "ENTRY KB"], 6: ["EXIT MA", "EXIT SBY#1", "EXIT KC"], 7: ["ENTRY SBY#2", "ENTRY BAS", "ENTRY KD"], 8: ["EXIT BAS", "EXIT KA", "EXIT SBY#3"], 9: ["ENTRY KA", "ENTRY BAS", "ENTRY MC"], 10: ["EXIT SBY#2", "EXIT MA", "EXIT KB"], 11: ["ENTRY SBY#1", "ENTRY KC", "ENTRY BDL/Autogate"], 12: ["EXIT KD", "EXIT LORI", "EXIT BAS"], 13: ["ENTRY SBY#3", "ENTRY KB", "ENTRY MC"], 14: ["EXIT KC", "EXIT MA", "EXIT SBY#1"], 15: ["ENTRY KD", "ENTRY SBY#2", "ENTRY BAS"], 16: ["EXIT SBY#3", "EXIT BAS", "EXIT KA"], 17: ["ENTRY BAS", "ENTRY MC", "ENTRY KA"], 18: ["EXIT MA", "EXIT KB", "EXIT SBY#2"], 19: ["ENTRY BDL/Autogate", "ENTRY SBY#1", "ENTRY KC"], 20: ["EXIT BAS", "EXIT KD", "EXIT LORI"], 21: ["ENTRY KB", "ENTRY MC", "ENTRY SBY#3"], 22: ["EXIT SBY#1", "EXIT KC", "EXIT MA"], 23: ["ENTRY BAS", "ENTRY KD", "ENTRY SBY#2"], 24: ["EXIT KA", "EXIT SBY#3", "EXIT BAS"] };
         const START_ROW = { 1:1, 2:2, 3:1, 4:20, 5:13, 6:16, 7:17, 8:6, 9:3, 10:10, 11:7, 12:24, 13:15, 14:22, 15:5, 16:14, 17:19, 18:8, 19:9, 20:12, 21:21, 22:4, 23:11, 24:18, 25:23 };
 
@@ -118,7 +115,6 @@
         let userData = null;
         let authMode = 'login';
 
-        // AUTH HANDLER
         onAuthStateChanged(auth, async (user) => {
             document.getElementById('loading-overlay').classList.add('hidden');
             if (user) {
@@ -130,7 +126,7 @@
                     if(userData.role === 'admin') document.getElementById('admin-nav').classList.remove('hidden');
                     showPage('jadual-tugas');
                 } else {
-                    alert("Akaun belum diluluskan Admin.");
+                    Swal.fire('Akses Ditolak', 'Akaun belum diluluskan Admin.', 'warning');
                     signOut(auth);
                 }
             } else {
@@ -145,22 +141,12 @@
                 const dty = getDuty(new Date(), userData.platoon);
                 const exSnap = await get(ref(db, 'excel_data'));
                 let ktr = "TIADA DATA";
-
                 if(exSnap.exists() && !dty.off) {
                     const listData = exSnap.val();
                     const myName = userData.fullName.trim().toUpperCase();
-                    
-                    // PENAMBAHBAIKAN: Carian lebih fleksibel
-                    const match = listData.find(i => {
-                        const excelName = String(i.Nama || i.NAMA || "").trim().toUpperCase();
-                        return excelName === myName;
-                    });
-
-                    if(match) {
-                        ktr = match.No_Kaunter || match["NO KAUNTER"] || match.KAUNTER || match.Kaunter || "SET";
-                    }
+                    const m = listData.find(i => String(i.Nama || i.NAMA || "").trim().toUpperCase() === myName);
+                    if(m) ktr = m.No_Kaunter || m["NO KAUNTER"] || m.KAUNTER || m.Kaunter || "SET";
                 }
-
                 cont.innerHTML = `
                     <div class="bg-white p-6 rounded-[2rem] mb-4 border border-slate-100 shadow-sm flex justify-between items-center">
                         <div><h2 class="text-xs font-black uppercase">${userData.fullName}</h2><p class="text-[9px] text-blue-600 font-bold uppercase tracking-widest">Platun ${userData.platoon}</p></div>
@@ -200,7 +186,7 @@
                     const reader = new FileReader();
                     reader.onload = (evt) => {
                         const data = XLSX.utils.sheet_to_json(XLSX.read(evt.target.result, {type:'binary'}).Sheets[XLSX.read(evt.target.result, {type:'binary'}).SheetNames[0]]);
-                        set(ref(db, 'excel_data'), data).then(() => alert("Data Berjaya dikemaskini!"));
+                        set(ref(db, 'excel_data'), data).then(() => Swal.fire('Berjaya', 'Data Kaunter dikemaskini!', 'success'));
                     };
                     reader.readAsBinaryString(e.target.files[0]);
                 };
@@ -226,17 +212,8 @@
         // SIDEBAR ACTIONS
         const sidebar = document.getElementById('mobile-sidebar');
         const container = document.getElementById('sidebar-container');
-        
-        function openMenu() {
-            sidebar.classList.remove('hidden');
-            setTimeout(() => container.classList.remove('closed'), 10);
-        }
-
-        function closeMenu() {
-            container.classList.add('closed');
-            setTimeout(() => sidebar.classList.add('hidden'), 300);
-        }
-
+        function openMenu() { sidebar.classList.remove('hidden'); setTimeout(() => container.classList.remove('closed'), 10); }
+        function closeMenu() { container.classList.add('closed'); setTimeout(() => sidebar.classList.add('hidden'), 300); }
         sidebar.onclick = (e) => { if (e.target === sidebar) closeMenu(); };
         document.getElementById('menu-open').onclick = openMenu;
         document.getElementById('nav-today').onclick = () => showPage('jadual-tugas');
@@ -249,33 +226,42 @@
             const email = document.getElementById('email').value.trim();
             const pass = document.getElementById('password').value;
             if (authMode === 'login') {
-                try { await signInWithEmailAndPassword(auth, email, pass); } catch(e) { alert("Emel atau Kata Laluan salah."); }
+                try { await signInWithEmailAndPassword(auth, email, pass); } catch(e) { Swal.fire('Ralat', 'Emel atau Kata Laluan salah.', 'error'); }
             } else if (authMode === 'register') {
                 const fn = document.getElementById('reg-firstname').value.trim().toUpperCase();
                 const ln = document.getElementById('reg-lastname').value.trim().toUpperCase();
                 const plt = document.getElementById('reg-platoon').value;
-                if(!fn || !ln || !plt || !email || !pass) return alert("Sila isi semua ruangan.");
+                if(!fn || !ln || !plt || !email || !pass) return Swal.fire('Info', 'Sila isi semua ruangan.', 'info');
                 try {
                     const res = await createUserWithEmailAndPassword(auth, email, pass);
                     await set(ref(db, 'users/' + res.user.uid), { firstName: fn, lastName: ln, fullName: fn + " " + ln, platoon: parseInt(plt), role: "user", status: "pending" });
-                    alert("Berjaya mendaftar! Tunggu kelulusan Admin.");
+                    Swal.fire('Pendaftaran Berjaya', 'Tunggu kelulusan Admin.', 'success');
                     signOut(auth);
-                } catch(e) { alert(e.message); }
+                } catch(e) { Swal.fire('Ralat', e.message, 'error'); }
             }
         };
 
-        // FUNGSI LUPA KATA LALUAN
+        // FUNGSI LUPA KATA LALUAN PROFESIONAL
         document.getElementById('btn-forgot-pw').onclick = async () => {
-            const email = document.getElementById('email').value.trim();
-            if (!email) {
-                alert("Sila masukkan emel anda di ruangan EMEL untuk set semula kata laluan.");
-                return;
-            }
-            try {
-                await sendPasswordResetEmail(auth, email);
-                alert("Emel set semula kata laluan telah dihantar ke: " + email);
-            } catch (error) {
-                alert("Ralat: " + error.message);
+            const { value: email } = await Swal.fire({
+                title: 'LUPA KATA LALUAN',
+                input: 'email',
+                inputLabel: 'Masukkan Emel Berdaftar',
+                inputPlaceholder: 'CONTOH: HAFIZ@EMAIL.COM',
+                showCancelButton: true,
+                confirmButtonText: 'HANTAR EMEL',
+                cancelButtonText: 'BATAL',
+                buttonsStyling: true,
+                inputAttributes: { autocapitalize: 'off', autocorrect: 'off' }
+            });
+
+            if (email) {
+                try {
+                    await sendPasswordResetEmail(auth, email);
+                    Swal.fire('Berjaya', 'Sila semak emel anda untuk set semula kata laluan.', 'success');
+                } catch (error) {
+                    Swal.fire('Gagal', 'Emel tidak ditemui atau ralat sistem.', 'error');
+                }
             }
         };
 
