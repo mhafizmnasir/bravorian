@@ -79,7 +79,14 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { 
+            getAuth, 
+            onAuthStateChanged, 
+            signInWithEmailAndPassword, 
+            createUserWithEmailAndPassword, 
+            signOut,
+            sendPasswordResetEmail 
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getDatabase, ref, get, set, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         const firebaseConfig = { 
@@ -95,7 +102,7 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        // LOGIK JADUAL
+        // LOGIK JADUAL (KEKAL SEPERTI ASAL)
         const JADUAL_2 = { 1: ["ENTRY MC", "ENTRY KA", "ENTRY BAS"], 2: ["EXIT KB", "EXIT SBY#2", "EXIT MA"], 3: ["ENTRY KC", "ENTRY BDL/Autogate", "ENTRY SBY#1"], 4: ["EXIT LORI", "EXIT BAS", "EXIT KD"], 5: ["ENTRY MC", "ENTRY SBY#3", "ENTRY KB"], 6: ["EXIT MA", "EXIT SBY#1", "EXIT KC"], 7: ["ENTRY SBY#2", "ENTRY BAS", "ENTRY KD"], 8: ["EXIT BAS", "EXIT KA", "EXIT SBY#3"], 9: ["ENTRY KA", "ENTRY BAS", "ENTRY MC"], 10: ["EXIT SBY#2", "EXIT MA", "EXIT KB"], 11: ["ENTRY SBY#1", "ENTRY KC", "ENTRY BDL/Autogate"], 12: ["EXIT KD", "EXIT LORI", "EXIT BAS"], 13: ["ENTRY SBY#3", "ENTRY KB", "ENTRY MC"], 14: ["EXIT KC", "EXIT MA", "EXIT SBY#1"], 15: ["ENTRY KD", "ENTRY SBY#2", "ENTRY BAS"], 16: ["EXIT SBY#3", "EXIT BAS", "EXIT KA"], 17: ["ENTRY BAS", "ENTRY MC", "ENTRY KA"], 18: ["EXIT MA", "EXIT KB", "EXIT SBY#2"], 19: ["ENTRY BDL/Autogate", "ENTRY SBY#1", "ENTRY KC"], 20: ["EXIT BAS", "EXIT KD", "EXIT LORI"], 21: ["ENTRY KB", "ENTRY MC", "ENTRY SBY#3"], 22: ["EXIT SBY#1", "EXIT KC", "EXIT MA"], 23: ["ENTRY BAS", "ENTRY KD", "ENTRY SBY#2"], 24: ["EXIT KA", "EXIT SBY#3", "EXIT BAS"] };
         const START_ROW = { 1:1, 2:2, 3:1, 4:20, 5:13, 6:16, 7:17, 8:6, 9:3, 10:10, 11:7, 12:24, 13:15, 14:22, 15:5, 16:14, 17:19, 18:8, 19:9, 20:12, 21:21, 22:4, 23:11, 24:18, 25:23 };
 
@@ -138,10 +145,22 @@
                 const dty = getDuty(new Date(), userData.platoon);
                 const exSnap = await get(ref(db, 'excel_data'));
                 let ktr = "TIADA DATA";
+
                 if(exSnap.exists() && !dty.off) {
-                    const m = exSnap.val().find(i => String(i.Nama).trim().toUpperCase() === userData.fullName);
-                    if(m) ktr = m.No_Kaunter;
+                    const listData = exSnap.val();
+                    const myName = userData.fullName.trim().toUpperCase();
+                    
+                    // PENAMBAHBAIKAN: Carian lebih fleksibel
+                    const match = listData.find(i => {
+                        const excelName = String(i.Nama || i.NAMA || "").trim().toUpperCase();
+                        return excelName === myName;
+                    });
+
+                    if(match) {
+                        ktr = match.No_Kaunter || match["NO KAUNTER"] || match.KAUNTER || match.Kaunter || "SET";
+                    }
                 }
+
                 cont.innerHTML = `
                     <div class="bg-white p-6 rounded-[2rem] mb-4 border border-slate-100 shadow-sm flex justify-between items-center">
                         <div><h2 class="text-xs font-black uppercase">${userData.fullName}</h2><p class="text-[9px] text-blue-600 font-bold uppercase tracking-widest">Platun ${userData.platoon}</p></div>
@@ -218,9 +237,7 @@
             setTimeout(() => sidebar.classList.add('hidden'), 300);
         }
 
-        // Tap di luar untuk tutup
         sidebar.onclick = (e) => { if (e.target === sidebar) closeMenu(); };
-
         document.getElementById('menu-open').onclick = openMenu;
         document.getElementById('nav-today').onclick = () => showPage('jadual-tugas');
         document.getElementById('nav-calendar').onclick = () => showPage('jadual-induk');
@@ -244,6 +261,21 @@
                     alert("Berjaya mendaftar! Tunggu kelulusan Admin.");
                     signOut(auth);
                 } catch(e) { alert(e.message); }
+            }
+        };
+
+        // FUNGSI LUPA KATA LALUAN
+        document.getElementById('btn-forgot-pw').onclick = async () => {
+            const email = document.getElementById('email').value.trim();
+            if (!email) {
+                alert("Sila masukkan emel anda di ruangan EMEL untuk set semula kata laluan.");
+                return;
+            }
+            try {
+                await sendPasswordResetEmail(auth, email);
+                alert("Emel set semula kata laluan telah dihantar ke: " + email);
+            } catch (error) {
+                alert("Ralat: " + error.message);
             }
         };
 
