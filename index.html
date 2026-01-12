@@ -154,10 +154,23 @@
         };
 
         document.getElementById('btn-forgot-pw').onclick = function() {
-            var email = document.getElementById('email').value.trim();
-            if (!email) return alert("Masukkan emel.");
-            auth.sendPasswordResetEmail(email).then(function() { alert("Emel set semula dihantar."); });
-        };
+    var e = document.getElementById('email').value.trim();
+    if (!e) {
+        alert("Sila masukkan emel anda pada kotak EMAIL di atas terlebih dahulu untuk set semula kata laluan.");
+        return;
+    }
+    
+    // Fungsi hantar emel reset
+    auth.sendPasswordResetEmail(e).then(function() {
+        alert("Pautan set semula kata laluan telah dihantar ke emel: " + e + "\n\nSila semak Inbox atau Folder Spam anda.");
+    }).catch(function(err) {
+        if (err.code === 'auth/user-not-found') {
+            alert("Ralat: Emel ini tidak berdaftar dalam sistem.");
+        } else {
+            alert("Ralat: " + err.message);
+        }
+    });
+};
 
         function showPage(page) {
             var content = document.getElementById('dynamic-content');
