@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BSI SYSTEM PRO - Hafiz</title>
+    <title>BRAVORIAN</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
@@ -19,12 +19,12 @@
 
     <div id="auth-section" class="flex items-center justify-center min-h-screen p-6">
         <div class="bg-white p-8 rounded-[2.5rem] shadow-2xl w-full max-w-md border border-slate-100 text-center">
-            <h1 class="text-2xl font-extrabold text-blue-900 tracking-tight uppercase mb-6 italic">BSI SYSTEM PRO</h1>
+            <h1 class="text-2xl font-extrabold text-blue-900 tracking-tight uppercase mb-6 italic">BRAVORIAN</h1>
             
             <div id="register-fields" class="hidden space-y-3 mb-3">
                 <div class="flex gap-2">
-                    <input type="text" id="reg-firstname" placeholder="Nama Depan" class="w-1/2 p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none text-sm font-bold uppercase">
-                    <input type="text" id="reg-lastname" placeholder="Nama Belakang" class="w-1/2 p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none text-sm font-bold uppercase">
+                    <input type="text" id="reg-firstname" placeholder="First Name" class="w-1/2 p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none text-sm font-bold uppercase">
+                    <input type="text" id="reg-lastname" placeholder="Last Name" class="w-1/2 p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none text-sm font-bold uppercase">
                 </div>
                 <select id="reg-platoon" class="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none text-sm font-bold">
                     <option value="">-- Pilih Platun --</option>
@@ -48,7 +48,7 @@
                     <button id="menu-open" class="md:hidden p-2 text-slate-600 bg-slate-50 rounded-xl">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
                     </button>
-                    <span class="font-extrabold text-blue-900 italic tracking-tighter text-xl underline decoration-blue-200">BSI-PRO</span>
+                    <span class="font-extrabold text-blue-900 italic tracking-tighter text-xl underline decoration-blue-200">BRAVORIAN</span>
                 </div>
                 <button id="btn-logout" class="bg-red-50 text-red-600 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest">Logout</button>
             </div>
@@ -59,7 +59,7 @@
                 <button id="menu-close" class="self-end p-2 mb-8 bg-slate-50 rounded-full"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
                 <div class="space-y-2 font-black uppercase text-[10px] tracking-[0.2em]">
                     <button onclick="menuNav('jadual-tugas')" class="block w-full text-left p-4 hover:bg-blue-50 rounded-2xl">Tugasan Hari Ini</button>
-                    <button onclick="menuNav('jadual-induk')" class="block w-full text-left p-4 hover:bg-blue-50 rounded-2xl">Kalendar Tugas (Induk)</button>
+                    <button onclick="menuNav('jadual-induk')" class="block w-full text-left p-4 hover:bg-blue-50 rounded-2xl">Kalendar InduK</button>
                     <button id="admin-nav-mb" onclick="menuNav('admin')" class="hidden w-full text-left p-4 bg-red-50 text-red-600 rounded-2xl italic border border-red-100">Admin Panel</button>
                 </div>
             </div>
@@ -167,7 +167,7 @@
             if (page === 'jadual-tugas') {
                 const duty = getDuty(new Date(), userData.platoon);
                 const excelSnap = await get(child(ref(rdb), 'excel_data'));
-                let kaunter = "Menunggu Update Admin...";
+                let kaunter = "Menunggu Update Roster...";
 
                 if(excelSnap.exists() && !duty.off){
                     const dataExcel = excelSnap.val();
