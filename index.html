@@ -12,6 +12,7 @@
         .mobile-menu { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .mobile-menu.closed { transform: translateX(-100%); }
         
+        /* Layout Cetakan A4 */
         @media print {
             body * { visibility: hidden; }
             #print-area, #print-area * { visibility: visible; }
@@ -21,15 +22,14 @@
             }
             .no-print { display: none; }
         }
-        .leave-card { transition: all 0.2s ease; border: 1px solid #f1f5f9; }
-        .leave-card:active { transform: scale(0.98); background-color: #f8fafc; }
+        .animate-pulse-once { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) 1; }
     </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-900">
 
     <div id="loading-overlay" class="fixed inset-0 bg-white z-[100] flex flex-col items-center justify-center p-6 text-center">
         <div class="w-12 h-12 border-4 border-blue-900 border-t-transparent rounded-full animate-spin mb-4"></div>
-        <p class="text-[10px] font-black uppercase tracking-[0.3em] text-blue-900">Sistem Bravorian Sedang Memuatkan...</p>
+        <p class="text-[10px] font-black uppercase tracking-[0.3em] text-blue-900">Memulakan Sistem Bravorian...</p>
     </div>
 
     <div id="print-area" class="hidden"></div>
@@ -43,7 +43,8 @@
                     <input type="text" id="reg-firstname" placeholder="NAMA DEPAN" class="w-1/2 p-4 bg-slate-50 border-none rounded-2xl text-[10px] font-bold uppercase outline-none focus:ring-2 focus:ring-blue-600">
                     <input type="text" id="reg-lastname" placeholder="NAMA BELAKANG" class="w-1/2 p-4 bg-slate-50 border-none rounded-2xl text-[10px] font-bold uppercase outline-none focus:ring-2 focus:ring-blue-600">
                 </div>
-                <select id="reg-platoon" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-[10px] font-bold outline-none focus:ring-2 focus:ring-blue-600 uppercase"></select>
+                <select id="reg-platoon" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-[10px] font-bold outline-none focus:ring-2 focus:ring-blue-600 uppercase">
+                    </select>
             </div>
 
             <div class="space-y-3">
@@ -59,7 +60,7 @@
             </div>
         </div>
     </div>
-    <div id="main-dashboard" class="hidden">
+        <div id="main-dashboard" class="hidden">
         <nav class="bg-white/80 backdrop-blur-md border-b border-slate-100 p-4 sticky top-0 z-50 flex justify-between items-center px-6">
             <div class="flex items-center gap-4">
                 <button id="menu-open" class="p-2 text-slate-600 bg-slate-50 rounded-xl active:scale-90 transition-transform">
@@ -84,33 +85,33 @@
                     <button id="nav-today" class="flex items-center gap-4 w-full text-left p-4 hover:bg-blue-50 rounded-2xl transition-all">
                         <span class="w-2 h-2 bg-blue-600 rounded-full"></span> Tugasan Hari Ini
                     </button>
+
+                    
                     <button id="nav-calendar" class="flex items-center gap-4 w-full text-left p-4 hover:bg-blue-50 rounded-2xl transition-all">
                         <span class="w-2 h-2 bg-slate-200 rounded-full"></span> Kalendar Bulanan
                     </button>
                     
                     <div class="pt-4 pb-2">
-                        <p class="px-4 text-[8px] text-slate-400 mb-2 tracking-[0.3em]">Mohon Cuti</p>
-                        <button id="nav-leave-gantian" class="flex items-center gap-4 w-full text-left p-4 hover:bg-blue-50 rounded-2xl transition-all">
+                        <p class="px-4 text-[8px] text-slate-400 mb-2 tracking-[0.3em]">Borang Permohonan</p>
+                        <button id="nav-leave-gantian" class="flex items-center gap-4 w-full text-left p-4 hover:bg-blue-50 rounded-2xl transition-all text-orange-600">
                             <span class="w-2 h-2 bg-orange-400 rounded-full"></span> Cuti Gantian
                         </button>
-                        <button id="nav-leave-rekod" class="flex items-center gap-4 w-full text-left p-4 hover:bg-blue-50 rounded-2xl transition-all">
+                        <button id="nav-leave-rekod" class="flex items-center gap-4 w-full text-left p-4 hover:bg-blue-50 rounded-2xl transition-all text-emerald-600">
                             <span class="w-2 h-2 bg-emerald-400 rounded-full"></span> Cuti Rekod
                         </button>
-                        <button id="nav-leave-timeoff" class="flex items-center gap-4 w-full text-left p-4 hover:bg-blue-50 rounded-2xl transition-all">
+                        <button id="nav-leave-timeoff" class="flex items-center gap-4 w-full text-left p-4 hover:bg-blue-50 rounded-2xl transition-all text-purple-600">
                             <span class="w-2 h-2 bg-purple-400 rounded-full"></span> Time Off
                         </button>
                     </div>
 
-                    <button id="admin-nav" class="hidden flex items-center justify-between w-full text-left p-4 bg-red-50 text-red-600 rounded-2xl italic border border-red-100 mt-6 group">
+                    <button id="admin-nav" class="hidden flex items-center justify-between w-full text-left p-4 bg-red-50 text-red-600 rounded-2xl italic border border-red-100 mt-6">
                         <span>Admin Panel</span>
                         <span id="pending-count" class="hidden bg-red-600 text-white text-[8px] px-2 py-1 rounded-full not-italic">0</span>
                     </button>
                 </div>
 
-                <div class="mt-auto pt-6 border-t border-slate-50">
-                    <div class="bg-slate-50 p-4 rounded-2xl">
-                        <p class="text-[8px] font-bold text-slate-400 uppercase mb-1 tracking-widest text-center italic">Imigresen BSI</p>
-                    </div>
+                <div class="mt-auto pt-6 border-t border-slate-50 text-center">
+                    <p class="text-[8px] font-bold text-slate-300 uppercase tracking-[0.3em]">BSI Bravorian v2.0</p>
                 </div>
             </div>
         </div>
@@ -118,8 +119,9 @@
         <main class="max-w-4xl mx-auto p-4 md:p-8">
             <div id="dynamic-content" class="space-y-6"></div>
         </main>
-    </div>
-    <script type="module">
+        </div>
+
+        <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getDatabase, ref, get, set, update, onValue, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
@@ -138,22 +140,23 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        // DATA JADUAL 2 & START ROW (LOGIK KEKAL)
+        // DATA JADUAL 2 & START ROW (LOGIK KEKAL TEPAT)
         const JADUAL_2 = { 1: ["ENTRY MC", "ENTRY KA", "ENTRY BAS"], 2: ["EXIT KB", "EXIT SBY#2", "EXIT MA"], 3: ["ENTRY KC", "ENTRY BDL/Autogate", "ENTRY SBY#1"], 4: ["EXIT LORI", "EXIT BAS", "EXIT KD"], 5: ["ENTRY MC", "ENTRY SBY#3", "ENTRY KB"], 6: ["EXIT MA", "EXIT SBY#1", "EXIT KC"], 7: ["ENTRY SBY#2", "ENTRY BAS", "ENTRY KD"], 8: ["EXIT BAS", "EXIT KA", "EXIT SBY#3"], 9: ["ENTRY KA", "ENTRY BAS", "ENTRY MC"], 10: ["EXIT SBY#2", "EXIT MA", "EXIT KB"], 11: ["ENTRY SBY#1", "ENTRY KC", "ENTRY BDL/Autogate"], 12: ["EXIT KD", "EXIT LORI", "EXIT BAS"], 13: ["ENTRY SBY#3", "ENTRY KB", "ENTRY MC"], 14: ["EXIT KC", "EXIT MA", "EXIT SBY#1"], 15: ["ENTRY KD", "ENTRY SBY#2", "ENTRY BAS"], 16: ["EXIT SBY#3", "EXIT BAS", "EXIT KA"], 17: ["ENTRY BAS", "ENTRY MC", "ENTRY KA"], 18: ["EXIT MA", "EXIT KB", "EXIT SBY#2"], 19: ["ENTRY BDL/Autogate", "ENTRY SBY#1", "ENTRY KC"], 20: ["EXIT BAS", "EXIT KD", "EXIT LORI"], 21: ["ENTRY KB", "ENTRY MC", "ENTRY SBY#3"], 22: ["EXIT SBY#1", "EXIT KC", "EXIT MA"], 23: ["ENTRY BAS", "ENTRY KD", "ENTRY SBY#2"], 24: ["EXIT KA", "EXIT SBY#3", "EXIT BAS"] };
         const START_ROW = { 1:1, 2:2, 3:1, 4:20, 5:13, 6:16, 7:17, 8:6, 9:3, 10:10, 11:7, 12:24, 13:15, 14:22, 15:5, 16:14, 17:19, 18:8, 19:9, 20:12, 21:21, 22:4, 23:11, 24:18, 25:23 };
 
         let userData = null;
         let authMode = 'login';
 
-        // Jam Live
+        // Fungsi Jam Live (Update setiap saat)
         setInterval(() => {
             const now = new Date();
-            if(document.getElementById('live-clock')) {
-                document.getElementById('live-clock').innerText = now.toLocaleDateString('ms-MY', { day: '2-digit', month: 'short' }) + ' • ' + now.toLocaleTimeString('ms-MY', { hour12: false });
+            const clockEl = document.getElementById('live-clock');
+            if(clockEl) {
+                clockEl.innerText = now.toLocaleDateString('ms-MY', { day: '2-digit', month: 'short' }) + ' • ' + now.toLocaleTimeString('ms-MY', { hour12: false });
             }
         }, 1000);
 
-        // Fungsi Enjin Tugas
+        // Enjin Pengiraan Syif (Kekal seperti asal)
         function getDuty(date, platoon) {
             let baseDate = new Date(2026, 0, 3); 
             let targetDate = new Date(date); 
@@ -165,7 +168,7 @@
             let row = ((START_ROW[platoon] + Math.floor(diffDays/4) - 1) % 24) + 1;
             return { off: false, shift: ["PETANG", "PAGI", "MALAM"][cyclePos], loc: JADUAL_2[row][cyclePos], row: row };
         }
-        // Monitor Status Login & Kelulusan Admin
+                   // Monitor Status Login & Kelulusan Admin
         onAuthStateChanged(auth, async (user) => {
             const loading = document.getElementById('loading-overlay');
             if (user) {
@@ -180,7 +183,7 @@
                     }
                     showPage('jadual-tugas');
                 } else {
-                    alert("Akaun anda masih menunggu kelulusan Admin.");
+                    alert("Akaun anda masih menunggu kelulusan Admin. Sila hubungi Admin anda.");
                     signOut(auth);
                 }
             } else {
@@ -190,18 +193,22 @@
             loading.classList.add('hidden');
         });
 
-        // Monitor Jumlah Permohonan Baru (Untuk Badge Admin)
+        // Monitor Jumlah Pengguna Menunggu Kelulusan (Badge Admin)
         function monitorPendingUsers() {
             onValue(ref(db, 'users'), (snap) => {
                 let count = 0;
                 snap.forEach(c => { if(c.val().status === 'pending') count++; });
                 const b = document.getElementById('pending-count');
-                if(count > 0) { b.innerText = count; b.classList.remove('hidden'); }
-                else { b.classList.add('hidden'); }
+                if(count > 0) { 
+                    b.innerText = count; 
+                    b.classList.remove('hidden'); 
+                } else { 
+                    b.classList.add('hidden'); 
+                }
             });
         }
 
-        // Fungsi Penjana Templat Cetakan A4
+        // Fungsi Penjana Templat Cetakan A4 (Leave/Time Off)
         window.printLeave = function(title, data) {
             const printArea = document.getElementById('print-area');
             let content = `
@@ -221,14 +228,14 @@
                     <div style="width: 250px;"><div style="border-top: 1px solid black; padding-top: 5px;">Tandatangan Pemohon</div></div>
                     <div style="width: 250px;"><div style="border-top: 1px solid black; padding-top: 5px;">Tandatangan Ketua Platun</div></div>
                 </div>
-                <div style="margin-top: 80px; text-align: center; font-style: italic; font-size: 10pt; border: 1px dashed #ccc; padding: 10px;">
+                <div style="margin-top: 100px; text-align: center; font-style: italic; font-size: 10pt; border: 1px dashed #ccc; padding: 10px;">
                     Dicetak secara digital melalui Sistem Bravorian pada: ${new Date().toLocaleString('ms-MY')}
                 </div>
             `;
             printArea.innerHTML = content;
             window.print();
         };
-        // Fungsi Utama Paparan Halaman
+                    // Fungsi Utama Paparan Halaman
         async function showPage(p, targetMonth = new Date().getMonth()) {
             const cont = document.getElementById('dynamic-content');
             
@@ -246,7 +253,7 @@
                 }
 
                 cont.innerHTML = `
-                    <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm flex justify-between items-center animate-in fade-in duration-500">
+                    <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm flex justify-between items-center animate-pulse-once">
                         <div>
                             <h2 class="text-[8px] font-black uppercase text-slate-400 mb-1 tracking-widest">Pegawai Bertugas</h2>
                             <p class="text-sm font-black text-blue-900 uppercase">${userData.fullName}</p>
@@ -290,7 +297,7 @@
                     let r = getDuty(d, userData.platoon);
                     let isToday = new Date().toDateString() === d.toDateString();
                     html += `
-                        <div class="${r.off ? 'bg-slate-100 opacity-60' : 'bg-white'} ${isToday ? 'ring-2 ring-blue-600 ring-offset-2' : ''} p-3 rounded-2xl border border-slate-100 text-center shadow-sm min-h-[90px] flex flex-col justify-center transition-all active:scale-95">
+                        <div class="${r.off ? 'bg-slate-100 opacity-60' : 'bg-white'} ${isToday ? 'ring-2 ring-blue-600 ring-offset-2' : ''} p-3 rounded-2xl border border-slate-100 text-center shadow-sm min-h-[90px] flex flex-col justify-center transition-all">
                             <p class="text-[7px] font-bold text-slate-400 mb-1 uppercase">${d.toLocaleDateString('ms-MY',{weekday:'short', day:'2-digit'})}</p>
                             <p class="text-[9px] font-black ${r.off ? 'text-slate-400' : 'text-blue-900'} uppercase leading-tight">${r.off ? 'OFF' : r.shift}</p>
                             <p class="text-[7px] font-bold ${r.off ? 'hidden' : 'text-blue-500'} uppercase mt-1 tracking-tighter">${r.off ? '' : r.loc}</p>
@@ -312,74 +319,74 @@
             // 5. HALAMAN TIME OFF
             else if (p === 'leave-timeoff') {
                 cont.innerHTML = `
-                    <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100 animate-in slide-in-from-bottom-4 duration-500">
+                    <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100">
                         <div class="flex items-center gap-3 mb-6">
                             <div class="w-2 h-6 bg-purple-600 rounded-full"></div>
                             <h2 class="text-lg font-black text-blue-900 uppercase italic">Borang Time Off</h2>
                         </div>
                         <div class="space-y-4">
                             <div>
-                                <label class="text-[9px] font-black text-slate-400 uppercase ml-2">Tarikh Time Off</label>
+                                <label class="text-[9px] font-black text-slate-400 uppercase ml-2 tracking-widest">Tarikh Time Off</label>
                                 <input type="date" id="t-date" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-[11px] font-bold outline-none focus:ring-2 focus:ring-blue-600 mt-1">
                             </div>
                             <div>
-                                <label class="text-[9px] font-black text-slate-400 uppercase ml-2">Jumlah Jam Diambil</label>
-                                <input type="text" id="t-amount" placeholder="Contoh: 2 JAM" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-[11px] font-bold outline-none focus:ring-2 focus:ring-blue-600 mt-1 uppercase">
+                                <label class="text-[9px] font-black text-slate-400 uppercase ml-2 tracking-widest">Jumlah Jam Diambil</label>
+                                <input type="text" id="t-amount" placeholder="CONTOH: 2 JAM" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-[11px] font-bold outline-none focus:ring-2 focus:ring-blue-600 mt-1 uppercase">
                             </div>
                             <div>
-                                <label class="text-[9px] font-black text-slate-400 uppercase ml-2">Baki Time Off</label>
-                                <input type="text" id="t-balance" placeholder="Contoh: 4 JAM" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-[11px] font-bold outline-none focus:ring-2 focus:ring-blue-600 mt-1 uppercase">
+                                <label class="text-[9px] font-black text-slate-400 uppercase ml-2 tracking-widest">Baki Time Off</label>
+                                <input type="text" id="t-balance" placeholder="CONTOH: 4 JAM" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-[11px] font-bold outline-none focus:ring-2 focus:ring-blue-600 mt-1 uppercase">
                             </div>
                             <button onclick="handlePrint('TIME OFF')" class="w-full bg-blue-900 text-white font-black py-4 rounded-2xl mt-4 uppercase text-[10px] tracking-widest shadow-lg active:scale-95 transition-all">Cetak Borang A4</button>
                         </div>
                     </div>`;
             }
 
-            // Fungsi Pembantu Render Borang Cuti
+            // Fungsi Helper untuk Render Borang Cuti
             function renderLeaveForm(title, balLabel) {
                 cont.innerHTML = `
-                    <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100 animate-in slide-in-from-bottom-4 duration-500">
+                    <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100">
                         <div class="flex items-center gap-3 mb-6">
-                            <div class="w-2 h-6 bg-orange-500 rounded-full"></div>
+                            <div class="w-2 h-6 bg-blue-600 rounded-full"></div>
                             <h2 class="text-lg font-black text-blue-900 uppercase italic">Borang ${title}</h2>
                         </div>
                         <div class="space-y-4">
                             <div>
-                                <label class="text-[9px] font-black text-slate-400 uppercase ml-2">Tarikh Cuti</label>
+                                <label class="text-[9px] font-black text-slate-400 uppercase ml-2 tracking-widest">Tarikh Cuti</label>
                                 <input type="date" id="l-date" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-[11px] font-bold outline-none focus:ring-2 focus:ring-blue-600 mt-1">
                             </div>
                             <div>
-                                <label class="text-[9px] font-black text-slate-400 uppercase ml-2">Jumlah Cuti Diambil</label>
-                                <input type="text" id="l-amount" placeholder="Contoh: 1 HARI" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-[11px] font-bold outline-none focus:ring-2 focus:ring-blue-600 mt-1 uppercase">
+                                <label class="text-[9px] font-black text-slate-400 uppercase ml-2 tracking-widest">Jumlah Cuti Diambil</label>
+                                <input type="text" id="l-amount" placeholder="CONTOH: 1 HARI" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-[11px] font-bold outline-none focus:ring-2 focus:ring-blue-600 mt-1 uppercase">
                             </div>
                             <div>
-                                <label class="text-[9px] font-black text-slate-400 uppercase ml-2">${balLabel}</label>
-                                <input type="text" id="l-balance" placeholder="Contoh: 5 HARI" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-[11px] font-bold outline-none focus:ring-2 focus:ring-blue-600 mt-1 uppercase">
+                                <label class="text-[9px] font-black text-slate-400 uppercase ml-2 tracking-widest">${balLabel}</label>
+                                <input type="text" id="l-balance" placeholder="CONTOH: 5 HARI" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-[11px] font-bold outline-none focus:ring-2 focus:ring-blue-600 mt-1 uppercase">
                             </div>
                             <div>
-                                <label class="text-[9px] font-black text-slate-400 uppercase ml-2">Nama Pengganti (Jika Ada)</label>
+                                <label class="text-[9px] font-black text-slate-400 uppercase ml-2 tracking-widest">Nama Pengganti (Jika Ada)</label>
                                 <input type="text" id="l-rep" placeholder="NAMA PEGAWAI PENGGANTI" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-[11px] font-bold outline-none focus:ring-2 focus:ring-blue-600 mt-1 uppercase">
                             </div>
                             <button onclick="handlePrint('${title}')" class="w-full bg-blue-900 text-white font-black py-4 rounded-2xl mt-4 uppercase text-[10px] tracking-widest shadow-lg active:scale-95 transition-all">Cetak Borang A4</button>
                         </div>
                     </div>`;
             }
-            // 6. HALAMAN ADMIN (PENGURUSAN DATA & USER)
+                        // 6. HALAMAN ADMIN (PENGURUSAN DATA & USER)
             else if (p === 'admin') {
                 const exSnap = await get(ref(db, 'excel_data'));
                 const hasData = exSnap.exists();
                 
                 cont.innerHTML = `
-                    <div class="space-y-6 animate-in fade-in duration-500">
+                    <div class="space-y-6">
                         <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
-                            <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6">Pengurusan Data Kaunter</h3>
+                            <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6">Data Kaunter Harian</h3>
                             
                             <div id="file-status" class="mb-6 p-6 rounded-3xl ${hasData ? 'bg-green-50 border border-green-100' : 'bg-slate-50 border border-slate-100'}">
                                 <div class="flex justify-between items-center">
                                     <div>
-                                        <p class="text-[9px] font-black text-slate-400 uppercase mb-1">Status Data Aktif</p>
+                                        <p class="text-[9px] font-black text-slate-400 uppercase mb-1">Status Database</p>
                                         <p class="text-xs font-black ${hasData ? 'text-green-700' : 'text-slate-500'} uppercase">
-                                            ${hasData ? '✓ DATA KAUNTER SEDIA ADA' : 'TIADA DATA DIMUAT NAIK'}
+                                            ${hasData ? '✓ DATA SEDIA ADA' : 'TIADA DATA'}
                                         </p>
                                     </div>
                                     ${hasData ? `<button id="btn-delete-excel" class="bg-red-100 text-red-600 p-3 rounded-2xl hover:bg-red-200 transition-colors">
@@ -388,24 +395,22 @@
                                 </div>
                             </div>
 
-                            <div class="relative group">
-                                <input type="file" id="excel-input" accept=".xlsx, .xls" class="hidden">
-                                <label for="excel-input" class="flex flex-col items-center justify-center w-full p-10 border-2 border-dashed border-blue-100 rounded-[2.5rem] bg-blue-50/30 cursor-pointer hover:bg-blue-50 transition-all">
-                                    <svg class="w-8 h-8 text-blue-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-                                    <p class="text-[10px] font-black uppercase text-blue-900 tracking-widest">Muat Naik Fail Excel Baru</p>
-                                </label>
-                            </div>
+                            <input type="file" id="excel-input" accept=".xlsx, .xls" class="hidden">
+                            <label for="excel-input" class="flex flex-col items-center justify-center w-full p-10 border-2 border-dashed border-blue-100 rounded-[2.5rem] bg-blue-50/30 cursor-pointer hover:bg-blue-50 transition-all">
+                                <svg class="w-8 h-8 text-blue-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                                <p class="text-[10px] font-black uppercase text-blue-900 tracking-widest">Muat Naik Fail Excel Baru</p>
+                            </label>
                         </div>
 
                         <div id="adm-list" class="space-y-3">
-                            <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-4">Menunggu Kelulusan</h3>
+                            <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-4">Kelulusan Pengguna Baru</h3>
                         </div>
                     </div>`;
 
                 // Logik Hapus Data Excel
                 if (hasData) {
                     document.getElementById('btn-delete-excel').onclick = async () => {
-                        if (confirm("Adakah anda pasti ingin MENGHAPUSKAN data kaunter sedia ada?")) {
+                        if (confirm("Adakah anda pasti ingin MENGHAPUSKAN data kaunter ini?")) {
                             await remove(ref(db, 'excel_data'));
                             alert("Data berjaya dihapuskan.");
                             showPage('admin');
@@ -413,7 +418,7 @@
                     };
                 }
 
-                // Logik Muat Naik dengan Pengesahan
+                // Logik Muat Naik dengan Confirmation
                 document.getElementById('excel-input').onchange = (e) => {
                     const file = e.target.files[0];
                     if (!file) return;
@@ -433,7 +438,7 @@
                         };
                         reader.readAsBinaryString(file);
                     } else {
-                        e.target.value = ""; // Reset input jika cancel
+                        e.target.value = ""; 
                     }
                 };
 
@@ -445,7 +450,7 @@
                     if(c.val().status === 'pending') {
                         pendingCount++;
                         const div = document.createElement('div');
-                        div.className = "p-5 bg-white rounded-[2rem] flex justify-between items-center border border-slate-100 shadow-sm animate-in slide-in-from-right-4";
+                        div.className = "p-5 bg-white rounded-[2rem] flex justify-between items-center border border-slate-100 shadow-sm";
                         div.innerHTML = `
                             <div>
                                 <p class="text-xs font-black uppercase text-slate-800 tracking-tight">${c.val().fullName}</p>
@@ -464,7 +469,7 @@
             closeMenu();
             window.scrollTo(0,0);
         }
-                // Fungsi Mengumpul Data Borang Untuk Cetakan
+                    // Fungsi Mengumpul Data Borang Untuk Cetakan
         window.handlePrint = function(type) {
             let data = {};
             if (type === 'TIME OFF') {
@@ -498,22 +503,24 @@
             setTimeout(() => sidebar.classList.add('hidden'), 300); 
         }
 
-        // Event Listeners Navigasi
+        // Event Listeners Kawalan Menu
         sidebar.onclick = (e) => { if (e.target === sidebar) closeMenu(); };
         document.getElementById('menu-open').onclick = openMenu;
         document.getElementById('menu-close').onclick = closeMenu;
 
-        // Hubungkan Butang Menu Sidebar
+        // Hubungkan Butang Menu Sidebar ke Fungsi showPage
         document.getElementById('nav-today').onclick = () => showPage('jadual-tugas');
         document.getElementById('nav-calendar').onclick = () => showPage('jadual-induk');
         document.getElementById('nav-leave-gantian').onclick = () => showPage('leave-gantian');
         document.getElementById('nav-leave-rekod').onclick = () => showPage('leave-rekod');
         document.getElementById('nav-leave-timeoff').onclick = () => showPage('leave-timeoff');
         document.getElementById('admin-nav').onclick = () => showPage('admin');
+        
+        // Log Keluar
         document.getElementById('btn-logout').onclick = () => {
             if(confirm("Adakah anda ingin log keluar?")) signOut(auth);
         };
-                // Logik Aksi Butang (Login / Register / Reset)
+                    // Logik Aksi Butang (Login / Register / Reset)
         document.getElementById('btn-action').onclick = async () => {
             const email = document.getElementById('email').value.trim();
             const pass = document.getElementById('password').value;
@@ -545,6 +552,7 @@
                     });
                     alert("Pendaftaran berjaya! Sila tunggu kelulusan daripada Admin sebelum log masuk.");
                     signOut(auth);
+                    toggleAuthMode('login');
                 } catch(e) { 
                     alert("Ralat Pendaftaran: " + e.message); 
                 }
@@ -592,6 +600,7 @@
         // Automatik Isi Pilihan Platun (1 hingga 25)
         const sel = document.getElementById('reg-platoon');
         if(sel) {
+            sel.innerHTML = '<option value="" disabled selected>PILIH PLATUN</option>';
             for(let i=1; i<=25; i++) {
                 const o = document.createElement('option');
                 o.value = i;
@@ -602,3 +611,5 @@
     </script>
 </body>
 </html>
+
+        
