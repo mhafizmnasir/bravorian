@@ -13,7 +13,6 @@
         .mobile-menu.closed { transform: translateX(-100%); }
         .animate-fade-up { animation: fadeUp 0.4s ease-out forwards; }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-        /* Mengelakkan skrin putih semasa loading */
         [v-cloak] { display: none; }
     </style>
 </head>
@@ -47,6 +46,7 @@
 
             <button id="btn-action" class="w-full bg-blue-900 text-white font-black py-4 rounded-2xl mt-6 hover:bg-blue-800 shadow-lg active:scale-95 transition-all uppercase tracking-widest text-xs">Log Masuk</button>
             <button id="auth-toggle-btn" class="w-full mt-4 text-[10px] text-blue-600 font-black uppercase tracking-widest hover:underline">Daftar Akaun Baru</button>
+            <button id="btn-forgot-pw" class="w-full mt-2 text-[10px] text-slate-400 font-bold uppercase tracking-widest hover:underline">Lupa Kata Laluan?</button>
         </div>
     </div>
 
@@ -115,7 +115,6 @@
 
         let userData = null;
 
-        // AUTH LISTENER
         onAuthStateChanged(auth, async (user) => {
             document.getElementById('loading-overlay').classList.add('hidden');
             if (user) {
@@ -141,7 +140,6 @@
             }
         });
 
-        // ACTIONS
         document.getElementById('btn-action').onclick = async () => {
             const email = document.getElementById('email').value.trim();
             const pass = document.getElementById('password').value;
@@ -168,7 +166,15 @@
             }
         };
 
-        // UI HELPERS
+        document.getElementById('btn-forgot-pw').onclick = async () => {
+            const email = document.getElementById('email').value.trim();
+            if (!email) return alert("Sila masukkan emel anda untuk set semula kata laluan.");
+            try {
+                await sendPasswordResetEmail(auth, email);
+                alert("Pautan set semula kata laluan telah dihantar ke emel anda.");
+            } catch(e) { alert("Ralat: " + e.message); }
+        };
+
         document.getElementById('auth-toggle-btn').onclick = () => {
             const isReg = document.getElementById('register-fields').classList.toggle('hidden');
             document.getElementById('btn-action').innerText = isReg ? "Daftar Akaun" : "Log Masuk";
@@ -204,6 +210,25 @@
                     const match = excelSnap.val().find(i => String(i.Nama).trim().toUpperCase() === userData.fullName);
                     if(match) kaunter = match.No_Kaunter;
                 }
+
+                let rakanHtml = "";
+                if (!duty.off) {
+                    const allUsersSnap = await get(child(ref(rdb), 'users'));
+                    let rakanList = [];
+                    allUsersSnap.forEach(snap => {
+                        const user = snap.val();
+                        if (user.fullName !== userData.fullName && user.status === 'approved') {
+                            const rakanDuty = getDuty(new Date(), user.platoon);
+                            if (rakanDuty.loc === duty.loc && rakanDuty.shift === duty.shift) {
+                                rakanList.push(user.fullName);
+                            }
+                        }
+                    });
+                    if (rakanList.length > 0) {
+                        rakanHtml = `<div class="mt-6 text-left"><p class="text-[9px] font-black text-slate-400 uppercase mb-2 tracking-widest">Rakan Setugas (Zon Sama)</p><div class="flex flex-wrap gap-2">${rakanList.map(nama => `<span class="bg-white/10 text-white border border-white/20 px-3 py-1 rounded-lg text-[9px] font-bold">${nama}</span>`).join('')}</div></div>`;
+                    }
+                }
+
                 content.innerHTML = `
                 <div class="animate-fade-up">
                     <div class="bg-white p-6 rounded-[2rem] mb-4 flex justify-between items-center shadow-sm border border-slate-100">
@@ -218,7 +243,8 @@
                         <div class="bg-white/10 p-6 rounded-3xl border border-white/10 backdrop-blur-md">
                             <p class="text-blue-200 text-[9px] font-black uppercase mb-1">No. Kaunter</p>
                             <h2 class="text-3xl font-black text-white">${kaunter}</h2>
-                        </div>`}
+                        </div>
+                        ${rakanHtml}`}
                     </div>
                 </div>`;
             } else if (page === 'jadual-induk') {
@@ -270,13 +296,6 @@
             }
         }
 
-        // Dropdown setup
         const sel = document.getElementById('reg-platoon');
         for(let i=2; i<=25; i++) { 
-            let opt = document.createElement('option'); 
-            opt.value = i; opt.text = "Platun " + i; 
-            sel.appendChild(opt); 
-        }
-    </script>
-</body>
-</html>
+            let opt = document.createElement('o
