@@ -180,12 +180,9 @@
         async function showPage(p, targetMonth = new Date().getMonth()) {
             const cont = document.getElementById('dynamic-content');
                         // 1. HALAMAN JADUAL TUGAS HARI INI (DENGAN NAMA & HARI)
+                        // 1. HALAMAN JADUAL TUGAS HARI INI
             if (p === 'jadual-tugas') {
-                const now = new Date();
-                const hariIni = now.toLocaleDateString('ms-MY', { weekday: 'long' });
-                const tarikhIni = now.toLocaleDateString('ms-MY', { day: '2-digit', month: 'long', year: 'numeric' });
-                
-                const dty = getDuty(now, userData.platoon);
+                const dty = getDuty(new Date(), userData.platoon);
                 const exSnap = await get(ref(db, 'excel_data'));
                 let ktr = "OFF";
                 
@@ -198,7 +195,6 @@
                 cont.innerHTML = `
                     <div class="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm mb-6 flex justify-between items-center animate-pulse-once">
                         <div>
-                            <p class="text-[8px] font-black uppercase text-blue-600 tracking-[0.2em] mb-1">${hariIni} • ${tarikhIni}</p>
                             <h2 class="text-sm font-black text-blue-900 uppercase tracking-tight">${userData.fullName}</h2>
                             <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1">Pegawai Imigresen • Platun ${userData.platoon}</p>
                         </div>
@@ -390,7 +386,7 @@
         document.getElementById('admin-nav').onclick = () => { showAdminPage(); closeMenu(); };
         document.getElementById('btn-logout').onclick = () => { if(confirm("Log keluar?")) signOut(auth); };
 
-                // Jam & Tarikh Live di Navigasi
+                        // Jam & Tarikh Live di Navigasi
         setInterval(() => {
             const clockEl = document.getElementById('live-clock');
             if(clockEl) {
