@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BRAVORIAN - BSI</title>
+    <title>BRAVORIAN BSI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
@@ -11,7 +11,6 @@
         .mobile-menu { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
         .mobile-menu.closed { transform: translateX(-100%); }
         input, select { -webkit-appearance: none; border-radius: 1rem; }
-        /* Smooth scale animation for buttons */
         .btn-press:active { transform: scale(0.95); transition: 0.1s; }
     </style>
 </head>
@@ -20,17 +19,15 @@
     <div id="loading-overlay" class="fixed inset-0 bg-white z-[100] flex flex-col items-center justify-center">
         <div class="w-12 h-12 border-4 border-yellow-400 border-t-black rounded-full animate-spin"></div>
     </div>
-        <div id="auth-section" class="hidden flex items-center justify-center min-h-screen p-6">
+
+    <div id="auth-section" class="hidden flex items-center justify-center min-h-screen p-6">
         <div class="bg-white p-10 rounded-[3rem] shadow-2xl w-full max-w-md border border-slate-100 text-center relative overflow-hidden">
             <div class="absolute top-0 left-0 w-full h-2 bg-yellow-400"></div>
-            
             <div class="flex justify-center mb-6">
                 <img src="assets/img/logo.png" alt="Logo" class="h-20 object-contain" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1067/1067357.png'">
             </div>
-
             <h1 id="auth-title" class="text-4xl font-black text-black uppercase italic mb-2 tracking-tighter">BRAVORIAN</h1>
             <p id="auth-subtitle" class="text-[11px] font-bold text-slate-400 uppercase mb-10 tracking-[0.4em]">B.S.I JOHOR BAHRU</p>
-            
             <div id="register-fields" class="hidden space-y-4 mb-4 text-left">
                 <div class="flex gap-3">
                     <input type="text" id="reg-firstname" placeholder="NAMA DEPAN" class="w-1/2 p-5 bg-slate-50 border-none text-[12px] font-bold uppercase outline-none focus:ring-2 focus:ring-yellow-400">
@@ -38,14 +35,11 @@
                 </div>
                 <select id="reg-platoon" class="w-full p-5 bg-slate-50 border-none text-[12px] font-bold outline-none focus:ring-2 focus:ring-yellow-400 uppercase"></select>
             </div>
-
             <div class="space-y-4">
                 <input type="email" id="email" placeholder="EMEL" class="w-full p-5 bg-slate-50 border-none text-[12px] font-bold outline-none focus:ring-2 focus:ring-yellow-400">
                 <input type="password" id="password" placeholder="KATA LALUAN" class="w-full p-5 bg-slate-50 border-none text-[12px] font-bold outline-none focus:ring-2 focus:ring-yellow-400">
             </div>
-
             <button id="btn-action" class="btn-press w-full bg-black text-yellow-400 font-black py-5 rounded-2xl mt-8 uppercase text-[12px] tracking-widest shadow-xl">Log Masuk</button>
-            
             <div class="mt-8 flex flex-col gap-4">
                 <button id="btn-forgot-pw" class="text-[10px] text-slate-400 font-bold uppercase tracking-widest hover:text-black">Lupa Kata Laluan?</button>
                 <button id="auth-toggle-btn" class="w-max mx-auto text-[10px] text-black font-black uppercase tracking-widest border-b-2 border-yellow-400 pb-1">Daftar Akaun Baru</button>
@@ -70,13 +64,13 @@
         <div id="mobile-sidebar" class="fixed inset-0 bg-black/40 z-[60] hidden backdrop-blur-sm">
             <div id="sidebar-container" class="mobile-menu closed bg-white w-80 h-full p-10 flex flex-col shadow-2xl">
                 <div class="mb-12 flex justify-between items-center">
-                    <h2 class="text-[11px] font-black text-black uppercase opacity-30 tracking-[0.3em]">Menu Utama</h2>
+                    <h2 class="text-[11px] font-black text-black uppercase opacity-30 tracking-[0.3em]">Menu</h2>
                     <button id="menu-close" class="p-2 text-slate-400">✕</button>
                 </div>
                 <div class="space-y-4 font-black text-[13px] uppercase tracking-widest text-slate-400">
-                    <button id="nav-welcome" class="btn-press flex items-center gap-4 w-full text-left p-5 hover:bg-yellow-50 rounded-2xl">Utama</button>
-                    <button id="nav-calendar" class="btn-press flex items-center gap-4 w-full text-left p-5 hover:bg-yellow-50 rounded-2xl">Kalendar Syif</button>
-                    <button id="nav-settings" class="btn-press flex items-center gap-4 w-full text-left p-5 hover:bg-yellow-50 rounded-2xl">Tetapan</button>
+                    <button id="nav-welcome" class="btn-press flex items-center gap-4 w-full text-left p-5 hover:bg-yellow-50 rounded-2xl transition-all">Utama</button>
+                    <button id="nav-calendar" class="btn-press flex items-center gap-4 w-full text-left p-5 hover:bg-yellow-50 rounded-2xl transition-all">Kalendar Syif</button>
+                    <button id="nav-settings" class="btn-press flex items-center gap-4 w-full text-left p-5 hover:bg-yellow-50 rounded-2xl transition-all">Tetapan</button>
                     <button id="admin-nav" class="hidden flex items-center justify-between w-full p-5 bg-black text-yellow-400 rounded-2xl mt-10">
                         <span>Admin Panel</span>
                         <span id="pending-count" class="hidden bg-yellow-400 text-black text-[10px] px-2 py-1 rounded-full font-bold">0</span>
@@ -85,23 +79,19 @@
             </div>
         </div>
 
-        <main class="max-w-4xl mx-auto p-6 md:p-12">
-            <div id="dynamic-content" class="space-y-8"></div>
-        </main>
+        <main class="max-w-4xl mx-auto p-6 md:p-12"><div id="dynamic-content" class="space-y-8"></div></main>
     </div>
-        <script type="module">
+
+    <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, sendPasswordResetEmail, updatePassword, verifyBeforeUpdateEmail, reauthenticateWithCredential, EmailAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getDatabase, ref, get, set, update, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-                const firebaseConfig = { 
+        const firebaseConfig = { 
             apiKey: "AIzaSyCQ9SBXkEILe6PZdmLyGBSFK63XhPM_V7o", 
             authDomain: "bravorians-bsi.firebaseapp.com", 
-            // Pastikan URL database tepat seperti di bawah
             databaseURL: "https://bravorians-bsi-default-rtdb.asia-southeast1.firebasedatabase.app", 
             projectId: "bravorians-bsi", 
-            storageBucket: "bravorians-bsi.appspot.com",
-            messagingSenderId: "314220494464",
             appId: "1:314220494464:web:d3b21e9b742e1db86f7065" 
         };
 
@@ -109,13 +99,11 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        // DATA JADUAL 2 & POSISI AWAL PLATUN
         const JADUAL_2 = { 1: ["ENTRY MC", "ENTRY KA", "ENTRY BAS"], 2: ["EXIT KB", "EXIT SBY#2", "EXIT MA"], 3: ["ENTRY KC", "ENTRY BDL/Autogate", "ENTRY SBY#1"], 4: ["EXIT LORI", "EXIT BAS", "EXIT KD"], 5: ["ENTRY MC", "ENTRY SBY#3", "ENTRY KB"], 6: ["EXIT MA", "EXIT SBY#1", "EXIT KC"], 7: ["ENTRY SBY#2", "ENTRY BAS", "ENTRY KD"], 8: ["EXIT BAS", "EXIT KA", "EXIT SBY#3"], 9: ["ENTRY KA", "ENTRY BAS", "ENTRY MC"], 10: ["EXIT SBY#2", "EXIT MA", "EXIT KB"], 11: ["ENTRY SBY#1", "ENTRY KC", "ENTRY BDL/Autogate"], 12: ["EXIT KD", "EXIT LORI", "EXIT BAS"], 13: ["ENTRY SBY#3", "ENTRY KB", "ENTRY MC"], 14: ["EXIT KC", "EXIT MA", "EXIT SBY#1"], 15: ["ENTRY KD", "ENTRY SBY#2", "ENTRY BAS"], 16: ["EXIT SBY#3", "EXIT BAS", "EXIT KA"], 17: ["ENTRY BAS", "ENTRY MC", "ENTRY KA"], 18: ["EXIT MA", "EXIT KB", "EXIT SBY#2"], 19: ["ENTRY BDL/Autogate", "ENTRY SBY#1", "ENTRY KC"], 20: ["EXIT BAS", "EXIT KD", "EXIT LORI"], 21: ["ENTRY KB", "ENTRY MC", "ENTRY SBY#3"], 22: ["EXIT SBY#1", "EXIT KC", "EXIT MA"], 23: ["ENTRY BAS", "ENTRY KD", "ENTRY SBY#2"], 24: ["EXIT KA", "EXIT SBY#3", "EXIT BAS"] };
         const START_ROW = { 1:1, 2:2, 3:1, 4:20, 5:13, 6:16, 7:17, 8:6, 9:3, 10:10, 11:7, 12:24, 13:15, 14:22, 15:5, 16:14, 17:19, 18:8, 19:9, 20:12, 21:21, 22:4, 23:11, 24:18, 25:23 };
         
         let userData = null;
 
-        // LOGIK PENGIRAAN TUGASAN
         function getDuty(date, platoon) {
             let baseDate = new Date(2026, 0, 3); 
             let targetDate = new Date(date); targetDate.setHours(0,0,0,0);
@@ -127,7 +115,6 @@
             return { off: false, shift: ["PETANG", "PAGI", "MALAM"][cyclePos], loc: JADUAL_2[row][cyclePos] };
         }
 
-        // FUNGSI NAVIGASI HALAMAN
         window.showPage = async function(p, targetMonth = new Date().getMonth()) {
             const cont = document.getElementById('dynamic-content');
             document.querySelectorAll('.space-y-4 button').forEach(b => b.classList.remove('text-black', 'border-l-4', 'border-yellow-400'));
@@ -171,8 +158,7 @@
                 }
                 cont.innerHTML = html + '</div>';
                 document.getElementById('month-select').onchange = (e) => window.showPage('jadual-induk', e.target.value);
-            }
-                        else if (p === 'settings') {
+            } else if (p === 'settings') {
                 cont.innerHTML = `<div class="max-w-md mx-auto space-y-8"><div class="text-center"><h2 class="text-2xl font-black text-black uppercase tracking-tighter italic">Tetapan</h2></div>
                     <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl space-y-4">
                         <input type="email" id="new-email" placeholder="EMEL BARU" class="w-full p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold uppercase outline-none focus:ring-2 focus:ring-yellow-400">
@@ -188,7 +174,6 @@
             closeMenu();
         };
 
-        // FUNGSI PANEL ADMIN
         window.showAdminPage = async function() {
             const cont = document.getElementById('dynamic-content');
             cont.innerHTML = `<div id="adm-list" class="space-y-4"><h3 class="text-[11px] font-black text-slate-400 uppercase tracking-widest px-6 mb-4">Pengesahan Pengguna</h3></div>`;
@@ -208,7 +193,6 @@
             closeMenu();
         };
 
-        // KAWALAN AUTH & TOGGLE DAFTAR
         let authMode = 'login';
         document.getElementById('auth-toggle-btn').onclick = () => {
             authMode = authMode === 'login' ? 'register' : 'login';
@@ -221,7 +205,7 @@
             const email = document.getElementById('email').value.trim();
             const pass = document.getElementById('password').value;
             if (authMode === 'login') {
-                try { await signInWithEmailAndPassword(auth, email, pass); } catch(e) { alert("Emel atau Kata Laluan Salah!"); }
+                try { await signInWithEmailAndPassword(auth, email, pass); } catch(e) { alert("Emel/Password Salah!"); }
             } else {
                 const fn = document.getElementById('reg-firstname').value.toUpperCase();
                 const ln = document.getElementById('reg-lastname').value.toUpperCase();
@@ -229,7 +213,7 @@
                 try {
                     const res = await createUserWithEmailAndPassword(auth, email, pass);
                     await set(ref(db, 'users/' + res.user.uid), { fullName: fn + " " + ln, platoon: parseInt(plt), role: "user", status: "pending" });
-                    alert("Berjaya! Sila tunggu kelulusan Admin."); signOut(auth); location.reload();
+                    alert("Tunggu kelulusan Admin."); signOut(auth); location.reload();
                 } catch(e) { alert(e.message); }
             }
         };
@@ -237,79 +221,26 @@
         document.getElementById('btn-forgot-pw').onclick = async () => {
             const email = document.getElementById('email').value.trim();
             if(!email) return alert("Sila masukkan emel.");
-            try { await sendPasswordResetEmail(auth, email); alert("Pautan reset kata laluan telah dihantar ke emel anda."); } catch(e) { alert("Ralat emel!"); }
+            try { await sendPasswordResetEmail(auth, email); alert("Pautan dihantar ke emel anda."); } catch(e) { alert("Ralat!"); }
         };
 
         async function handleAccountUpdate(type) {
             const user = auth.currentUser;
-            const currentPw = prompt("Sahkan Kata Laluan:");
+            const currentPw = prompt("Sahkan Kata Laluan Semasa:");
             if (!currentPw) return;
             const credential = EmailAuthProvider.credential(user.email, currentPw);
             try {
                 await reauthenticateWithCredential(user, credential);
                 if (type === 'email') {
                     const newEmail = document.getElementById('new-email').value.trim();
-                    await verifyBeforeUpdateEmail(user, newEmail); alert("Sila semak emel baru untuk pengesahan.");
+                    await verifyBeforeUpdateEmail(user, newEmail); alert("Sila semak emel baru.");
                 } else {
                     const newPw = document.getElementById('new-password').value;
-                    await updatePassword(user, newPw); alert("Kata laluan dikemaskini!");
+                    await updatePassword(user, newPw); alert("Berjaya!");
                 }
             } catch (e) { alert(e.message); }
         }
 
-        // SIDEBAR CONTROLLER
         const sidebar = document.getElementById('mobile-sidebar');
         const container = document.getElementById('sidebar-container');
-        const openMenu = () => { sidebar.classList.remove('hidden'); setTimeout(() => container.classList.remove('closed'), 10); };
-        const closeMenu = () => { container.classList.add('closed'); setTimeout(() => sidebar.classList.add('hidden'), 300); };
-        document.getElementById('menu-open').onclick = openMenu;
-        document.getElementById('menu-close').onclick = closeMenu;
-        sidebar.onclick = (e) => { if (e.target === sidebar) closeMenu(); };
-
-        // OBSERVER (PENJAGA STATUS LOGIN)
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                const snap = await get(ref(db, 'users/' + user.uid));
-                if (snap.exists() && snap.val().status === "approved") {
-                    userData = snap.val();
-                    document.getElementById('auth-section').classList.add('hidden');
-                    document.getElementById('main-dashboard').classList.remove('hidden');
-                    if(userData.role === 'admin') { 
-                        document.getElementById('admin-nav').classList.remove('hidden');
-                        onValue(ref(db, 'users'), s => {
-                            let c = 0; s.forEach(u => { if(u.val().status === 'pending') c++; });
-                            const p = document.getElementById('pending-count');
-                            if(c > 0) { p.innerText = c; p.classList.remove('hidden'); } else p.classList.add('hidden');
-                        });
-                    }
-                    window.showPage('welcome');
-                } else { signOut(auth); if(snap.exists() && snap.val().status === "pending") alert("Akaun anda dalam proses kelulusan."); }
-            } else {
-                document.getElementById('auth-section').classList.remove('hidden');
-                document.getElementById('main-dashboard').classList.add('hidden');
-            }
-            document.getElementById('loading-overlay').classList.add('hidden');
-        });
-
-        // INISIALISASI JAM & MENU
-        document.getElementById('nav-welcome').onclick = () => window.showPage('welcome');
-        document.getElementById('nav-calendar').onclick = () => window.showPage('jadual-induk');
-        document.getElementById('nav-settings').onclick = () => window.showPage('settings');
-        document.getElementById('admin-nav').onclick = () => window.showAdminPage();
-        document.getElementById('btn-logout').onclick = () => { if(confirm("Log keluar?")) signOut(auth); };
-
-        setInterval(() => {
-            const el = document.getElementById('live-clock');
-            if(el) {
-                const n = new Date();
-                el.innerText = `${n.toLocaleDateString('ms-MY', { weekday: 'short' })} | ${n.toLocaleTimeString('ms-MY', { hour12: false })}`;
-            }
-        }, 1000);
-
-        const sel = document.getElementById('reg-platoon');
-        for(let i=1; i<=25; i++) {
-            const o = document.createElement('option'); o.value = i; o.text = "PLATUN " + i; sel.appendChild(o);
-        }
-    </script>
-</body>
-</html>
+        const openMenu = () => { sidebar.classList.remove('hidden'); setTimeout(() => container.cl
