@@ -19,8 +19,14 @@
             <div id="auth-section" class="hidden flex items-center justify-center min-h-screen p-6">
         <div class="bg-white p-10 rounded-[3rem] shadow-2xl w-full max-w-md border border-slate-100 text-center relative overflow-hidden">
             <div class="absolute top-0 left-0 w-full h-2 bg-yellow-400"></div>
+            
+            <div class="flex justify-center mb-6">
+                <img src="assets/img/logo.png" alt="Logo" class="h-20 object-contain" onerror="this.style.display='none'">
+            </div>
+
             <h1 id="auth-title" class="text-4xl font-black text-black uppercase italic mb-2 tracking-tighter">BRAVORIAN</h1>
             <p class="text-[11px] font-bold text-slate-400 uppercase mb-10 tracking-[0.4em]">B.S.I JOHOR BAHRU</p>
+            
             <div id="register-fields" class="hidden space-y-4 mb-4 text-left">
                 <div class="flex gap-3">
                     <input type="text" id="reg-firstname" placeholder="NAMA DEPAN" class="w-1/2 p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold uppercase outline-none focus:ring-2 focus:ring-yellow-400">
@@ -28,11 +34,14 @@
                 </div>
                 <select id="reg-platoon" class="w-full p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold outline-none focus:ring-2 focus:ring-yellow-400 uppercase"></select>
             </div>
+
             <div class="space-y-4">
                 <input type="email" id="email" placeholder="EMEL" class="w-full p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold outline-none focus:ring-2 focus:ring-yellow-400">
                 <input type="password" id="password" placeholder="KATA LALUAN" class="w-full p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold outline-none focus:ring-2 focus:ring-yellow-400">
             </div>
+
             <button id="btn-action" class="w-full bg-black text-yellow-400 font-black py-5 rounded-2xl mt-8 uppercase text-[12px] tracking-widest shadow-xl active:scale-95 transition-all">Log Masuk</button>
+            
             <div class="mt-8 flex flex-col gap-4">
                 <button id="btn-forgot-pw" class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Lupa Kata Laluan?</button>
                 <button id="auth-toggle-btn" class="w-max mx-auto text-[10px] text-black font-black uppercase tracking-widest border-b-2 border-yellow-400 pb-1">Daftar Akaun Baru</button>
@@ -64,7 +73,7 @@
                     <button id="nav-settings" class="flex items-center gap-4 w-full text-left p-5 hover:bg-yellow-50 rounded-2xl transition-all">Tetapan</button>
                     <button id="admin-nav" class="hidden flex items-center justify-between w-full p-5 bg-black text-yellow-400 rounded-2xl mt-10">
                         <span>Admin Panel</span>
-                        <span id="pending-count" class="hidden bg-yellow-400 text-black text-[10px] px-2 py-1 rounded-full font-bold">0</span>
+                        <span id="pending-count" class="hidden bg-yellow-400 text-black text-[10px] px-2 py-1 rounded-full">0</span>
                     </button>
                 </div>
             </div>
@@ -74,7 +83,7 @@
                     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, sendPasswordResetEmail, updatePassword, verifyBeforeUpdateEmail, reauthenticateWithCredential, EmailAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getDatabase, ref, get, set, update, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.app";
+        import { getDatabase, ref, get, set, update, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         const firebaseConfig = { 
             apiKey: "AIzaSyCQ9SBXkEILe6PZdmLyGBSFK63XhPM_V7o", 
@@ -89,8 +98,8 @@
         const db = getDatabase(app);
                                 const JADUAL_2 = { 1: ["ENTRY MC", "ENTRY KA", "ENTRY BAS"], 2: ["EXIT KB", "EXIT SBY#2", "EXIT MA"], 3: ["ENTRY KC", "ENTRY BDL/Autogate", "ENTRY SBY#1"], 4: ["EXIT LORI", "EXIT BAS", "EXIT KD"], 5: ["ENTRY MC", "ENTRY SBY#3", "ENTRY KB"], 6: ["EXIT MA", "EXIT SBY#1", "EXIT KC"], 7: ["ENTRY SBY#2", "ENTRY BAS", "ENTRY KD"], 8: ["EXIT BAS", "EXIT KA", "EXIT SBY#3"], 9: ["ENTRY KA", "ENTRY BAS", "ENTRY MC"], 10: ["EXIT SBY#2", "EXIT MA", "EXIT KB"], 11: ["ENTRY SBY#1", "ENTRY KC", "ENTRY BDL/Autogate"], 12: ["EXIT KD", "EXIT LORI", "EXIT BAS"], 13: ["ENTRY SBY#3", "ENTRY KB", "ENTRY MC"], 14: ["EXIT KC", "EXIT MA", "EXIT SBY#1"], 15: ["ENTRY KD", "ENTRY SBY#2", "ENTRY BAS"], 16: ["EXIT SBY#3", "EXIT BAS", "EXIT KA"], 17: ["ENTRY BAS", "ENTRY MC", "ENTRY KA"], 18: ["EXIT MA", "EXIT KB", "EXIT SBY#2"], 19: ["ENTRY BDL/Autogate", "ENTRY SBY#1", "ENTRY KC"], 20: ["EXIT BAS", "EXIT KD", "EXIT LORI"], 21: ["ENTRY KB", "ENTRY MC", "ENTRY SBY#3"], 22: ["EXIT SBY#1", "EXIT KC", "EXIT MA"], 23: ["ENTRY BAS", "ENTRY KD", "ENTRY SBY#2"], 24: ["EXIT KA", "EXIT SBY#3", "EXIT BAS"] };
         const START_ROW = { 1:1, 2:2, 3:1, 4:20, 5:13, 6:16, 7:17, 8:6, 9:3, 10:10, 11:7, 12:24, 13:15, 14:22, 15:5, 16:14, 17:19, 18:8, 19:9, 20:12, 21:21, 22:4, 23:11, 24:18, 25:23 };
-        let userData = null;
-                                function getDuty(date, platoon) {
+
+        function getDuty(date, platoon) {
             let baseDate = new Date(2026, 0, 3); 
             let targetDate = new Date(date); 
             targetDate.setHours(0,0,0,0);
@@ -100,8 +109,29 @@
             if (cyclePos === 3) return { off: true };
             let row = ((START_ROW[platoon] + Math.floor(diffDays/4) - 1) % 24) + 1;
             return { off: false, shift: ["PETANG", "PAGI", "MALAM"][cyclePos], loc: JADUAL_2[row][cyclePos] };
-                                }
-                                async function showPage(p, targetMonth = new Date().getMonth()) {
+        }
+                                window.handleAccountUpdate = async (type) => {
+            const user = auth.currentUser;
+            const currentPw = prompt("Sahkan Kata Laluan Semasa:");
+            if (!currentPw) return;
+            const credential = EmailAuthProvider.credential(user.email, currentPw);
+            try {
+                await reauthenticateWithCredential(user, credential);
+                if (type === 'email') {
+                    const newEmail = document.getElementById('new-email').value.trim();
+                    if (!newEmail) return;
+                    await verifyBeforeUpdateEmail(user, newEmail);
+                    alert("Sila sahkan emel baru anda.");
+                } else if (type === 'password') {
+                    const newPw = document.getElementById('new-password').value;
+                    if (newPw.length < 6) return alert("Min 6 aksara");
+                    await updatePassword(user, newPw);
+                    alert("Kata laluan dikemaskini.");
+                }
+            } catch (e) { alert("Ralat: " + e.message); }
+        };
+                                let userData = null;
+        async function showPage(p, targetMonth = new Date().getMonth()) {
             const cont = document.getElementById('dynamic-content');
             document.querySelectorAll('.space-y-4 button').forEach(b => b.classList.remove('text-black', 'border-l-4', 'border-yellow-400'));
             const activeBtn = document.getElementById('nav-' + p);
@@ -113,98 +143,62 @@
                     const tkh = new Date(); tkh.setDate(tkh.getDate() + i);
                     const dty = getDuty(tkh, userData.platoon);
                     listHtml += `<div class="flex justify-between items-center p-6 ${i < 3 ? 'border-b border-slate-50' : ''}">
-                        <div class="text-left">
-                            <p class="text-[12px] font-black text-black uppercase">${tkh.toLocaleDateString('ms-MY', { weekday: 'long' })}</p>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase">${tkh.toLocaleDateString('ms-MY', { day: '2-digit', month: 'short' })}</p>
-                        </div>
-                        <div class="text-right">
-                            ${dty.off ? `<p class="text-sm font-black text-slate-300 italic">OFF</p>` : `<p class="text-[13px] font-black text-black uppercase leading-tight">${dty.shift}</p><p class="text-[10px] font-extrabold text-yellow-500 uppercase">${dty.loc}</p>`}
-                        </div>
+                        <div class="text-left"><p class="text-[12px] font-black text-black uppercase">${tkh.toLocaleDateString('ms-MY', { weekday: 'long' })}</p>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase">${tkh.toLocaleDateString('ms-MY', { day: '2-digit', month: 'short' })}</p></div>
+                        <div class="text-right">${dty.off ? `<p class="text-sm font-black text-slate-300 italic">OFF</p>` : `<p class="text-[13px] font-black text-black uppercase">${dty.shift}</p><p class="text-[10px] font-extrabold text-yellow-500 uppercase">${dty.loc}</p>`}</div>
                     </div>`;
                 }
                 cont.innerHTML = `
                     <div class="flex flex-col items-center justify-center min-h-[60vh] text-center">
-                        <div class="w-24 h-24 bg-black rounded-[2.5rem] flex items-center justify-center mb-8 relative shadow-2xl overflow-hidden">
+                        <div class="w-24 h-24 bg-black rounded-[2.5rem] flex items-center justify-center mb-8 relative shadow-2xl">
                             <div class="absolute inset-0 border-4 border-yellow-400 rounded-[2.5rem] animate-pulse"></div>
-                            <img src="assets/img/logo.png" alt="Logo" class="w-16 h-16 object-contain relative z-10" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1067/1067357.png'">
+                            <svg class="w-12 h-12 text-yellow-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
                         </div>
                         <h1 class="text-3xl font-black text-black uppercase italic mb-2 tracking-tighter">BRAVORIAN</h1>
-                        <div class="mb-10"><p class="text-[14px] font-black text-slate-800 uppercase tracking-widest">${userData.fullName}</p><span class="inline-block mt-2 px-5 py-2 bg-yellow-400 text-black text-[10px] font-black rounded-full uppercase tracking-widest">PLATUN ${userData.platoon}</span></div>
+                        <div class="mb-10"><p class="text-[14px] font-black text-slate-800 uppercase tracking-widest">${userData.fullName}</p><span class="inline-block mt-2 px-5 py-2 bg-yellow-400 text-black text-[10px] font-black rounded-full uppercase">PLATUN ${userData.platoon}</span></div>
                         <div class="bg-white rounded-[3rem] border border-slate-100 shadow-xl w-full max-w-md overflow-hidden">
-                            <div class="bg-black py-4"><p class="text-[10px] font-black text-yellow-400 uppercase tracking-widest">Ringkasan 3 Syif</p></div>
+                            <div class="bg-black py-4"><p class="text-[10px] font-black text-yellow-400 uppercase tracking-widest">3 Syif Terdekat</p></div>
                             ${listHtml}
                         </div>
                     </div>`;
-            } else if (p === 'jadual-induk') {
-                renderCalendar(cont, targetMonth);
+                            } else if (p === 'jadual-induk') {
+                const months = ["JANUARI", "FEBRUARI", "MAC", "APRIL", "MEI", "JUN", "JULAI", "OGOS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DISEMBER"];
+                let html = `<div class="bg-white p-5 rounded-[2.5rem] mb-6 border border-slate-100"><select id="month-select" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-[12px] font-black uppercase outline-none focus:ring-2 focus:ring-yellow-400">
+                        ${months.map((m, i) => `<option value="${i}" ${i == targetMonth ? 'selected' : ''}>${m} 2026</option>`).join('')}
+                    </select></div><div class="grid grid-cols-2 gap-4">`;
+                const daysInMonth = new Date(2026, parseInt(targetMonth) + 1, 0).getDate();
+                for(let i=1; i<=daysInMonth; i++){
+                    let d = new Date(2026, targetMonth, i); let r = getDuty(d, userData.platoon);
+                    html += `<div class="p-6 rounded-[2rem] border flex flex-col justify-center min-h-[120px] ${r.off ? 'bg-slate-50 opacity-50' : 'bg-white shadow-sm border-slate-100'}">
+                        <p class="text-[10px] font-black uppercase text-slate-400 mb-1">${d.toLocaleDateString('ms-MY',{weekday:'short', day:'2-digit'})}</p>
+                        <p class="text-sm font-black text-black uppercase">${r.off ? 'OFF' : r.shift}</p>
+                        <p class="text-[9px] font-black text-yellow-500 uppercase mt-2">${r.off ? '' : r.loc}</p>
+                    </div>`;
+                }
+                cont.innerHTML = html + '</div>';
+                document.getElementById('month-select').onchange = (e) => showPage('jadual-induk', e.target.value);
             } else if (p === 'settings') {
-                renderSettings(cont);
+                cont.innerHTML = `<div class="max-w-md mx-auto space-y-8"><div class="text-center"><h2 class="text-2xl font-black text-black uppercase tracking-tighter italic">Tetapan</h2></div>
+                    <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl space-y-4">
+                        <input type="email" id="new-email" placeholder="EMEL BARU" class="w-full p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold uppercase">
+                        <button onclick="handleAccountUpdate('email')" class="w-full bg-black text-yellow-400 font-black py-4 rounded-2xl uppercase text-[10px]">Update Emel</button>
+                    </div>
+                    <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl space-y-4">
+                        <input type="password" id="new-password" placeholder="KATA LALUAN BARU" class="w-full p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold uppercase">
+                        <button onclick="handleAccountUpdate('password')" class="w-full bg-black text-yellow-400 font-black py-4 rounded-2xl uppercase text-[10px]">Update Password</button>
+                    </div></div>`;
             }
             closeMenu();
-                                }
-                                function renderCalendar(cont, targetMonth) {
-            const months = ["JANUARI", "FEBRUARI", "MAC", "APRIL", "MEI", "JUN", "JULAI", "OGOS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DISEMBER"];
-            const skrg = new Date();
-            let html = `<div class="bg-white p-5 rounded-[2.5rem] mb-6 border border-slate-100 shadow-sm"><select id="month-select" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-[12px] font-black uppercase outline-none focus:ring-2 focus:ring-yellow-400">
-                ${months.map((m, i) => `<option value="${i}" ${i == targetMonth ? 'selected' : ''}>${m} 2026</option>`).join('')}
-            </select></div><div class="grid grid-cols-2 gap-4">`;
-            const daysInMonth = new Date(2026, parseInt(targetMonth) + 1, 0).getDate();
-            for(let i=1; i<=daysInMonth; i++){
-                let d = new Date(2026, targetMonth, i); let r = getDuty(d, userData.platoon);
-                const isToday = (i === skrg.getDate() && targetMonth == skrg.getMonth());
-                html += `<div class="relative p-6 rounded-[2rem] border flex flex-col justify-center min-h-[120px] ${r.off ? 'bg-slate-50 opacity-50' : 'bg-white shadow-sm'} ${isToday ? 'ring-4 ring-yellow-400 z-10 scale-[1.05]' : 'border-slate-100'}">
-                    <p class="text-[10px] font-black uppercase mb-1 ${isToday ? 'text-black' : 'text-slate-400'}">${d.toLocaleDateString('ms-MY',{weekday:'short', day:'2-digit'})}</p>
-                    <p class="text-sm font-black text-black uppercase">${r.off ? 'OFF' : r.shift}</p>
-                    <p class="text-[9px] font-black text-yellow-500 uppercase mt-2">${r.off ? '' : r.loc}</p>
-                </div>`;
-            }
-            cont.innerHTML = html + '</div>';
-            document.getElementById('month-select').onchange = (e) => showPage('jadual-induk', e.target.value);
         }
-
-        function renderSettings(cont) {
-            cont.innerHTML = `<div class="max-w-md mx-auto space-y-8"><div class="text-center"><h2 class="text-2xl font-black text-black uppercase tracking-tighter italic">Tetapan Akaun</h2></div>
-                <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl space-y-4">
-                    <p class="text-[10px] font-black text-black uppercase border-b pb-2">Tukar Emel</p>
-                    <input type="email" id="new-email" placeholder="EMEL BARU" class="w-full p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold uppercase outline-none focus:ring-2 focus:ring-yellow-400">
-                    <button id="btn-upd-email" class="w-full bg-black text-yellow-400 font-black py-4 rounded-2xl uppercase text-[10px] tracking-widest">Update Emel</button>
-                </div>
-                <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl space-y-4">
-                    <p class="text-[10px] font-black text-black uppercase border-b pb-2">Tukar Kata Laluan</p>
-                    <input type="password" id="new-password" placeholder="KATA LALUAN BARU" class="w-full p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold uppercase outline-none focus:ring-2 focus:ring-yellow-400">
-                    <button id="btn-upd-pw" class="w-full bg-black text-yellow-400 font-black py-4 rounded-2xl uppercase text-[10px] tracking-widest">Update Password</button>
-                </div></div>`;
-            document.getElementById('btn-upd-email').onclick = () => handleAccountUpdate('email');
-            document.getElementById('btn-upd-pw').onclick = () => handleAccountUpdate('password');
-        }
-                                async function handleAccountUpdate(type) {
-            const user = auth.currentUser;
-            const currentPw = prompt("Sahkan Kata Laluan Semasa:");
-            if (!currentPw) return;
-            const credential = EmailAuthProvider.credential(user.email, currentPw);
-            try {
-                await reauthenticateWithCredential(user, credential);
-                if (type === 'email') {
-                    const newEmail = document.getElementById('new-email').value.trim();
-                    await verifyBeforeUpdateEmail(user, newEmail);
-                    alert("Pautan pengesahan dihantar.");
-                } else {
-                    const newPw = document.getElementById('new-password').value;
-                    await updatePassword(user, newPw);
-                    alert("Berjaya!");
-                }
-            } catch (e) { alert("Ralat: " + e.message); }
-        }
-
-        async function showAdminPage() {
+                                async function showAdminPage() {
             const cont = document.getElementById('dynamic-content');
-            cont.innerHTML = `<div id="adm-list" class="space-y-4"><h3 class="text-[11px] font-black text-slate-400 uppercase tracking-widest px-6 mb-4">Kelulusan</h3></div>`;
+            cont.innerHTML = `<div id="adm-list" class="space-y-4"><h3 class="text-[11px] font-black text-slate-400 uppercase tracking-widest px-6">Pengesahan Pengguna</h3></div>`;
             const snap = await get(ref(db, 'users'));
             snap.forEach(c => {
                 if(c.val().status === 'pending') {
                     const div = document.createElement('div');
                     div.className = "p-6 bg-white rounded-[2.5rem] flex justify-between items-center border border-slate-100 shadow-sm";
-                    div.innerHTML = `<div><p class="text-[13px] font-black text-black">${c.val().fullName}</p><p class="text-[10px] font-bold text-yellow-600">P${c.val().platoon}</p></div>`;
+                    div.innerHTML = `<div><p class="text-[13px] font-black uppercase text-black">${c.val().fullName}</p><p class="text-[10px] font-bold text-yellow-600 uppercase">Platun ${c.val().platoon}</p></div>`;
                     const btn = document.createElement('button');
                     btn.className = "bg-black text-yellow-400 px-6 py-3 rounded-2xl text-[10px] font-black uppercase";
                     btn.innerText = "Luluskan";
@@ -213,9 +207,38 @@
                 }
             });
             closeMenu();
-        }
+                                }
                                 let authMode = 'login';
-        const sidebar = document.getElementById('mobile-sidebar');
+        document.getElementById('btn-action').onclick = async () => {
+            const email = document.getElementById('email').value.trim();
+            const pass = document.getElementById('password').value;
+            if (authMode === 'login') {
+                try { await signInWithEmailAndPassword(auth, email, pass); } catch(e) { alert("Akses Ditolak!"); }
+            } else {
+                const fn = document.getElementById('reg-firstname').value.toUpperCase();
+                const ln = document.getElementById('reg-lastname').value.toUpperCase();
+                const plt = document.getElementById('reg-platoon').value;
+                try {
+                    const res = await createUserWithEmailAndPassword(auth, email, pass);
+                    await set(ref(db, 'users/' + res.user.uid), { fullName: fn + " " + ln, platoon: parseInt(plt), role: "user", status: "pending" });
+                    alert("Berjaya! Sila tunggu kelulusan admin."); signOut(auth); toggleAuthMode('login');
+                } catch(e) { alert(e.message); }
+            }
+        };
+
+        document.getElementById('btn-forgot-pw').onclick = async () => {
+            const email = document.getElementById('email').value.trim();
+            if(!email) return alert("Masukkan emel.");
+            try { await sendPasswordResetEmail(auth, email); alert("Pautan reset dihantar ke emel anda."); } catch(e) { alert("Ralat!"); }
+        };
+
+        function toggleAuthMode(t) {
+            authMode = t;
+            document.getElementById('register-fields').classList.toggle('hidden', t === 'login');
+            document.getElementById('auth-title').innerText = t === 'login' ? 'BRAVORIAN' : 'DAFTAR';
+        }
+        document.getElementById('auth-toggle-btn').onclick = () => toggleAuthMode(authMode === 'login' ? 'register' : 'login');
+                                const sidebar = document.getElementById('mobile-sidebar');
         const container = document.getElementById('sidebar-container');
         function openMenu() { sidebar.classList.remove('hidden'); setTimeout(() => container.classList.remove('closed'), 10); }
         function closeMenu() { container.classList.add('closed'); setTimeout(() => sidebar.classList.add('hidden'), 300); }
@@ -224,35 +247,11 @@
         document.getElementById('menu-close').onclick = closeMenu;
         sidebar.onclick = (e) => { if (e.target === sidebar) closeMenu(); };
 
-        document.getElementById('btn-action').onclick = async () => {
-            const email = document.getElementById('email').value.trim();
-            const pass = document.getElementById('password').value;
-            if (authMode === 'login') {
-                try { await signInWithEmailAndPassword(auth, email, pass); } catch(e) { alert("Ralat Log Masuk!"); }
-            } else {
-                const fn = document.getElementById('reg-firstname').value.toUpperCase();
-                const ln = document.getElementById('reg-lastname').value.toUpperCase();
-                const plt = document.getElementById('reg-platoon').value;
-                try {
-                    const res = await createUserWithEmailAndPassword(auth, email, pass);
-                    await set(ref(db, 'users/' + res.user.uid), { fullName: fn + " " + ln, platoon: parseInt(plt), role: "user", status: "pending" });
-                    alert("Sila tunggu kelulusan."); signOut(auth); toggleAuthMode('login');
-                } catch(e) { alert(e.message); }
-            }
-        };
-                                document.getElementById('btn-forgot-pw').onclick = async () => {
-            const email = document.getElementById('email').value.trim();
-            if(!email) return alert("Masukkan emel.");
-            try { await sendPasswordResetEmail(auth, email); alert("Pautan dihantar!"); } catch(e) { alert("Ralat!"); }
-        };
-
-        function toggleAuthMode(t) {
-            authMode = t;
-            document.getElementById('register-fields').classList.toggle('hidden', t === 'login');
-            document.getElementById('auth-title').innerText = t === 'login' ? 'BRAVORIAN' : 'DAFTAR';
-            document.getElementById('auth-toggle-btn').innerText = t === 'login' ? 'Daftar Akaun Baru' : 'Sudah ada akaun? Log Masuk';
-        }
-        document.getElementById('auth-toggle-btn').onclick = () => toggleAuthMode(authMode === 'login' ? 'register' : 'login');
+        document.getElementById('nav-welcome').onclick = () => showPage('welcome');
+        document.getElementById('nav-calendar').onclick = () => showPage('jadual-induk');
+        document.getElementById('nav-settings').onclick = () => showPage('settings');
+        document.getElementById('admin-nav').onclick = () => showAdminPage();
+        document.getElementById('btn-logout').onclick = () => { if(confirm("Log keluar?")) signOut(auth); };
                                 onAuthStateChanged(auth, async (user) => {
             if (user) {
                 const snap = await get(ref(db, 'users/' + user.uid));
@@ -269,18 +268,13 @@
                         });
                     }
                     showPage('welcome');
-                } else { signOut(auth); alert("Belum diluluskan."); }
+                } else { signOut(auth); alert("Menunggu kelulusan."); }
             } else {
                 document.getElementById('auth-section').classList.remove('hidden');
                 document.getElementById('main-dashboard').classList.add('hidden');
             }
             document.getElementById('loading-overlay').classList.add('hidden');
         });
-                                document.getElementById('nav-welcome').onclick = () => showPage('welcome');
-        document.getElementById('nav-calendar').onclick = () => showPage('jadual-induk');
-        document.getElementById('nav-settings').onclick = () => showPage('settings');
-        document.getElementById('admin-nav').onclick = () => showAdminPage();
-        document.getElementById('btn-logout').onclick = () => { if(confirm("Keluar?")) signOut(auth); };
 
         setInterval(() => {
             const el = document.getElementById('live-clock');
@@ -289,8 +283,7 @@
                 el.innerText = `${n.toLocaleDateString('ms-MY', { weekday: 'short' })} | ${n.toLocaleTimeString('ms-MY', { hour12: false })}`;
             }
         }, 1000);
-
-        const sel = document.getElementById('reg-platoon');
+                                const sel = document.getElementById('reg-platoon');
         for(let i=1; i<=25; i++) {
             const o = document.createElement('option'); o.value = i; o.text = "PLATUN " + i; sel.appendChild(o);
         }
