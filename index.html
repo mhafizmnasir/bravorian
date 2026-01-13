@@ -22,7 +22,6 @@
         <div class="bg-white p-8 rounded-[2.5rem] shadow-2xl w-full max-w-md border border-slate-100 text-center">
             <h1 id="auth-title" class="text-3xl font-black text-blue-900 uppercase italic mb-2 tracking-tighter">BRAVORIAN</h1>
             <p class="text-[9px] font-bold text-slate-400 uppercase mb-8 tracking-[0.3em]">Bangunan Sultan Iskandar</p>
-            
             <div id="register-fields" class="hidden space-y-3 mb-4 text-left">
                 <div class="flex gap-2">
                     <input type="text" id="reg-firstname" placeholder="NAMA DEPAN" class="w-1/2 p-4 bg-slate-50 border-none rounded-2xl text-[10px] font-bold uppercase outline-none focus:ring-2 focus:ring-blue-600">
@@ -30,18 +29,16 @@
                 </div>
                 <select id="reg-platoon" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-[10px] font-bold outline-none focus:ring-2 focus:ring-blue-600 uppercase"></select>
             </div>
-
             <div class="space-y-3">
                 <input type="email" id="email" placeholder="EMEL" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-[10px] font-bold outline-none focus:ring-2 focus:ring-blue-600">
                 <input type="password" id="password" placeholder="KATA LALUAN" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-[10px] font-bold outline-none focus:ring-2 focus:ring-blue-600">
             </div>
-
             <button id="btn-action" class="w-full bg-blue-900 text-white font-black py-4 rounded-2xl mt-6 uppercase text-[10px] tracking-widest shadow-lg">Log Masuk</button>
             <button id="auth-toggle-btn" class="w-full text-[9px] text-blue-600 font-black uppercase tracking-widest mt-6">Daftar Akaun Baru</button>
             <button id="btn-forgot-pw" class="w-full text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-4">Lupa Kata Laluan?</button>
         </div>
     </div>
-        <div id="main-dashboard" class="hidden">
+         <div id="main-dashboard" class="hidden">
         <nav class="bg-white/80 backdrop-blur-md border-b border-slate-100 p-4 sticky top-0 z-50 flex justify-between items-center px-6">
             <div class="flex items-center gap-4">
                 <button id="menu-open" class="p-2 text-slate-600 bg-slate-50 rounded-xl">
@@ -54,7 +51,6 @@
             </div>
             <button id="btn-logout" class="bg-red-50 text-red-600 px-4 py-2 rounded-xl text-[9px] font-black uppercase">Logout</button>
         </nav>
-
         <div id="mobile-sidebar" class="fixed inset-0 bg-slate-900/60 z-[60] hidden backdrop-blur-sm">
             <div id="sidebar-container" class="mobile-menu closed bg-white w-80 h-full p-8 flex flex-col shadow-2xl overflow-y-auto">
                 <div class="mb-10 flex justify-between items-center">
@@ -73,8 +69,8 @@
             </div>
         </div>
         <main class="max-w-4xl mx-auto p-4 md:p-8"><div id="dynamic-content" class="space-y-6"></div></main>
-        </div>
-            <script type="module">
+         </div>
+             <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getDatabase, ref, get, set, update, onValue, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
@@ -96,6 +92,7 @@
 
         let userData = null;
         let authMode = 'login';
+        let countdownTimer = null;
 
         function getDuty(date, platoon) {
             let baseDate = new Date(2026, 0, 3); 
@@ -108,73 +105,70 @@
             let row = ((START_ROW[platoon] + Math.floor(diffDays/4) - 1) % 24) + 1;
             return { off: false, shift: ["PETANG", "PAGI", "MALAM"][cyclePos], loc: JADUAL_2[row][cyclePos], row: row };
         }
-                       onAuthStateChanged(auth, async (user) => {
-            const loading = document.getElementById('loading-overlay');
-            if (user) {
-                const snap = await get(ref(db, 'users/' + user.uid));
-                if (snap.exists() && snap.val().status === "approved") {
-                    userData = snap.val();
-                    document.getElementById('auth-section').classList.add('hidden');
-                    document.getElementById('main-dashboard').classList.remove('hidden');
-                    if(userData.role === 'admin') {
-                        document.getElementById('admin-nav').classList.remove('hidden');
-                        monitorPendingUsers();
-                    }
-                    showPage('welcome');
-                } else {
-                    alert("Akaun belum diluluskan Admin.");
-                    signOut(auth);
-                }
-            } else {
-                document.getElementById('auth-section').classList.remove('hidden');
-                document.getElementById('main-dashboard').classList.add('hidden');
-            }
-            loading.classList.add('hidden');
-        });
+                         function updateCountdown(shiftType, isOff) {
+            const el = document.getElementById('work-countdown');
+            if(!el || isOff) return;
 
-        function monitorPendingUsers() {
-            onValue(ref(db, 'users'), (snap) => {
-                let count = 0;
-                snap.forEach(c => { if(c.val().status === 'pending') count++; });
-                const b = document.getElementById('pending-count');
-                if(count > 0) { b.innerText = count; b.classList.remove('hidden'); }
-                else { b.classList.add('hidden'); }
-            });
-        }
-                        async function showPage(p, targetMonth = new Date().getMonth()) {
+            const now = new Date();
+            let start = new Date(), end = new Date();
+            
+            if(shiftType === 'PAGI') { start.setHours(8,0,0); end.setHours(15,0,0); }
+            else if(shiftType === 'PETANG') { start.setHours(15,0,0); end.setHours(23,0,0); }
+            else if(shiftType === 'MALAM') { 
+                start.setHours(23,0,0); 
+                end.setDate(end.getDate()+1); end.setHours(8,0,0); 
+            }
+
+            let target, label;
+            if(now < start) { target = start; label = "MULA TUGAS DALAM"; }
+            else if(now >= start && now < end) { target = end; label = "TAMAT TUGAS DALAM"; }
+            else { el.innerHTML = "SYIF TAMAT"; return; }
+
+            const diff = target - now;
+            const h = Math.floor(diff / 3600000);
+            const m = Math.floor((diff % 3600000) / 60000);
+            const s = Math.floor((diff % 60000) / 1000);
+            
+            el.innerHTML = `<p class="text-[7px] font-black text-blue-400 mb-1">${label}</p>
+                            <p class="text-2xl font-black text-blue-900 tracking-tighter tabular-nums">
+                                ${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}
+                            </p>`;
+                         }
+                         async function showPage(p, targetMonth = new Date().getMonth()) {
             const cont = document.getElementById('dynamic-content');
+            clearInterval(countdownTimer);
             
             if (p === 'welcome') {
                 const dty = getDuty(new Date(), userData.platoon);
                 cont.innerHTML = `
-                    <div class="flex flex-col items-center justify-center min-h-[70vh] text-center px-6">
-                        <div class="w-24 h-24 bg-blue-900 rounded-[2.5rem] flex items-center justify-center mb-8 shadow-2xl shadow-blue-200">
-                            <svg class="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.18l7 3.12v4.7c0 4.67-3.13 8.75-7 9.81-3.87-1.06-7-5.14-7-9.81V6.3l7-3.12z"/>
-                            </svg>
+                    <div class="flex flex-col items-center justify-center min-h-[75vh] text-center px-6">
+                        <div class="w-20 h-20 bg-blue-900 rounded-[2rem] flex items-center justify-center mb-6 shadow-xl shadow-blue-100">
+                            <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
                         </div>
-                        <h1 class="text-3xl font-black text-blue-900 uppercase italic tracking-tighter mb-2">Selamat Datang</h1>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em] mb-10">${userData.fullName}</p>
+                        <h1 class="text-3xl font-black text-blue-900 uppercase italic tracking-tighter mb-1">Selamat Datang</h1>
+                        <p class="text-[11px] font-black text-slate-900 uppercase tracking-tight">${userData.fullName}</p>
+                        <p class="text-[9px] font-bold text-blue-600 uppercase tracking-[0.2em] mb-10 italic">Platun ${userData.platoon}</p>
                         
-                        <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm w-full max-w-sm mb-10">
-                            <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-4">Status Tugasan Hari Ini</p>
-                            ${dty.off ? 
-                                `<p class="text-xl font-black text-slate-300 uppercase italic">HARI INI OFF</p>` : 
-                                `<div class="flex justify-around items-center">
-                                    <div class="text-center">
-                                        <p class="text-[7px] font-bold text-blue-400 uppercase">Syif</p>
-                                        <p class="text-sm font-black text-blue-900 uppercase">${dty.shift}</p>
-                                    </div>
-                                    <div class="h-8 w-[1px] bg-slate-100"></div>
-                                    <div class="text-center">
-                                        <p class="text-[7px] font-bold text-blue-400 uppercase">Lokasi</p>
-                                        <p class="text-sm font-black text-blue-900 uppercase">${dty.loc}</p>
-                                    </div>
-                                </div>`
-                            }
+                        <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm w-full max-w-sm">
+                            <div class="grid grid-cols-2 gap-4 mb-8">
+                                <div class="text-center">
+                                    <p class="text-[7px] font-black text-slate-400 uppercase mb-1">Syif Semasa</p>
+                                    <p class="text-sm font-black text-blue-900 uppercase">${dty.off ? 'OFF' : dty.shift}</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-[7px] font-black text-slate-400 uppercase mb-1">Lokasi</p>
+                                    <p class="text-sm font-black text-blue-900 uppercase">${dty.off ? '-' : dty.loc}</p>
+                                </div>
+                            </div>
+                            <div id="work-countdown" class="pt-6 border-t border-slate-50 min-h-[60px]">
+                                ${dty.off ? '<p class="text-xs font-black text-slate-300 italic uppercase">Tiada Tugasan Hari Ini</p>' : ''}
+                            </div>
                         </div>
-                        <button onclick="showPage('jadual-tugas')" class="bg-blue-900 text-white font-black px-12 py-5 rounded-2xl uppercase text-[10px] tracking-widest shadow-lg active:scale-95 transition-all">Masuk Dashboard</button>
                     </div>`;
+                if(!dty.off) {
+                    updateCountdown(dty.shift, dty.off);
+                    countdownTimer = setInterval(() => updateCountdown(dty.shift, dty.off), 1000);
+                }
             } else if (p === 'jadual-tugas') {
                 const now = new Date();
                 const dty = getDuty(now, userData.platoon);
@@ -187,22 +181,20 @@
                 }
                 cont.innerHTML = `
                     <div class="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm mb-6 flex justify-between items-center">
-                        <div><h2 class="text-sm font-black text-blue-900 uppercase tracking-tight">${userData.fullName}</h2><p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1">Pegawai Imigresen • Platun ${userData.platoon}</p></div>
+                        <div><h2 class="text-sm font-black text-blue-900 uppercase tracking-tight">${userData.fullName}</h2><p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1">Platun ${userData.platoon}</p></div>
                         <div class="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-900 font-black text-sm border border-blue-100">${userData.platoon}</div>
                     </div>
                     <div class="bg-blue-900 p-10 rounded-[3rem] text-white text-center shadow-2xl relative overflow-hidden">
-                        ${dty.off ? `<div class="py-10"><h1 class="text-5xl font-black opacity-20 italic uppercase tracking-tighter">OFF DAY</h1><p class="text-blue-300 text-[10px] font-bold uppercase mt-4 tracking-widest">Selamat Berehat, Tuan</p></div>` : `
+                        ${dty.off ? `<div class="py-10"><h1 class="text-5xl font-black opacity-20 italic uppercase tracking-tighter">OFF DAY</h1></div>` : `
                             <p class="text-[9px] font-black text-blue-300 uppercase mb-4 tracking-[0.4em]">Lokasi Tugasan</p>
                             <h1 class="text-4xl font-black mb-1 tracking-tighter uppercase italic">${dty.loc}</h1>
-                            <p class="text-[10px] font-bold text-blue-200 mb-10 uppercase tracking-widest italic"><span class="opacity-60 font-medium">SYIF</span> ${dty.shift}</p>
+                            <p class="text-[10px] font-bold text-blue-200 mb-10 uppercase tracking-widest italic">${dty.shift}</p>
                             <div class="bg-white/10 p-8 rounded-[2.5rem] border border-white/20 backdrop-blur-xl inline-block min-w-[200px]">
-                                <p class="text-[8px] font-black text-blue-200 uppercase mb-2 tracking-widest">No. Kaunter Aktif</p>
                                 <h2 class="text-6xl font-black tracking-tighter italic text-yellow-400">${ktr}</h2>
                             </div>`}
                     </div>`;
             } else if (p === 'jadual-induk') {
                 const months = ["JANUARI", "FEBRUARI", "MAC", "APRIL", "MEI", "JUN", "JULAI", "OGOS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DISEMBER"];
-                const skrg = new Date();
                 let html = `<div class="bg-white p-4 rounded-3xl mb-4 shadow-sm border border-slate-100">
                     <select id="month-select" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-[10px] font-black uppercase outline-none focus:ring-2 focus:ring-blue-600">
                         ${months.map((m, i) => `<option value="${i}" ${i == targetMonth ? 'selected' : ''}>${m} 2026</option>`).join('')}
@@ -211,45 +203,53 @@
                 for(let i=1; i<=daysInMonth; i++){
                     let d = new Date(2026, targetMonth, i);
                     let r = getDuty(d, userData.platoon);
-                    const adakahHariIni = (i === skrg.getDate() && targetMonth == skrg.getMonth());
-                    html += `<div class="relative p-3 rounded-2xl border transition-all flex flex-col justify-center min-h-[100px] text-center ${r.off ? 'bg-slate-50 opacity-60' : 'bg-white shadow-sm'} ${adakahHariIni ? 'ring-2 ring-blue-600 border-transparent shadow-blue-100 shadow-xl scale-[1.02] z-10' : 'border-slate-100'}">
-                        ${adakahHariIni ? `<span class="absolute -top-2 left-1/2 -translate-x-1/2 bg-blue-600 text-white text-[6px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter">HARI INI</span>` : ''}
-                        <p class="text-[7px] font-bold ${adakahHariIni ? 'text-blue-600' : 'text-slate-400'} mb-1 uppercase">${d.toLocaleDateString('ms-MY',{weekday:'short', day:'2-digit'})}</p>
-                        <p class="text-[10px] ${adakahHariIni ? 'font-black text-blue-900 scale-110' : 'font-extrabold text-slate-700'} uppercase leading-tight">${r.off ? 'OFF' : r.shift}</p>
-                        <p class="text-[7px] font-bold ${r.off ? 'hidden' : (adakahHariIni ? 'text-blue-700' : 'text-blue-400')} uppercase mt-1 tracking-tighter">${r.off ? '' : r.loc}</p>
+                    html += `<div class="p-3 rounded-2xl border bg-white ${r.off ? 'opacity-40' : 'shadow-sm'} border-slate-100 flex flex-col justify-center min-h-[100px] text-center">
+                        <p class="text-[7px] font-bold text-slate-400 mb-1 uppercase">${d.toLocaleDateString('ms-MY',{weekday:'short', day:'2-digit'})}</p>
+                        <p class="text-[10px] font-extrabold text-slate-700 uppercase leading-tight">${r.off ? 'OFF' : r.shift}</p>
+                        <p class="text-[7px] font-bold text-blue-400 uppercase mt-1 tracking-tighter">${r.off ? '' : r.loc}</p>
                     </div>`;
                 }
                 cont.innerHTML = html + '</div>';
                 document.getElementById('month-select').onchange = (e) => showPage('jadual-induk', e.target.value);
             }
             closeMenu();
-                        }
-                      async function showAdminPage() {
+                         }
+                         onAuthStateChanged(auth, async (user) => {
+            const loading = document.getElementById('loading-overlay');
+            if (user) {
+                const snap = await get(ref(db, 'users/' + user.uid));
+                if (snap.exists() && snap.val().status === "approved") {
+                    userData = snap.val();
+                    document.getElementById('auth-section').classList.add('hidden');
+                    document.getElementById('main-dashboard').classList.remove('hidden');
+                    if(userData.role === 'admin') document.getElementById('admin-nav').classList.remove('hidden');
+                    showPage('welcome');
+                } else { alert("Akaun belum diluluskan Admin."); signOut(auth); }
+            } else {
+                document.getElementById('auth-section').classList.remove('hidden');
+                document.getElementById('main-dashboard').classList.add('hidden');
+            }
+            loading.classList.add('hidden');
+        });
+
+        async function showAdminPage() {
             const cont = document.getElementById('dynamic-content');
+            const usersSnap = await get(ref(db, 'users'));
             const exSnap = await get(ref(db, 'excel_data'));
             const hasData = exSnap.exists();
             cont.innerHTML = `<div class="space-y-6">
-                <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
-                    <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6">Data Kaunter</h3>
-                    <div class="mb-6 p-6 rounded-3xl ${hasData ? 'bg-green-50' : 'bg-slate-50'} flex justify-between items-center">
-                        <p class="text-xs font-black ${hasData ? 'text-green-700' : 'text-slate-500'}">${hasData ? '✓ DATA AKTIF' : 'TIADA DATA'}</p>
-                        ${hasData ? `<button id="btn-delete-excel" class="bg-red-100 text-red-600 p-3 rounded-2xl">Hapus</button>` : ''}
+                <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm text-center">
+                    <p class="text-[10px] font-black text-slate-400 mb-4 uppercase tracking-widest">Excel Kaunter</p>
+                    <div class="mb-6 p-4 rounded-2xl ${hasData ? 'bg-green-50 text-green-700' : 'bg-slate-50 text-slate-400'} text-[10px] font-black">
+                        ${hasData ? 'DATA AKTIF' : 'TIADA DATA'}
                     </div>
-                    <input type="file" id="excel-input" accept=".xlsx, .xls" class="hidden">
-                    <label for="excel-input" class="flex flex-col items-center justify-center w-full p-10 border-2 border-dashed border-blue-100 rounded-[2.5rem] cursor-pointer">
-                        <p class="text-[10px] font-black uppercase text-blue-900">Muat Naik Excel Baru</p>
-                    </label>
+                    <input type="file" id="excel-input" class="hidden">
+                    <label for="excel-input" class="bg-blue-900 text-white px-8 py-4 rounded-2xl text-[10px] font-black uppercase inline-block cursor-pointer">Muat Naik Baru</label>
                 </div>
-                <div id="adm-list" class="space-y-3"><h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-4">Kelulusan Pengguna</h3></div>
+                <div id="adm-list" class="space-y-3"></div>
             </div>`;
-            if (hasData) {
-                document.getElementById('btn-delete-excel').onclick = async () => {
-                    if (confirm("Hapus data kaunter?")) { await remove(ref(db, 'excel_data')); showAdminPage(); }
-                };
-            }
             document.getElementById('excel-input').onchange = (e) => {
                 const file = e.target.files[0];
-                if (!file || !confirm(`Sahkan muat naik: ${file.name}?`)) return;
                 const reader = new FileReader();
                 reader.onload = async (evt) => {
                     const workbook = XLSX.read(evt.target.result, { type: 'binary' });
@@ -259,7 +259,6 @@
                 };
                 reader.readAsBinaryString(file);
             };
-            const usersSnap = await get(ref(db, 'users'));
             const list = document.getElementById('adm-list');
             usersSnap.forEach(c => {
                 if(c.val().status === 'pending') {
@@ -273,8 +272,8 @@
                     div.appendChild(btn); list.appendChild(div);
                 }
             });
-                      }
-                       const sidebar = document.getElementById('mobile-sidebar');
+        }
+                        const sidebar = document.getElementById('mobile-sidebar');
         const container = document.getElementById('sidebar-container');
         function openMenu() { sidebar.classList.remove('hidden'); setTimeout(() => container.classList.remove('closed'), 10); }
         function closeMenu() { container.classList.add('closed'); setTimeout(() => sidebar.classList.add('hidden'), 300); }
@@ -283,11 +282,10 @@
         document.getElementById('menu-close').onclick = closeMenu;
         sidebar.onclick = (e) => { if (e.target === sidebar) closeMenu(); };
 
-        // NAV BARU
-        document.getElementById('nav-welcome').onclick = () => { showPage('welcome'); closeMenu(); };
-        document.getElementById('nav-today').onclick = () => { showPage('jadual-tugas'); closeMenu(); };
-        document.getElementById('nav-calendar').onclick = () => { showPage('jadual-induk'); closeMenu(); };
-        document.getElementById('admin-nav').onclick = () => { showAdminPage(); closeMenu(); };
+        document.getElementById('nav-welcome').onclick = () => showPage('welcome');
+        document.getElementById('nav-today').onclick = () => showPage('jadual-tugas');
+        document.getElementById('nav-calendar').onclick = () => showPage('jadual-induk');
+        document.getElementById('admin-nav').onclick = () => showAdminPage();
         document.getElementById('btn-logout').onclick = () => { if(confirm("Log keluar?")) signOut(auth); };
 
         setInterval(() => {
@@ -300,7 +298,7 @@
                 clockEl.innerHTML = `<span class="text-[8px] font-black text-blue-600 tracking-tighter">${hari} • ${tarikh} • ${masa}</span>`;
             }
         }, 1000);
-                       document.getElementById('btn-action').onclick = async () => {
+                        document.getElementById('btn-action').onclick = async () => {
             const email = document.getElementById('email').value.trim();
             const pass = document.getElementById('password').value;
             if (authMode === 'login') {
