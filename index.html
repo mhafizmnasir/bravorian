@@ -94,11 +94,14 @@
         import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, sendPasswordResetEmail, updatePassword, verifyBeforeUpdateEmail, reauthenticateWithCredential, EmailAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getDatabase, ref, get, set, update, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        const firebaseConfig = { 
+                const firebaseConfig = { 
             apiKey: "AIzaSyCQ9SBXkEILe6PZdmLyGBSFK63XhPM_V7o", 
             authDomain: "bravorians-bsi.firebaseapp.com", 
+            // Pastikan URL database tepat seperti di bawah
             databaseURL: "https://bravorians-bsi-default-rtdb.asia-southeast1.firebasedatabase.app", 
             projectId: "bravorians-bsi", 
+            storageBucket: "bravorians-bsi.appspot.com",
+            messagingSenderId: "314220494464",
             appId: "1:314220494464:web:d3b21e9b742e1db86f7065" 
         };
 
