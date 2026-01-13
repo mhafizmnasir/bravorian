@@ -91,7 +91,7 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getDatabase(app);
-                       const JADUAL_2 = { 1: ["ENTRY MC", "ENTRY KA", "ENTRY BAS"], 2: ["EXIT KB", "EXIT SBY#2", "EXIT MA"], 3: ["ENTRY KC", "ENTRY BDL/Autogate", "ENTRY SBY#1"], 4: ["EXIT LORI", "EXIT BAS", "EXIT KD"], 5: ["ENTRY MC", "ENTRY SBY#3", "ENTRY KB"], 6: ["EXIT MA", "EXIT SBY#1", "EXIT KC"], 7: ["ENTRY SBY#2", "ENTRY BAS", "ENTRY KD"], 8: ["EXIT BAS", "EXIT KA", "EXIT SBY#3"], 9: ["ENTRY KA", "ENTRY BAS", "ENTRY MC"], 10: ["EXIT SBY#2", "EXIT MA", "EXIT KB"], 11: ["ENTRY SBY#1", "ENTRY KC", "ENTRY BDL/Autogate"], 12: ["EXIT KD", "EXIT LORI", "EXIT BAS"], 13: ["ENTRY SBY#3", "ENTRY KB", "ENTRY MC"], 14: ["EXIT KC", "EXIT MA", "EXIT SBY#1"], 15: ["ENTRY KD", "ENTRY SBY#2", "ENTRY BAS"], 16: ["EXIT SBY#3", "EXIT BAS", "EXIT KA"], 17: ["ENTRY BAS", "ENTRY MC", "ENTRY KA"], 18: ["EXIT MA", "EXIT KB", "EXIT SBY#2"], 19: ["ENTRY BDL/Autogate", "ENTRY SBY#1", "ENTRY KC"], 20: ["EXIT BAS", "EXIT KD", "EXIT LORI"], 21: ["ENTRY KB", "ENTRY MC", "ENTRY SBY#3"], 22: ["EXIT SBY#1", "EXIT KC", "EXIT MA"], 23: ["ENTRY BAS", "ENTRY KD", "ENTRY SBY#2"], 24: ["EXIT KA", "EXIT SBY#3", "EXIT BAS"] };
+                        const JADUAL_2 = { 1: ["ENTRY MC", "ENTRY KA", "ENTRY BAS"], 2: ["EXIT KB", "EXIT SBY#2", "EXIT MA"], 3: ["ENTRY KC", "ENTRY BDL/Autogate", "ENTRY SBY#1"], 4: ["EXIT LORI", "EXIT BAS", "EXIT KD"], 5: ["ENTRY MC", "ENTRY SBY#3", "ENTRY KB"], 6: ["EXIT MA", "EXIT SBY#1", "EXIT KC"], 7: ["ENTRY SBY#2", "ENTRY BAS", "ENTRY KD"], 8: ["EXIT BAS", "EXIT KA", "EXIT SBY#3"], 9: ["ENTRY KA", "ENTRY BAS", "ENTRY MC"], 10: ["EXIT SBY#2", "EXIT MA", "EXIT KB"], 11: ["ENTRY SBY#1", "ENTRY KC", "ENTRY BDL/Autogate"], 12: ["EXIT KD", "EXIT LORI", "EXIT BAS"], 13: ["ENTRY SBY#3", "ENTRY KB", "ENTRY MC"], 14: ["EXIT KC", "EXIT MA", "EXIT SBY#1"], 15: ["ENTRY KD", "ENTRY SBY#2", "ENTRY BAS"], 16: ["EXIT SBY#3", "EXIT BAS", "EXIT KA"], 17: ["ENTRY BAS", "ENTRY MC", "ENTRY KA"], 18: ["EXIT MA", "EXIT KB", "EXIT SBY#2"], 19: ["ENTRY BDL/Autogate", "ENTRY SBY#1", "ENTRY KC"], 20: ["EXIT BAS", "EXIT KD", "EXIT LORI"], 21: ["ENTRY KB", "ENTRY MC", "ENTRY SBY#3"], 22: ["EXIT SBY#1", "EXIT KC", "EXIT MA"], 23: ["ENTRY BAS", "ENTRY KD", "ENTRY SBY#2"], 24: ["EXIT KA", "EXIT SBY#3", "EXIT BAS"] };
         const START_ROW = { 1:1, 2:2, 3:1, 4:20, 5:13, 6:16, 7:17, 8:6, 9:3, 10:10, 11:7, 12:24, 13:15, 14:22, 15:5, 16:14, 17:19, 18:8, 19:9, 20:12, 21:21, 22:4, 23:11, 24:18, 25:23 };
 
         let userData = null;
@@ -109,7 +109,7 @@
             let row = ((START_ROW[platoon] + Math.floor(diffDays/4) - 1) % 24) + 1;
             return { off: false, shift: ["PETANG", "PAGI", "MALAM"][cyclePos], loc: JADUAL_2[row][cyclePos], row: row };
         }
-                               function updateCountdown() {
+                       function updateCountdown() {
             const el = document.getElementById('syif-countdown');
             const labelEl = document.getElementById('countdown-label');
             if(!el || !userData) return;
@@ -123,34 +123,29 @@
                 return; 
             }
 
-            let startTime = new Date(now);
-            let endTime = new Date(now);
+            let start = new Date(now);
+            let end = new Date(now);
 
-            // Set waktu berdasarkan Syif
             if(dty.shift === "PETANG") {
-                startTime.setHours(15, 0, 0, 0);
-                endTime.setHours(23, 0, 0, 0);
+                start.setHours(15,0,0,0); end.setHours(23,0,0,0);
             } else if(dty.shift === "PAGI") {
-                startTime.setHours(8, 0, 0, 0);
-                endTime.setHours(15, 0, 0, 0);
+                start.setHours(8,0,0,0); end.setHours(15,0,0,0);
             } else if(dty.shift === "MALAM") {
-                startTime.setHours(23, 0, 0, 0);
-                endTime.setHours(8, 0, 0, 0);
-                // Jika sekarang awal pagi (sebelum jam 8), bermakna kita dalam syif malam yang bermula semalam
-                if (now.getHours() < 8) {
-                    startTime.setDate(startTime.getDate() - 1);
-                } else {
-                    endTime.setDate(endTime.getDate() + 1);
+                start.setHours(23,0,0,0);
+                end = new Date(now); end.setDate(end.getDate() + 1); end.setHours(8,0,0,0);
+                if(now.getHours() < 8) { // Jika dalam awal pagi (00:00 - 08:00)
+                    start.setDate(start.getDate() - 1);
+                    end = new Date(now); end.setHours(8,0,0,0);
                 }
             }
 
             let diff;
-            if (now < startTime) {
+            if (now < start) {
                 labelEl.innerText = "SYIF BERMULA DALAM";
-                diff = startTime - now;
-            } else if (now >= startTime && now < endTime) {
+                diff = start - now;
+            } else if (now < end) {
                 labelEl.innerText = "SYIF TAMAT DALAM";
-                diff = endTime - now;
+                diff = end - now;
             } else {
                 labelEl.innerText = "SYIF SELESAI";
                 el.innerText = "REHAT";
@@ -161,39 +156,8 @@
             const m = Math.floor((diff%3600000)/60000);
             const s = Math.floor((diff%60000)/1000);
             el.innerText = `${h}j ${m}m ${s}s`;
-        }
-
-        onAuthStateChanged(auth, async (user) => {
-            const loading = document.getElementById('loading-overlay');
-            if (user) {
-                const snap = await get(ref(db, 'users/' + user.uid));
-                if (snap.exists() && snap.val().status === "approved") {
-                    userData = snap.val();
-                    document.getElementById('auth-section').classList.add('hidden');
-                    document.getElementById('main-dashboard').classList.remove('hidden');
-                    if(userData.role === 'admin') {
-                        document.getElementById('admin-nav').classList.remove('hidden');
-                        monitorPendingUsers();
-                    }
-                    showPage('welcome');
-                } else { alert("Akaun belum diluluskan."); signOut(auth); }
-            } else {
-                document.getElementById('auth-section').classList.remove('hidden');
-                document.getElementById('main-dashboard').classList.add('hidden');
-            }
-            loading.classList.add('hidden');
-        });
-
-        function monitorPendingUsers() {
-            onValue(ref(db, 'users'), (snap) => {
-                let count = 0;
-                snap.forEach(c => { if(c.val().status === 'pending') count++; });
-                const b = document.getElementById('pending-count');
-                if(count > 0) { b.innerText = count; b.classList.remove('hidden'); }
-                else { b.classList.add('hidden'); }
-            });
-        }
-                                async function showPage(p, targetMonth = new Date().getMonth()) {
+                       }
+                        async function showPage(p, targetMonth = new Date().getMonth()) {
             const cont = document.getElementById('dynamic-content');
             if(countdownInterval) clearInterval(countdownInterval);
             
@@ -220,7 +184,6 @@
                                     <div><p class="text-[7px] font-bold text-blue-400 uppercase">Lokasi</p><p class="text-xs font-black text-blue-900">${dty.loc}</p></div>
                                 </div>`}
                             </div>
-
                             <div class="bg-blue-50 p-6 rounded-[2.5rem] border border-blue-100 shadow-sm">
                                 <p id="countdown-label" class="text-[8px] font-black text-blue-600 uppercase tracking-widest mb-2">SYIF BERMULA DALAM</p>
                                 <h2 id="syif-countdown" class="text-2xl font-black text-blue-900 tracking-tighter uppercase italic">--:--:--</h2>
@@ -229,9 +192,6 @@
                     </div>`;
                 updateCountdown();
                 countdownInterval = setInterval(updateCountdown, 1000);
-            } 
-            // ... (bahagian lain kekal sama seperti sebelumnya)
-                                    
             } else if (p === 'jadual-tugas') {
                 const now = new Date();
                 const dty = getDuty(now, userData.platoon);
@@ -285,49 +245,33 @@
             const cont = document.getElementById('dynamic-content');
             const exSnap = await get(ref(db, 'excel_data'));
             const hasData = exSnap.exists();
-            cont.innerHTML = `<div class="space-y-6">
-                <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
-                    <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6">Data Kaunter</h3>
-                    <div class="mb-6 p-6 rounded-3xl ${hasData ? 'bg-green-50' : 'bg-slate-50'} flex justify-between items-center">
-                        <p class="text-xs font-black ${hasData ? 'text-green-700' : 'text-slate-500'}">${hasData ? '✓ DATA AKTIF' : 'TIADA DATA'}</p>
-                        ${hasData ? `<button id="btn-delete-excel" class="bg-red-100 text-red-600 p-3 rounded-2xl">Hapus</button>` : ''}
-                    </div>
-                    <input type="file" id="excel-input" accept=".xlsx, .xls" class="hidden">
-                    <label for="excel-input" class="flex flex-col items-center justify-center w-full p-10 border-2 border-dashed border-blue-100 rounded-[2.5rem] cursor-pointer">
-                        <p class="text-[10px] font-black uppercase text-blue-900">Muat Naik Excel Baru</p>
-                    </label>
+            cont.innerHTML = `<div class="space-y-6"><div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
+                <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6">Data Kaunter</h3>
+                <div class="mb-6 p-6 rounded-3xl ${hasData ? 'bg-green-50' : 'bg-slate-50'} flex justify-between items-center">
+                    <p class="text-xs font-black ${hasData ? 'text-green-700' : 'text-slate-500'}">${hasData ? '✓ DATA AKTIF' : 'TIADA DATA'}</p>
+                    ${hasData ? `<button id="btn-delete-excel" class="bg-red-100 text-red-600 p-3 rounded-2xl">Hapus</button>` : ''}
                 </div>
-                <div id="adm-list" class="space-y-3"><h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-4">Kelulusan Pengguna</h3></div>
-            </div>`;
-            if (hasData) {
-                document.getElementById('btn-delete-excel').onclick = async () => {
-                    if (confirm("Hapus data kaunter?")) { await remove(ref(db, 'excel_data')); showAdminPage(); }
-                };
-            }
+                <input type="file" id="excel-input" accept=".xlsx, .xls" class="hidden">
+                <label for="excel-input" class="flex flex-col items-center justify-center w-full p-10 border-2 border-dashed border-blue-100 rounded-[2.5rem] cursor-pointer">
+                    <p class="text-[10px] font-black uppercase text-blue-900">Muat Naik Excel Baru</p>
+                </label></div><div id="adm-list" class="space-y-3"></div></div>`;
+            if (hasData) { document.getElementById('btn-delete-excel').onclick = async () => { if (confirm("Hapus?")) { await remove(ref(db, 'excel_data')); showAdminPage(); } }; }
             document.getElementById('excel-input').onchange = (e) => {
-                const file = e.target.files[0];
-                if (!file || !confirm(`Sahkan muat naik: ${file.name}?`)) return;
-                const reader = new FileReader();
-                reader.onload = async (evt) => {
-                    const workbook = XLSX.read(evt.target.result, { type: 'binary' });
-                    const data = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
-                    await set(ref(db, 'excel_data'), data);
-                    alert("Berjaya!"); showAdminPage();
-                };
-                reader.readAsBinaryString(file);
+                const f = e.target.files[0]; if (!f) return;
+                const r = new FileReader(); r.onload = async (evt) => {
+                    const d = XLSX.utils.sheet_to_json(XLSX.read(evt.target.result, { type: 'binary' }).Sheets[XLSX.read(evt.target.result, { type: 'binary' }).SheetNames[0]]);
+                    await set(ref(db, 'excel_data'), d); alert("Berjaya!"); showAdminPage();
+                }; r.readAsBinaryString(f);
             };
-            const usersSnap = await get(ref(db, 'users'));
-            const list = document.getElementById('adm-list');
-            usersSnap.forEach(c => {
+            const uSnap = await get(ref(db, 'users'));
+            const l = document.getElementById('adm-list');
+            uSnap.forEach(c => {
                 if(c.val().status === 'pending') {
-                    const div = document.createElement('div');
-                    div.className = "p-5 bg-white rounded-[2rem] flex justify-between items-center border border-slate-100";
-                    div.innerHTML = `<div><p class="text-xs font-black uppercase">${c.val().fullName}</p><p class="text-[9px] font-bold text-blue-500 uppercase">Platun ${c.val().platoon}</p></div>`;
-                    const btn = document.createElement('button');
-                    btn.className = "bg-blue-900 text-white px-6 py-3 rounded-2xl text-[9px] font-black uppercase";
-                    btn.innerText = "Luluskan";
-                    btn.onclick = () => update(ref(db, 'users/' + c.key), { status: 'approved' }).then(() => showAdminPage());
-                    div.appendChild(btn); list.appendChild(div);
+                    const d = document.createElement('div'); d.className = "p-5 bg-white rounded-[2rem] flex justify-between items-center border border-slate-100";
+                    d.innerHTML = `<div><p class="text-xs font-black uppercase">${c.val().fullName}</p><p class="text-[9px] font-bold text-blue-500 uppercase">Platun ${c.val().platoon}</p></div>`;
+                    const b = document.createElement('button'); b.className = "bg-blue-900 text-white px-6 py-3 rounded-2xl text-[9px] font-black uppercase"; b.innerText = "Luluskan";
+                    b.onclick = () => update(ref(db, 'users/' + c.key), { status: 'approved' }).then(() => showAdminPage());
+                    d.appendChild(b); l.appendChild(d);
                 }
             });
                         }
@@ -340,10 +284,10 @@
         document.getElementById('menu-close').onclick = closeMenu;
         sidebar.onclick = (e) => { if (e.target === sidebar) closeMenu(); };
 
-        document.getElementById('nav-welcome').onclick = () => { showPage('welcome'); closeMenu(); };
-        document.getElementById('nav-today').onclick = () => { showPage('jadual-tugas'); closeMenu(); };
-        document.getElementById('nav-calendar').onclick = () => { showPage('jadual-induk'); closeMenu(); };
-        document.getElementById('admin-nav').onclick = () => { showAdminPage(); closeMenu(); };
+        document.getElementById('nav-welcome').onclick = () => showPage('welcome');
+        document.getElementById('nav-today').onclick = () => showPage('jadual-tugas');
+        document.getElementById('nav-calendar').onclick = () => showPage('jadual-induk');
+        document.getElementById('admin-nav').onclick = () => showAdminPage();
         document.getElementById('btn-logout').onclick = () => { if(confirm("Log keluar?")) signOut(auth); };
 
         setInterval(() => {
@@ -356,7 +300,25 @@
                 clockEl.innerHTML = `<span class="text-[8px] font-black text-blue-600 tracking-tighter">${hari} • ${tarikh} • ${masa}</span>`;
             }
         }, 1000);
-                        document.getElementById('btn-action').onclick = async () => {
+                        onAuthStateChanged(auth, async (user) => {
+            const loading = document.getElementById('loading-overlay');
+            if (user) {
+                const snap = await get(ref(db, 'users/' + user.uid));
+                if (snap.exists() && snap.val().status === "approved") {
+                    userData = snap.val();
+                    document.getElementById('auth-section').classList.add('hidden');
+                    document.getElementById('main-dashboard').classList.remove('hidden');
+                    if(userData.role === 'admin') document.getElementById('admin-nav').classList.remove('hidden');
+                    showPage('welcome');
+                } else { alert("Akaun belum diluluskan."); signOut(auth); }
+            } else {
+                document.getElementById('auth-section').classList.remove('hidden');
+                document.getElementById('main-dashboard').classList.add('hidden');
+            }
+            loading.classList.add('hidden');
+        });
+
+        document.getElementById('btn-action').onclick = async () => {
             const email = document.getElementById('email').value.trim();
             const pass = document.getElementById('password').value;
             if (authMode === 'login') {
@@ -369,28 +331,19 @@
                 try {
                     const res = await createUserWithEmailAndPassword(auth, email, pass);
                     await set(ref(db, 'users/' + res.user.uid), { firstName: fn, lastName: ln, fullName: fn + " " + ln, platoon: parseInt(plt), role: "user", status: "pending" });
-                    alert("Berjaya! Tunggu kelulusan Admin."); signOut(auth); toggleAuthMode('login');
+                    alert("Berjaya! Tunggu kelulusan."); signOut(auth); toggleAuthMode('login');
                 } catch(e) { alert(e.message); }
-            } else if (authMode === 'reset') {
-                try { await sendPasswordResetEmail(auth, email); alert("Semak emel!"); toggleAuthMode('login'); } catch(e) { alert(e.message); }
             }
         };
 
-        function toggleAuthMode(target) {
-            authMode = target;
-            document.getElementById('register-fields').classList.toggle('hidden', target !== 'register');
-            document.getElementById('password').classList.toggle('hidden', target === 'reset');
-            document.getElementById('auth-title').innerText = target === 'login' ? 'BRAVORIAN' : (target === 'register' ? 'DAFTAR' : 'SET SEMULA');
-            document.getElementById('btn-action').innerText = target === 'login' ? 'Log Masuk' : (target === 'register' ? 'Daftar' : 'Hantar Pautan');
+        function toggleAuthMode(t) {
+            authMode = t; document.getElementById('register-fields').classList.toggle('hidden', t !== 'register');
+            document.getElementById('auth-title').innerText = t === 'login' ? 'BRAVORIAN' : 'DAFTAR';
         }
-
         document.getElementById('auth-toggle-btn').onclick = () => toggleAuthMode(authMode === 'login' ? 'register' : 'login');
-        document.getElementById('btn-forgot-pw').onclick = () => toggleAuthMode('reset');
 
-        const sel = document.getElementById('reg-platoon');
-        for(let i=1; i<=25; i++) {
-            const o = document.createElement('option'); o.value = i; o.text = "PLATUN " + i; sel.appendChild(o);
-        }
+        const s = document.getElementById('reg-platoon');
+        for(let i=1; i<=25; i++) { const o = document.createElement('option'); o.value = i; o.text = "PLATUN " + i; s.appendChild(o); }
     </script>
 </body>
 </html>
