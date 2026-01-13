@@ -109,30 +109,52 @@
             let row = ((START_ROW[platoon] + Math.floor(diffDays/4) - 1) % 24) + 1;
             return { off: false, shift: ["PETANG", "PAGI", "MALAM"][cyclePos], loc: JADUAL_2[row][cyclePos], row: row };
         }
-                       function updateCountdown() {
+                               function updateCountdown() {
             const el = document.getElementById('syif-countdown');
+            const labelEl = document.getElementById('countdown-label');
             if(!el || !userData) return;
+
             const now = new Date();
             const dty = getDuty(now, userData.platoon);
-            let target = new Date(now);
             
-            if(dty.off) { el.innerText = "HARI INI OFF"; return; }
+            if(dty.off) { 
+                el.innerText = "HARI INI OFF"; 
+                labelEl.innerText = "STATUS";
+                return; 
+            }
 
-            if(dty.shift === "PETANG") target.setHours(15,0,0,0);
-            else if(dty.shift === "PAGI") target.setHours(8,0,0,0);
-            else if(dty.shift === "MALAM") target.setHours(23,0,0,0);
+            let startTime = new Date(now);
+            let endTime = new Date(now);
 
-            let diff = target - now;
-            if (diff < 0) {
-                // Jika sudah melepasi waktu mula, kira ke waktu tamat
-                if(dty.shift === "PETANG") target.setHours(23,0,0,0);
-                else if(dty.shift === "PAGI") target.setHours(15,0,0,0);
-                else if(dty.shift === "MALAM") target.setHours(target.getHours() + 9);
-                diff = target - now;
-                if(diff < 0) { el.innerText = "SYIF SELESAI"; return; }
-                el.parentElement.querySelector('p').innerText = "SYIF TAMAT DALAM";
+            // Set waktu berdasarkan Syif
+            if(dty.shift === "PETANG") {
+                startTime.setHours(15, 0, 0, 0);
+                endTime.setHours(23, 0, 0, 0);
+            } else if(dty.shift === "PAGI") {
+                startTime.setHours(8, 0, 0, 0);
+                endTime.setHours(15, 0, 0, 0);
+            } else if(dty.shift === "MALAM") {
+                startTime.setHours(23, 0, 0, 0);
+                endTime.setHours(8, 0, 0, 0);
+                // Jika sekarang awal pagi (sebelum jam 8), bermakna kita dalam syif malam yang bermula semalam
+                if (now.getHours() < 8) {
+                    startTime.setDate(startTime.getDate() - 1);
+                } else {
+                    endTime.setDate(endTime.getDate() + 1);
+                }
+            }
+
+            let diff;
+            if (now < startTime) {
+                labelEl.innerText = "SYIF BERMULA DALAM";
+                diff = startTime - now;
+            } else if (now >= startTime && now < endTime) {
+                labelEl.innerText = "SYIF TAMAT DALAM";
+                diff = endTime - now;
             } else {
-                el.parentElement.querySelector('p').innerText = "SYIF BERMULA DALAM";
+                labelEl.innerText = "SYIF SELESAI";
+                el.innerText = "REHAT";
+                return;
             }
 
             const h = Math.floor(diff/3600000);
@@ -171,7 +193,7 @@
                 else { b.classList.add('hidden'); }
             });
         }
-                        async function showPage(p, targetMonth = new Date().getMonth()) {
+                                async function showPage(p, targetMonth = new Date().getMonth()) {
             const cont = document.getElementById('dynamic-content');
             if(countdownInterval) clearInterval(countdownInterval);
             
@@ -200,13 +222,16 @@
                             </div>
 
                             <div class="bg-blue-50 p-6 rounded-[2.5rem] border border-blue-100 shadow-sm">
-                                <p class="text-[8px] font-black text-blue-600 uppercase tracking-widest mb-2">SYIF BERMULA DALAM</p>
+                                <p id="countdown-label" class="text-[8px] font-black text-blue-600 uppercase tracking-widest mb-2">SYIF BERMULA DALAM</p>
                                 <h2 id="syif-countdown" class="text-2xl font-black text-blue-900 tracking-tighter uppercase italic">--:--:--</h2>
                             </div>
                         </div>
                     </div>`;
                 updateCountdown();
                 countdownInterval = setInterval(updateCountdown, 1000);
+            } 
+            // ... (bahagian lain kekal sama seperti sebelumnya)
+                                    
             } else if (p === 'jadual-tugas') {
                 const now = new Date();
                 const dty = getDuty(now, userData.platoon);
