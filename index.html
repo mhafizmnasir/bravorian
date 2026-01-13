@@ -114,11 +114,11 @@
             if(!el || !userData) return;
 
             const now = new Date();
-            let target = null;
-            let statusLabel = "";
+            let targetDateObj = null;
+            let currentStatus = "";
 
-            // Mencari syif terdekat dalam kitaran 8 hari untuk pastikan melangkau hari OFF
-            for (let i = 0; i < 8; i++) {
+            // Check dari hari ini sehingga 5 hari ke depan untuk cari syif seterusnya
+            for (let i = 0; i < 5; i++) {
                 let checkDate = new Date();
                 checkDate.setDate(now.getDate() + i);
                 let d = getDuty(checkDate, userData.platoon);
@@ -131,26 +131,26 @@
                     else if (d.shift === "PAGI") { sTime.setHours(8,0,0); eTime.setHours(15,0,0); }
                     else if (d.shift === "MALAM") { sTime.setHours(23,0,0); eTime.setDate(eTime.getDate() + 1); eTime.setHours(8,0,0); }
 
-                    // Jika sekarang dalam waktu syif
+                    // Logik: Jika sedang bekerja sekarang
                     if (now >= sTime && now < eTime) {
-                        target = eTime; statusLabel = "SYIF TAMAT DALAM"; break;
+                        targetDateObj = eTime; currentStatus = "SYIF TAMAT DALAM"; break;
                     } 
-                    // Jika syif belum bermula
+                    // Logik: Cari syif akan datang yang paling hampir
                     else if (now < sTime) {
-                        target = sTime; statusLabel = "SYIF BERMULA DALAM"; break;
+                        targetDateObj = sTime; currentStatus = "SYIF BERMULA DALAM"; break;
                     }
                 }
             }
 
-            if (target) {
-                labelEl.innerText = statusLabel;
-                let diff = target - now;
+            if (targetDateObj) {
+                labelEl.innerText = currentStatus;
+                let diff = targetDateObj - now;
                 const h = Math.floor(diff/3600000);
                 const m = Math.floor((diff%3600000)/60000);
                 const s = Math.floor((diff%60000)/1000);
                 el.innerText = `${h}j ${m}m ${s}s`;
             } else {
-                el.innerText = "OFF"; labelEl.innerText = "STATUS";
+                el.innerText = "HARI INI OFF"; labelEl.innerText = "STATUS";
             }
                         }
                         async function showPage(p, targetMonth = new Date().getMonth()) {
@@ -167,7 +167,6 @@
                         <h1 class="text-3xl font-black text-blue-900 uppercase italic tracking-tighter mb-1">Selamat Datang</h1>
                         <p class="text-[12px] font-black text-blue-600 uppercase mb-1">${userData.fullName}</p>
                         <p class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.3em] mb-10">PLATUN ${userData.platoon}</p>
-                        
                         <div class="grid grid-cols-1 gap-4 w-full max-w-sm">
                             <div class="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm">
                                 <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-3">Tugasan Hari Ini</p>
@@ -189,36 +188,14 @@
             } else if (p === 'jadual-tugas') {
                 const now = new Date();
                 const dty = getDuty(now, userData.platoon);
-                const exSnap = await get(ref(db, 'excel_data'));
-                let ktr = "OFF";
-                if(exSnap.exists() && !dty.off) {
-                    const listData = exSnap.val();
-                    const match = listData.find(i => String(i.Nama || i.NAMA || "").trim().toUpperCase() === userData.fullName.toUpperCase());
-                    ktr = match ? (match.No_Kaunter || match["NO KAUNTER"] || match.KAUNTER || "SET") : "TIADA DATA";
-                }
-                cont.innerHTML = `
-                    <div class="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm mb-6 flex justify-between items-center">
-                        <div><h2 class="text-sm font-black text-blue-900 uppercase tracking-tight">${userData.fullName}</h2><p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1">Pegawai Imigresen • Platun ${userData.platoon}</p></div>
-                        <div class="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-900 font-black text-sm border border-blue-100">${userData.platoon}</div>
-                    </div>
-                    <div class="bg-blue-900 p-10 rounded-[3rem] text-white text-center shadow-2xl relative overflow-hidden">
-                        ${dty.off ? `<div class="py-10"><h1 class="text-5xl font-black opacity-20 italic uppercase tracking-tighter">OFF DAY</h1><p class="text-blue-300 text-[10px] font-bold uppercase mt-4 tracking-widest">Selamat Berehat, Tuan</p></div>` : `
-                            <p class="text-[9px] font-black text-blue-300 uppercase mb-4 tracking-[0.4em]">Lokasi Tugasan</p>
-                            <h1 class="text-4xl font-black mb-1 tracking-tighter uppercase italic">${dty.loc}</h1>
-                            <p class="text-[10px] font-bold text-blue-200 mb-10 uppercase tracking-widest italic"><span class="opacity-60 font-medium">SYIF</span> ${dty.shift}</p>
-                            <div class="bg-white/10 p-8 rounded-[2.5rem] border border-white/20 backdrop-blur-xl inline-block min-w-[200px]">
-                                <p class="text-[8px] font-black text-blue-200 uppercase mb-2 tracking-widest">No. Kaunter Aktif</p>
-                                <h2 class="text-6xl font-black tracking-tighter italic text-yellow-400">${ktr}</h2>
-                            </div>`}
-                    </div>`;
+                cont.innerHTML = `<div class="bg-blue-900 p-10 rounded-[3rem] text-white text-center shadow-2xl relative overflow-hidden">${dty.off ? `<h1 class="text-5xl font-black opacity-20 italic">OFF DAY</h1>` : `<h1 class="text-4xl font-black mb-1 uppercase italic">${dty.loc}</h1><p class="text-[10px] font-bold text-blue-200 tracking-widest uppercase italic">SYIF ${dty.shift}</p>`}</div>`;
             } else if (p === 'jadual-induk') {
                 const months = ["JANUARI", "FEBRUARI", "MAC", "APRIL", "MEI", "JUN", "JULAI", "OGOS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DISEMBER"];
-                let html = `<div class="bg-white p-4 rounded-3xl mb-4 shadow-sm border border-slate-100"><select id="month-select" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-[10px] font-black uppercase outline-none focus:ring-2 focus:ring-blue-600">${months.map((m, i) => `<option value="${i}" ${i == targetMonth ? 'selected' : ''}>${m} 2026</option>`).join('')}</select></div><div class="grid grid-cols-3 gap-2">`;
+                let html = `<div class="bg-white p-4 rounded-3xl mb-4 shadow-sm"><select id="month-select" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-[10px] font-black uppercase">${months.map((m, i) => `<option value="${i}" ${i == targetMonth ? 'selected' : ''}>${m} 2026</option>`).join('')}</select></div><div class="grid grid-cols-3 gap-2">`;
                 const daysInMonth = new Date(2026, parseInt(targetMonth) + 1, 0).getDate();
                 for(let i=1; i<=daysInMonth; i++){
                     let d = new Date(2026, targetMonth, i); let r = getDuty(d, userData.platoon);
-                    const isToday = (i === new Date().getDate() && targetMonth == new Date().getMonth());
-                    html += `<div class="p-3 rounded-2xl border flex flex-col justify-center min-h-[100px] text-center ${r.off ? 'bg-slate-50 opacity-60' : 'bg-white shadow-sm'} ${isToday ? 'ring-2 ring-blue-600' : 'border-slate-100'}"><p class="text-[7px] font-bold uppercase">${d.toLocaleDateString('ms-MY',{weekday:'short', day:'2-digit'})}</p><p class="text-[10px] font-extrabold uppercase">${r.off ? 'OFF' : r.shift}</p></div>`;
+                    html += `<div class="p-3 rounded-2xl border text-center ${r.off ? 'bg-slate-50 opacity-60' : 'bg-white shadow-sm'}"><p class="text-[7px] font-bold text-slate-400 uppercase">${d.toLocaleDateString('ms-MY',{weekday:'short', day:'2-digit'})}</p><p class="text-[10px] font-extrabold uppercase">${r.off ? 'OFF' : r.shift}</p></div>`;
                 }
                 cont.innerHTML = html + '</div>';
                 document.getElementById('month-select').onchange = (e) => showPage('jadual-induk', e.target.value);
@@ -233,7 +210,7 @@
             uSnap.forEach(c => {
                 if(c.val().status === 'pending') {
                     const d = document.createElement('div'); d.className = "p-5 bg-white rounded-[2rem] flex justify-between items-center border border-slate-100";
-                    d.innerHTML = `<div><p class="text-xs font-black uppercase">${c.val().fullName}</p><p class="text-[9px] font-bold text-blue-500 uppercase">Platun ${c.val().platoon}</p></div>`;
+                    d.innerHTML = `<div><p class="text-xs font-black uppercase">${c.val().fullName}</p></div>`;
                     const b = document.createElement('button'); b.className = "bg-blue-900 text-white px-6 py-3 rounded-2xl text-[9px] font-black uppercase"; b.innerText = "Luluskan";
                     b.onclick = () => update(ref(db, 'users/' + c.key), { status: 'approved' }).then(() => showAdminPage());
                     d.appendChild(b); list.appendChild(d);
