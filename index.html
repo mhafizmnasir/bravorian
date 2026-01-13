@@ -3,47 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BRAVORIAN BSI</title>
+    <title>BRAVORIAN - BSI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; background-color: #f8fafc; }
         .mobile-menu { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
         .mobile-menu.closed { transform: translateX(-100%); }
+        input, select { -webkit-appearance: none; border-radius: 1rem; }
+        .btn-active { transform: scale(0.95); }
     </style>
 </head>
 <body class="min-h-screen text-slate-900">
-        <div id="loading-overlay" class="fixed inset-0 bg-white z-[100] flex flex-col items-center justify-center">
+    <div id="loading-overlay" class="fixed inset-0 bg-white z-[100] flex flex-col items-center justify-center">
         <div class="w-12 h-12 border-4 border-yellow-400 border-t-black rounded-full animate-spin"></div>
-        </div>
-            <div id="auth-section" class="hidden flex items-center justify-center min-h-screen p-6">
+    </div>
+        <div id="auth-section" class="hidden flex items-center justify-center min-h-screen p-6">
         <div class="bg-white p-10 rounded-[3rem] shadow-2xl w-full max-w-md border border-slate-100 text-center relative overflow-hidden">
             <div class="absolute top-0 left-0 w-full h-2 bg-yellow-400"></div>
+            
+            <div class="flex justify-center mb-6">
+                <img src="assets/img/logo.png" alt="Logo" class="h-20 object-contain" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1067/1067357.png'">
+            </div>
+
             <h1 id="auth-title" class="text-4xl font-black text-black uppercase italic mb-2 tracking-tighter">BRAVORIAN</h1>
             <p id="auth-subtitle" class="text-[11px] font-bold text-slate-400 uppercase mb-10 tracking-[0.4em]">B.S.I JOHOR BAHRU</p>
             
             <div id="register-fields" class="hidden space-y-4 mb-4 text-left">
                 <div class="flex gap-3">
-                    <input type="text" id="reg-firstname" placeholder="NAMA DEPAN" class="w-1/2 p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold uppercase outline-none focus:ring-2 focus:ring-yellow-400">
-                    <input type="text" id="reg-lastname" placeholder="NAMA BELAKANG" class="w-1/2 p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold uppercase outline-none focus:ring-2 focus:ring-yellow-400">
+                    <input type="text" id="reg-firstname" placeholder="NAMA DEPAN" class="w-1/2 p-5 bg-slate-50 border-none text-[12px] font-bold uppercase outline-none focus:ring-2 focus:ring-yellow-400">
+                    <input type="text" id="reg-lastname" placeholder="NAMA BELAKANG" class="w-1/2 p-5 bg-slate-50 border-none text-[12px] font-bold uppercase outline-none focus:ring-2 focus:ring-yellow-400">
                 </div>
-                <select id="reg-platoon" class="w-full p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold outline-none focus:ring-2 focus:ring-yellow-400 uppercase"></select>
+                <select id="reg-platoon" class="w-full p-5 bg-slate-50 border-none text-[12px] font-bold outline-none focus:ring-2 focus:ring-yellow-400 uppercase"></select>
             </div>
 
             <div class="space-y-4">
-                <input type="email" id="email" placeholder="EMEL" class="w-full p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold outline-none focus:ring-2 focus:ring-yellow-400">
-                <input type="password" id="password" placeholder="KATA LALUAN" class="w-full p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold outline-none focus:ring-2 focus:ring-yellow-400">
+                <input type="email" id="email" placeholder="EMEL" class="w-full p-5 bg-slate-50 border-none text-[12px] font-bold outline-none focus:ring-2 focus:ring-yellow-400">
+                <input type="password" id="password" placeholder="KATA LALUAN" class="w-full p-5 bg-slate-50 border-none text-[12px] font-bold outline-none focus:ring-2 focus:ring-yellow-400">
             </div>
 
             <button id="btn-action" class="w-full bg-black text-yellow-400 font-black py-5 rounded-2xl mt-8 uppercase text-[12px] tracking-widest shadow-xl active:scale-95 transition-all">Log Masuk</button>
             
             <div class="mt-8 flex flex-col gap-4">
-                <button id="btn-forgot-pw" class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Lupa Kata Laluan?</button>
+                <button id="btn-forgot-pw" class="text-[10px] text-slate-400 font-bold uppercase tracking-widest hover:text-black transition-colors">Lupa Kata Laluan?</button>
                 <button id="auth-toggle-btn" class="w-max mx-auto text-[10px] text-black font-black uppercase tracking-widest border-b-2 border-yellow-400 pb-1">Daftar Akaun Baru</button>
             </div>
         </div>
-            </div>
-                <div id="main-dashboard" class="hidden">
+        </div>
+            <div id="main-dashboard" class="hidden">
         <nav class="bg-white/90 backdrop-blur-lg border-b border-slate-100 p-5 sticky top-0 z-50 flex justify-between items-center px-8">
             <div class="flex items-center gap-4">
                 <button id="menu-open" class="p-3 text-black bg-yellow-400 rounded-2xl shadow-sm">
@@ -51,34 +58,32 @@
                 </button>
                 <div class="flex flex-col leading-none">
                     <span class="font-black text-black italic uppercase tracking-tighter text-lg">Bravorian</span>
-                    <span id="live-clock" class="text-[9px] font-bold text-slate-400 mt-1 uppercase">Loading...</span>
+                    <span id="live-clock" class="text-[9px] font-bold text-slate-400 mt-1 uppercase">Memuatkan...</span>
                 </div>
             </div>
             <button id="btn-logout" class="bg-slate-100 text-slate-600 px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest">Keluar</button>
         </nav>
+
         <div id="mobile-sidebar" class="fixed inset-0 bg-black/40 z-[60] hidden backdrop-blur-sm">
             <div id="sidebar-container" class="mobile-menu closed bg-white w-80 h-full p-10 flex flex-col shadow-2xl">
                 <div class="mb-12 flex justify-between items-center">
                     <h2 class="text-[11px] font-black text-black uppercase opacity-30 tracking-[0.3em]">Menu Utama</h2>
-                    <button id="menu-close" class="p-2 text-slate-400">✕</button>
+                    <button id="menu-close" class="p-2 text-slate-400 hover:text-black">✕</button>
                 </div>
                 <div class="space-y-4 font-black text-[13px] uppercase tracking-widest text-slate-400">
                     <button id="nav-welcome" class="flex items-center gap-4 w-full text-left p-5 hover:bg-yellow-50 rounded-2xl transition-all">Utama</button>
                     <button id="nav-calendar" class="flex items-center gap-4 w-full text-left p-5 hover:bg-yellow-50 rounded-2xl transition-all">Kalendar Syif</button>
                     <button id="nav-settings" class="flex items-center gap-4 w-full text-left p-5 hover:bg-yellow-50 rounded-2xl transition-all">Tetapan</button>
-                    <button id="admin-nav" class="hidden flex items-center justify-between w-full p-5 bg-black text-yellow-400 rounded-2xl mt-10 shadow-lg">
+                    <button id="admin-nav" class="hidden flex items-center justify-between w-full p-5 bg-black text-yellow-400 rounded-2xl mt-10">
                         <span>Admin Panel</span>
-                        <span id="pending-count" class="hidden bg-yellow-400 text-black text-[10px] px-2 py-1 rounded-full">0</span>
+                        <span id="pending-count" class="hidden bg-yellow-400 text-black text-[10px] px-2 py-1 rounded-full font-bold">0</span>
                     </button>
                 </div>
             </div>
         </div>
-
-        <main class="max-w-4xl mx-auto p-6 md:p-12">
-            <div id="dynamic-content" class="space-y-8"></div>
-        </main>
-    </div>
-    <script type="module">
+        <main class="max-w-4xl mx-auto p-6 md:p-12"><div id="dynamic-content" class="space-y-8"></div></main>
+            </div>
+                <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, sendPasswordResetEmail, updatePassword, verifyBeforeUpdateEmail, reauthenticateWithCredential, EmailAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getDatabase, ref, get, set, update, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
@@ -94,8 +99,10 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getDatabase(app);
-                const JADUAL_2 = { 1: ["ENTRY MC", "ENTRY KA", "ENTRY BAS"], 2: ["EXIT KB", "EXIT SBY#2", "EXIT MA"], 3: ["ENTRY KC", "ENTRY BDL/Autogate", "ENTRY SBY#1"], 4: ["EXIT LORI", "EXIT BAS", "EXIT KD"], 5: ["ENTRY MC", "ENTRY SBY#3", "ENTRY KB"], 6: ["EXIT MA", "EXIT SBY#1", "EXIT KC"], 7: ["ENTRY SBY#2", "ENTRY BAS", "ENTRY KD"], 8: ["EXIT BAS", "EXIT KA", "EXIT SBY#3"], 9: ["ENTRY KA", "ENTRY BAS", "ENTRY MC"], 10: ["EXIT SBY#2", "EXIT MA", "EXIT KB"], 11: ["ENTRY SBY#1", "ENTRY KC", "ENTRY BDL/Autogate"], 12: ["EXIT KD", "EXIT LORI", "EXIT BAS"], 13: ["ENTRY SBY#3", "ENTRY KB", "ENTRY MC"], 14: ["EXIT KC", "EXIT MA", "EXIT SBY#1"], 15: ["ENTRY KD", "ENTRY SBY#2", "ENTRY BAS"], 16: ["EXIT SBY#3", "EXIT BAS", "EXIT KA"], 17: ["ENTRY BAS", "ENTRY MC", "ENTRY KA"], 18: ["EXIT MA", "EXIT KB", "EXIT SBY#2"], 19: ["ENTRY BDL/Autogate", "ENTRY SBY#1", "ENTRY KC"], 20: ["EXIT BAS", "EXIT KD", "EXIT LORI"], 21: ["ENTRY KB", "ENTRY MC", "ENTRY SBY#3"], 22: ["EXIT SBY#1", "EXIT KC", "EXIT MA"], 23: ["ENTRY BAS", "ENTRY KD", "ENTRY SBY#2"], 24: ["EXIT KA", "EXIT SBY#3", "EXIT BAS"] };
+                            const JADUAL_2 = { 1: ["ENTRY MC", "ENTRY KA", "ENTRY BAS"], 2: ["EXIT KB", "EXIT SBY#2", "EXIT MA"], 3: ["ENTRY KC", "ENTRY BDL/Autogate", "ENTRY SBY#1"], 4: ["EXIT LORI", "EXIT BAS", "EXIT KD"], 5: ["ENTRY MC", "ENTRY SBY#3", "ENTRY KB"], 6: ["EXIT MA", "EXIT SBY#1", "EXIT KC"], 7: ["ENTRY SBY#2", "ENTRY BAS", "ENTRY KD"], 8: ["EXIT BAS", "EXIT KA", "EXIT SBY#3"], 9: ["ENTRY KA", "ENTRY BAS", "ENTRY MC"], 10: ["EXIT SBY#2", "EXIT MA", "EXIT KB"], 11: ["ENTRY SBY#1", "ENTRY KC", "ENTRY BDL/Autogate"], 12: ["EXIT KD", "EXIT LORI", "EXIT BAS"], 13: ["ENTRY SBY#3", "ENTRY KB", "ENTRY MC"], 14: ["EXIT KC", "EXIT MA", "EXIT SBY#1"], 15: ["ENTRY KD", "ENTRY SBY#2", "ENTRY BAS"], 16: ["EXIT SBY#3", "EXIT BAS", "EXIT KA"], 17: ["ENTRY BAS", "ENTRY MC", "ENTRY KA"], 18: ["EXIT MA", "EXIT KB", "EXIT SBY#2"], 19: ["ENTRY BDL/Autogate", "ENTRY SBY#1", "ENTRY KC"], 20: ["EXIT BAS", "EXIT KD", "EXIT LORI"], 21: ["ENTRY KB", "ENTRY MC", "ENTRY SBY#3"], 22: ["EXIT SBY#1", "EXIT KC", "EXIT MA"], 23: ["ENTRY BAS", "ENTRY KD", "ENTRY SBY#2"], 24: ["EXIT KA", "EXIT SBY#3", "EXIT BAS"] };
         const START_ROW = { 1:1, 2:2, 3:1, 4:20, 5:13, 6:16, 7:17, 8:6, 9:3, 10:10, 11:7, 12:24, 13:15, 14:22, 15:5, 16:14, 17:19, 18:8, 19:9, 20:12, 21:21, 22:4, 23:11, 24:18, 25:23 };
+        
+        let userData = null;
 
         function getDuty(date, platoon) {
             let baseDate = new Date(2026, 0, 3); 
@@ -108,30 +115,8 @@
             let row = ((START_ROW[platoon] + Math.floor(diffDays/4) - 1) % 24) + 1;
             return { off: false, shift: ["PETANG", "PAGI", "MALAM"][cyclePos], loc: JADUAL_2[row][cyclePos] };
         }
-                window.handleAccountUpdate = async (type) => {
-            const user = auth.currentUser;
-            const currentPw = prompt("Sahkan Kata Laluan Semasa:");
-            if (!currentPw) return;
-            const credential = EmailAuthProvider.credential(user.email, currentPw);
-            try {
-                await reauthenticateWithCredential(user, credential);
-                if (type === 'email') {
-                    const newEmail = document.getElementById('new-email').value.trim();
-                    if (!newEmail) return alert("Masukkan emel baru");
-                    await verifyBeforeUpdateEmail(user, newEmail);
-                    alert("Pautan pengesahan dihantar ke " + newEmail);
-                } else if (type === 'password') {
-                    const newPw = document.getElementById('new-password').value;
-                    if (newPw.length < 6) return alert("Min 6 aksara");
-                    await updatePassword(user, newPw);
-                    alert("Berjaya!");
-                }
-            } catch (e) { alert("Ralat: " + e.message); }
-        };
-                let userData = null;
-        async function showPage(p, targetMonth = new Date().getMonth()) {
+                            window.showPage = async function(p, targetMonth = new Date().getMonth()) {
             const cont = document.getElementById('dynamic-content');
-            // Reset border menu
             document.querySelectorAll('.space-y-4 button').forEach(b => b.classList.remove('text-black', 'border-l-4', 'border-yellow-400'));
             const activeBtn = document.getElementById('nav-' + p);
             if(activeBtn) activeBtn.classList.add('text-black', 'border-l-4', 'border-yellow-400');
@@ -141,30 +126,20 @@
                 for (let i = 1; i <= 3; i++) {
                     const tkh = new Date(); tkh.setDate(tkh.getDate() + i);
                     const dty = getDuty(tkh, userData.platoon);
-                    listHtml += `
-                        <div class="flex justify-between items-center p-6 ${i < 3 ? 'border-b border-slate-50' : ''}">
-                            <div class="text-left">
-                                <p class="text-[12px] font-black text-black uppercase tracking-tighter">${tkh.toLocaleDateString('ms-MY', { weekday: 'long' })}</p>
-                                <p class="text-[10px] font-bold text-slate-400 uppercase">${tkh.toLocaleDateString('ms-MY', { day: '2-digit', month: 'short' })}</p>
-                            </div>
-                            <div class="text-right">
-                                ${dty.off ? `<p class="text-sm font-black text-slate-300 italic">OFF</p>` : 
-                                `<p class="text-[13px] font-black text-black uppercase">${dty.shift}</p>
-                                 <p class="text-[10px] font-extrabold text-yellow-500 uppercase">${dty.loc}</p>`}
-                            </div>
-                        </div>`;
+                    listHtml += `<div class="flex justify-between items-center p-6 ${i < 3 ? 'border-b border-slate-50' : ''}">
+                        <div class="text-left"><p class="text-[12px] font-black text-black uppercase">${tkh.toLocaleDateString('ms-MY', { weekday: 'long' })}</p>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase">${tkh.toLocaleDateString('ms-MY', { day: '2-digit', month: 'short' })}</p></div>
+                        <div class="text-right">${dty.off ? `<p class="text-sm font-black text-slate-300 italic">OFF</p>` : `<p class="text-[13px] font-black text-black uppercase leading-tight">${dty.shift}</p><p class="text-[10px] font-extrabold text-yellow-500 uppercase">${dty.loc}</p>`}</div>
+                    </div>`;
                 }
                 cont.innerHTML = `
                     <div class="flex flex-col items-center justify-center min-h-[60vh] text-center">
-                        <div class="w-24 h-24 bg-black rounded-[2.5rem] flex items-center justify-center mb-8 relative shadow-2xl">
+                        <div class="w-24 h-24 bg-black rounded-[2.5rem] flex items-center justify-center mb-8 relative shadow-2xl overflow-hidden">
                             <div class="absolute inset-0 border-4 border-yellow-400 rounded-[2.5rem] animate-pulse"></div>
-                            <svg class="w-12 h-12 text-yellow-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+                            <svg class="w-12 h-12 text-yellow-400 relative z-10" fill="currentColor" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
                         </div>
-                        <h1 class="text-3xl font-black text-black uppercase italic mb-2 tracking-tighter italic">BRAVORIAN</h1>
-                        <div class="mb-10">
-                            <p class="text-[14px] font-black text-slate-800 uppercase tracking-widest">${userData.fullName}</p>
-                            <span class="inline-block mt-2 px-5 py-2 bg-yellow-400 text-black text-[10px] font-black rounded-full uppercase">PLATUN ${userData.platoon}</span>
-                        </div>
+                        <h1 class="text-3xl font-black text-black uppercase italic mb-2 tracking-tighter">BRAVORIAN</h1>
+                        <div class="mb-10"><p class="text-[14px] font-black text-slate-800 uppercase tracking-widest">${userData.fullName}</p><span class="inline-block mt-2 px-5 py-2 bg-yellow-400 text-black text-[10px] font-black rounded-full uppercase tracking-widest">PLATUN ${userData.platoon}</span></div>
                         <div class="bg-white rounded-[3rem] border border-slate-100 shadow-xl w-full max-w-md overflow-hidden">
                             <div class="bg-black py-4"><p class="text-[10px] font-black text-yellow-400 uppercase tracking-widest">3 Syif Terdekat</p></div>
                             ${listHtml}
@@ -172,105 +147,145 @@
                     </div>`;
                             } else if (p === 'jadual-induk') {
                 const months = ["JANUARI", "FEBRUARI", "MAC", "APRIL", "MEI", "JUN", "JULAI", "OGOS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DISEMBER"];
-                const skrg = new Date();
-                let html = `<div class="bg-white p-5 rounded-[2.5rem] mb-6 border border-slate-100"><select id="month-select" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-[12px] font-black uppercase outline-none focus:ring-2 focus:ring-yellow-400">
+                let html = `<div class="bg-white p-5 rounded-[2.5rem] mb-6 border border-slate-100 shadow-sm"><select id="month-select" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-[12px] font-black uppercase outline-none focus:ring-2 focus:ring-yellow-400">
                         ${months.map((m, i) => `<option value="${i}" ${i == targetMonth ? 'selected' : ''}>${m} 2026</option>`).join('')}
                     </select></div><div class="grid grid-cols-2 gap-4">`;
                 const daysInMonth = new Date(2026, parseInt(targetMonth) + 1, 0).getDate();
                 for(let i=1; i<=daysInMonth; i++){
                     let d = new Date(2026, targetMonth, i); let r = getDuty(d, userData.platoon);
-                    const isToday = (i === skrg.getDate() && targetMonth == skrg.getMonth());
-                    html += `<div class="relative p-6 rounded-[2rem] border flex flex-col justify-center min-h-[120px] ${r.off ? 'bg-slate-50 opacity-50' : 'bg-white shadow-sm'} ${isToday ? 'ring-4 ring-yellow-400 scale-[1.05] z-10' : 'border-slate-100'}">
-                        <p class="text-[10px] font-black uppercase mb-1 ${isToday ? 'text-black' : 'text-slate-400'}">${d.toLocaleDateString('ms-MY',{weekday:'short', day:'2-digit'})}</p>
+                    html += `<div class="p-6 rounded-[2rem] border flex flex-col justify-center min-h-[120px] ${r.off ? 'bg-slate-50 opacity-50' : 'bg-white shadow-sm border-slate-100'}">
+                        <p class="text-[10px] font-black uppercase text-slate-400 mb-1">${d.toLocaleDateString('ms-MY',{weekday:'short', day:'2-digit'})}</p>
                         <p class="text-sm font-black text-black uppercase">${r.off ? 'OFF' : r.shift}</p>
                         <p class="text-[9px] font-black text-yellow-500 uppercase mt-2">${r.off ? '' : r.loc}</p>
                     </div>`;
                 }
                 cont.innerHTML = html + '</div>';
-                document.getElementById('month-select').onchange = (e) => showPage('jadual-induk', e.target.value);
+                document.getElementById('month-select').onchange = (e) => window.showPage('jadual-induk', e.target.value);
             } else if (p === 'settings') {
-                cont.innerHTML = `
-                    <div class="max-w-md mx-auto space-y-8">
-                        <div class="text-center"><h2 class="text-2xl font-black text-black uppercase tracking-tighter italic">Tetapan Akaun</h2></div>
-                        <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl space-y-4">
-                            <p class="text-[10px] font-black text-black uppercase border-b pb-2">Tukar Emel</p>
-                            <input type="email" id="new-email" placeholder="EMEL BARU" class="w-full p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold uppercase outline-none focus:ring-2 focus:ring-yellow-400">
-                            <button onclick="handleAccountUpdate('email')" class="w-full bg-black text-yellow-400 font-black py-4 rounded-2xl uppercase text-[10px] tracking-widest">Update Emel</button>
-                        </div>
-                        <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl space-y-4">
-                            <p class="text-[10px] font-black text-black uppercase border-b pb-2">Tukar Kata Laluan</p>
-                            <input type="password" id="new-password" placeholder="KATA LALUAN BARU" class="w-full p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold uppercase outline-none focus:ring-2 focus:ring-yellow-400">
-                            <button onclick="handleAccountUpdate('password')" class="w-full bg-black text-yellow-400 font-black py-4 rounded-2xl uppercase text-[10px] tracking-widest">Update Password</button>
-                        </div>
-                    </div>`;
+                cont.innerHTML = `<div class="max-w-md mx-auto space-y-8"><div class="text-center"><h2 class="text-2xl font-black text-black uppercase tracking-tighter italic">Tetapan Akaun</h2></div>
+                    <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl space-y-4">
+                        <input type="email" id="new-email" placeholder="EMEL BARU" class="w-full p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold uppercase outline-none focus:ring-2 focus:ring-yellow-400">
+                        <button id="upd-email-btn" class="w-full bg-black text-yellow-400 font-black py-4 rounded-2xl uppercase text-[10px] tracking-widest">Update Emel</button>
+                    </div>
+                    <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl space-y-4">
+                        <input type="password" id="new-password" placeholder="KATA LALUAN BARU" class="w-full p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold uppercase outline-none focus:ring-2 focus:ring-yellow-400">
+                        <button id="upd-pw-btn" class="w-full bg-black text-yellow-400 font-black py-4 rounded-2xl uppercase text-[10px] tracking-widest">Update Password</button>
+                    </div></div>`;
+                document.getElementById('upd-email-btn').onclick = () => handleAccountUpdate('email');
+                document.getElementById('upd-pw-btn').onclick = () => handleAccountUpdate('password');
             }
             closeMenu();
-        }
-                async function showAdminPage() {
-            const cont = document.getElementById('dynamic-content');
-            cont.innerHTML = `<div id="adm-list" class="space-y-4"><h3 class="text-[11px] font-black text-slate-400 uppercase tracking-widest px-6">Pengesahan Pengguna</h3></div>`;
-            const snap = await get(ref(db, 'users'));
-            snap.forEach(c => {
-                if(c.val().status === 'pending') {
-                    const div = document.createElement('div');
-                    div.className = "p-6 bg-white rounded-[2.5rem] flex justify-between items-center border border-slate-100 shadow-sm";
-                    div.innerHTML = `<div><p class="text-[13px] font-black uppercase text-black">${c.val().fullName}</p><p class="text-[10px] font-bold text-yellow-600 uppercase">Platun ${c.val().platoon}</p></div>`;
-                    const btn = document.createElement('button');
-                    btn.className = "bg-black text-yellow-400 px-6 py-3 rounded-2xl text-[10px] font-black uppercase";
-                    btn.innerText = "Luluskan";
-                    btn.onclick = () => update(ref(db, 'users/' + c.key), { status: 'approved' }).then(() => showAdminPage());
-                    div.appendChild(btn); document.getElementById('adm-list').appendChild(div);
-                }
-            });
-            closeMenu();
-                }
-                document.getElementById('btn-action').onclick = async () => {
+        };
+                            let authMode = 'login';
+        document.getElementById('auth-toggle-btn').onclick = () => {
+            authMode = authMode === 'login' ? 'register' : 'login';
+            document.getElementById('register-fields').classList.toggle('hidden', authMode === 'login');
+            document.getElementById('auth-title').innerText = authMode === 'login' ? 'BRAVORIAN' : 'DAFTAR';
+            document.getElementById('auth-subtitle').innerText = authMode === 'login' ? 'B.S.I JOHOR BAHRU' : 'SERTI KAMI';
+            document.getElementById('auth-toggle-btn').innerText = authMode === 'login' ? 'Daftar Akaun Baru' : 'Sudah ada akaun? Log Masuk';
+        };
+
+        document.getElementById('btn-action').onclick = async () => {
             const email = document.getElementById('email').value.trim();
             const pass = document.getElementById('password').value;
             if (authMode === 'login') {
-                try { await signInWithEmailAndPassword(auth, email, pass); } catch(e) { alert("Akses Ditolak: Emel/Katalaluan Salah!"); }
+                try { 
+                    await signInWithEmailAndPassword(auth, email, pass); 
+                } catch(e) { 
+                    alert("Akses Ditolak: Emel atau Kata Laluan Salah!"); 
+                }
             } else {
-                const fn = document.getElementById('reg-firstname').value.trim().toUpperCase();
-                const ln = document.getElementById('reg-lastname').value.trim().toUpperCase();
+                const fn = document.getElementById('reg-firstname').value.toUpperCase();
+                const ln = document.getElementById('reg-lastname').value.toUpperCase();
                 const plt = document.getElementById('reg-platoon').value;
-                if(!fn || !ln || !plt) return alert("Lengkapkan maklumat!");
+                if(!fn || !ln || !email || !pass) return alert("Sila lengkapkan semua butiran.");
                 try {
                     const res = await createUserWithEmailAndPassword(auth, email, pass);
                     await set(ref(db, 'users/' + res.user.uid), { fullName: fn + " " + ln, platoon: parseInt(plt), role: "user", status: "pending" });
-                    alert("Daftar Berjaya! Sila tunggu admin luluskan akaun anda."); signOut(auth); toggleAuthMode('login');
+                    alert("Pendaftaran Berjaya! Sila tunggu kelulusan Admin."); 
+                    signOut(auth);
+                    location.reload();
                 } catch(e) { alert(e.message); }
             }
         };
 
         document.getElementById('btn-forgot-pw').onclick = async () => {
             const email = document.getElementById('email').value.trim();
-            if(!email) return alert("Masukkan emel anda di ruangan emel.");
-            try { await sendPasswordResetEmail(auth, email); alert("Pautan reset telah dihantar ke emel anda."); }
-            catch(e) { alert("Ralat: Emel tidak dijumpai."); }
+            if(!email) return alert("Sila masukkan emel anda untuk reset kata laluan.");
+            try { 
+                await sendPasswordResetEmail(auth, email); 
+                alert("Pautan reset kata laluan telah dihantar ke emel anda."); 
+            } catch(e) { alert("Ralat: Pastikan emel anda betul."); }
         };
-
-        function toggleAuthMode(t) {
-            authMode = t;
-            document.getElementById('register-fields').classList.toggle('hidden', t === 'login');
-            document.getElementById('auth-title').innerText = t === 'login' ? 'BRAVORIAN' : 'DAFTAR';
-            document.getElementById('btn-action').innerText = t === 'login' ? 'Log Masuk' : 'Daftar Sekarang';
+                            async function handleAccountUpdate(type) {
+            const user = auth.currentUser;
+            const currentPw = prompt("Sahkan Kata Laluan Semasa:");
+            if (!currentPw) return;
+            const credential = EmailAuthProvider.credential(user.email, currentPw);
+            try {
+                await reauthenticateWithCredential(user, credential);
+                if (type === 'email') {
+                    const newEmail = document.getElementById('new-email').value.trim();
+                    await verifyBeforeUpdateEmail(user, newEmail);
+                    alert("Pautan pengesahan telah dihantar ke emel baru.");
+                } else {
+                    const newPw = document.getElementById('new-password').value;
+                    await updatePassword(user, newPw);
+                    alert("Kata laluan berjaya dikemaskini!");
+                }
+            } catch (e) { alert("Ralat: " + e.message); }
         }
-        document.getElementById('auth-toggle-btn').onclick = () => toggleAuthMode(authMode === 'login' ? 'register' : 'login');
-                const sidebar = document.getElementById('mobile-sidebar');
-        const container = document.getElementById('sidebar-container');
-        function openMenu() { sidebar.classList.remove('hidden'); setTimeout(() => container.classList.remove('closed'), 10); }
-        function closeMenu() { container.classList.add('closed'); setTimeout(() => sidebar.classList.add('hidden'), 300); }
 
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const snap = await get(ref(db, 'users/' + user.uid));
+                if (snap.exists() && snap.val().status === "approved") {
+                    userData = snap.val();
+                    document.getElementById('auth-section').classList.add('hidden');
+                    document.getElementById('main-dashboard').classList.remove('hidden');
+                    if(userData.role === 'admin') { 
+                        document.getElementById('admin-nav').classList.remove('hidden');
+                        onValue(ref(db, 'users'), s => {
+                            let c = 0; s.forEach(u => { if(u.val().status === 'pending') c++; });
+                            const p = document.getElementById('pending-count');
+                            if(c > 0) { p.innerText = c; p.classList.remove('hidden'); } else p.classList.add('hidden');
+                        });
+                    }
+                    window.showPage('welcome');
+                } else if (snap.exists() && snap.val().status === "pending") {
+                    signOut(auth); alert("Akaun anda masih menunggu kelulusan Admin.");
+                } else {
+                    signOut(auth);
+                }
+            } else {
+                document.getElementById('auth-section').classList.remove('hidden');
+                document.getElementById('main-dashboard').classList.add('hidden');
+            }
+            document.getElementById('loading-overlay').classList.add('hidden');
+        });
+                            const sidebar = document.getElementById('mobile-sidebar');
+        const container = document.getElementById('sidebar-container');
+        const openMenu = () => { sidebar.classList.remove('hidden'); setTimeout(() => container.classList.remove('closed'), 10); };
+        const closeMenu = () => { container.classList.add('closed'); setTimeout(() => sidebar.classList.add('hidden'), 300); };
+        
         document.getElementById('menu-open').onclick = openMenu;
         document.getElementById('menu-close').onclick = closeMenu;
         sidebar.onclick = (e) => { if (e.target === sidebar) closeMenu(); };
 
-        document.getElementById('nav-welcome').onclick = () => showPage('welcome');
-        document.getElementById('nav-calendar').onclick = () => showPage('jadual-induk');
-        document.getElementById('nav-settings').onclick = () => showPage('settings');
-        document.getElementById('admin-nav').onclick = () => showAdminPage();
-        document.getElementById('btn-logout').onclick = () => { if(confirm("Log keluar?")) signOut(auth); };
-                const sel = document.getElementById('reg-platoon');
+        document.getElementById('nav-welcome').onclick = () => window.showPage('welcome');
+        document.getElementById('nav-calendar').onclick = () => window.showPage('jadual-induk');
+        document.getElementById('nav-settings').onclick = () => window.showPage('settings');
+        document.getElementById('btn-logout').onclick = () => { if(confirm("Keluar dari sistem?")) signOut(auth); };
+
+        setInterval(() => {
+            const el = document.getElementById('live-clock');
+            if(el) {
+                const n = new Date();
+                el.innerText = `${n.toLocaleDateString('ms-MY', { weekday: 'short' })} | ${n.toLocaleTimeString('ms-MY', { hour12: false })}`;
+            }
+        }, 1000);
+
+        const sel = document.getElementById('reg-platoon');
         for(let i=1; i<=25; i++) {
             const o = document.createElement('option'); o.value = i; o.text = "PLATUN " + i; sel.appendChild(o);
         }
