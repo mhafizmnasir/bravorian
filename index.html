@@ -155,6 +155,34 @@
                 else { b.classList.add('hidden'); }
             });
         }
+                    import { updateEmail, updatePassword, verifyBeforeUpdateEmail, reauthenticateWithCredential, EmailAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+async function handleAccountUpdate(type) {
+    const user = auth.currentUser;
+    const currentPw = prompt("Sila masukkan kata laluan semasa untuk pengesahan:");
+    if (!currentPw) return;
+
+    const credential = EmailAuthProvider.credential(user.email, currentPw);
+    
+    try {
+        await reauthenticateWithCredential(user, credential);
+        
+        if (type === 'email') {
+            const newEmail = document.getElementById('new-email').value.trim();
+            if (!newEmail) return alert("Masukkan emel baru");
+            // Menghantar emel pengesahan sebelum ditukar
+            await verifyBeforeUpdateEmail(user, newEmail);
+            alert("Emel pengesahan telah dihantar ke " + newEmail + ". Sila sahkan emel tersebut untuk melengkapkan pertukaran.");
+        } else if (type === 'password') {
+            const newPw = document.getElementById('new-password').value;
+            if (newPw.length < 6) return alert("Kata laluan mestilah sekurang-kurangnya 6 aksara");
+            await updatePassword(user, newPw);
+            alert("Kata laluan berjaya dikemaskini!");
+        }
+    } catch (error) {
+        alert("Ralat: " + error.message);
+    }
+}
                             async function showPage(p, targetMonth = new Date().getMonth()) {
             const cont = document.getElementById('dynamic-content');
             
@@ -202,7 +230,31 @@
                             ${htmlList}
                         </div>
                     </div>`;
-                            } else if (p === 'jadual-induk') {
+
+                } else if (p === 'settings') {
+    cont.innerHTML = `
+        <div class="max-w-md mx-auto space-y-8">
+            <div class="text-center">
+                <h2 class="text-2xl font-black text-black uppercase italic tracking-tighter">Tetapan Akaun</h2>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Kemaskini Maklumat Profil</p>
+            </div>
+
+            <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl">
+                <p class="text-[10px] font-black text-black uppercase tracking-widest mb-6 border-b pb-2">Tukar Emel</p>
+                <input type="email" id="new-email" placeholder="EMEL BARU" class="w-full p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold uppercase outline-none focus:ring-2 focus:ring-yellow-400 mb-4">
+                <button onclick="window.handleAccountUpdate('email')" class="w-full bg-black text-yellow-400 font-black py-4 rounded-2xl uppercase text-[10px] tracking-widest">Hantar Kod Verifikasi</button>
+            </div>
+
+            <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl">
+                <p class="text-[10px] font-black text-black uppercase tracking-widest mb-6 border-b pb-2">Tukar Kata Laluan</p>
+                <input type="password" id="new-password" placeholder="KATA LALUAN BARU" class="w-full p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold uppercase outline-none focus:ring-2 focus:ring-yellow-400 mb-4">
+                <button onclick="window.handleAccountUpdate('password')" class="w-full bg-black text-yellow-400 font-black py-4 rounded-2xl uppercase text-[10px] tracking-widest">Kemaskini Password</button>
+            </div>
+        </div>`;
+    // Jadikan fungsi global supaya boleh diakses oleh onclick
+    window.handleAccountUpdate = handleAccountUpdate;
+            }
+                            }  else if (p === 'jadual-induk') {
                 const months = ["JANUARI", "FEBRUARI", "MAC", "APRIL", "MEI", "JUN", "JULAI", "OGOS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DISEMBER"];
                 const skrg = new Date();
                 let html = `<div class="bg-white p-5 rounded-[2.5rem] mb-6 shadow-sm border border-slate-100">
@@ -293,6 +345,8 @@
             document.getElementById('register-fields').classList.toggle('hidden', target !== 'register');
             document.getElementById('auth-title').innerText = target === 'login' ? 'BRAVORIAN' : 'DAFTAR';
             document.getElementById('btn-action').innerText = target === 'login' ? 'Log Masuk' : 'Hantar Pendaftaran';
+            document.getElementById('nav-settings').onclick = () => { showPage('settings'); closeMenu(); };
+            
         }
 
         document.getElementById('auth-toggle-btn').onclick = () => toggleAuthMode(authMode === 'login' ? 'register' : 'login');
