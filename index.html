@@ -2,81 +2,181 @@
 <html lang="ms">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DEBUG - BRAVORIAN</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BRAVORIAN BSI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
+        .closed { transform: translateX(-100%); }
+        input, select { -webkit-appearance: none; }
+    </style>
 </head>
-<body class="bg-slate-900 text-white p-6">
+<body>
 
-    <div id="debug-box" class="fixed bottom-0 left-0 right-0 bg-black/80 p-4 h-64 overflow-y-auto border-t border-yellow-400 font-mono text-[10px]">
-        <p class="text-yellow-400 font-bold underline mb-2 uppercase">Laporan Sistem (Debug Log):</p>
-        <div id="logs"></div>
+    <div id="loader" class="fixed inset-0 bg-white z-[100] flex flex-col items-center justify-center">
+        <div class="w-10 h-10 border-4 border-yellow-400 border-t-black rounded-full animate-spin"></div>
+        <p class="mt-4 text-[10px] font-black uppercase text-slate-400">Memuatkan Sistem...</p>
     </div>
 
-    <div id="ui-container" class="text-center mt-20">
-        <div id="spinner" class="w-10 h-10 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin mx-auto"></div>
-        <p id="status-text" class="mt-4 text-sm font-bold uppercase tracking-widest">Memulakan Sistem...</p>
+    <div id="auth-section" class="hidden min-h-screen flex items-center justify-center p-6">
+        <div class="bg-white p-10 rounded-[2.5rem] shadow-xl w-full max-w-md text-center border border-slate-100">
+            <h1 id="auth-title" class="text-3xl font-black italic mb-2">BRAVORIAN</h1>
+            <p id="auth-subtitle" class="text-[10px] font-bold text-slate-400 uppercase mb-8 tracking-widest">B.S.I Johor Bahru</p>
+            
+            <div id="reg-fields" class="hidden space-y-3 mb-4">
+                <input type="text" id="fn" placeholder="NAMA PENUH" class="w-full p-4 bg-slate-50 rounded-xl text-xs font-bold uppercase border-none outline-none focus:ring-2 focus:ring-yellow-400">
+                <select id="plt" class="w-full p-4 bg-slate-50 rounded-xl text-xs font-bold uppercase border-none outline-none focus:ring-2 focus:ring-yellow-400"></select>
+            </div>
+
+            <div class="space-y-3">
+                <input type="email" id="em" placeholder="EMEL" class="w-full p-4 bg-slate-50 rounded-xl text-xs font-bold border-none outline-none focus:ring-2 focus:ring-yellow-400">
+                <input type="password" id="pw" placeholder="KATA LALUAN" class="w-full p-4 bg-slate-50 rounded-xl text-xs font-bold border-none outline-none focus:ring-2 focus:ring-yellow-400">
+            </div>
+
+            <button onclick="doAuth()" class="w-full bg-black text-yellow-400 font-black py-4 rounded-xl mt-6 uppercase text-xs shadow-lg active:scale-95 transition-all">Seterusnya</button>
+            <button onclick="toggleMode()" id="toggle-btn" class="mt-6 text-[10px] font-black uppercase border-b-2 border-yellow-400 pb-1">Daftar Akaun Baru</button>
+        </div>
+    </div>
+
+    <div id="main-dashboard" class="hidden">
+        <nav class="bg-white border-b p-5 sticky top-0 z-50 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <button onclick="toggleSidebar()" class="p-2 bg-yellow-400 rounded-lg font-bold">MENU</button>
+                <span class="font-black italic text-lg">BRAVORIAN</span>
+            </div>
+            <button onclick="firebase.auth().signOut()" class="text-[10px] font-bold text-red-500 uppercase">Keluar</button>
+        </nav>
+        <div id="sidebar" class="fixed inset-0 bg-black/50 z-[60] hidden">
+            <div id="side-cont" class="w-64 bg-white h-full p-8 closed transition-transform duration-300">
+                <div class="space-y-6">
+                    <button onclick="showPage('welcome')" class="block font-black text-xs uppercase">Utama</button>
+                    <button onclick="showPage('cal')" class="block font-black text-xs uppercase">Jadual</button>
+                    <button id="adm-btn" onclick="showAdmin()" class="hidden block font-black text-xs uppercase text-yellow-600">Admin Panel</button>
+                </div>
+            </div>
+        </div>
+        <main id="content" class="p-6 max-w-2xl mx-auto"></main>
     </div>
 
     <script>
-        const logEl = document.getElementById('logs');
-        function addLog(msg, color = "text-white") {
-            const p = document.createElement('p');
-            p.className = color;
-            p.innerText = `[${new Date().toLocaleTimeString()}] ${msg}`;
-            logEl.appendChild(p);
-            logEl.scrollTop = logEl.scrollHeight;
+        const firebaseConfig = { 
+            apiKey: "AIzaSyCQ9SBXkEILe6PZdmLyGBSFK63XhPM_V7o", 
+            authDomain: "bravorians-bsi.firebaseapp.com", 
+            databaseURL: "https://bravorians-bsi-default-rtdb.asia-southeast1.firebasedatabase.app", 
+            projectId: "bravorians-bsi", 
+            appId: "1:314220494464:web:d3b21e9b742e1db86f7065" 
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.database();
+
+        let mode = 'login';
+        let uData = null;
+
+        const J2 = { 1: ["ENTRY MC", "ENTRY KA", "ENTRY BAS"], 2: ["EXIT KB", "EXIT SBY#2", "EXIT MA"], 3: ["ENTRY KC", "ENTRY BDL/Autogate", "ENTRY SBY#1"], 4: ["EXIT LORI", "EXIT BAS", "EXIT KD"], 5: ["ENTRY MC", "ENTRY SBY#3", "ENTRY KB"], 6: ["EXIT MA", "EXIT SBY#1", "EXIT KC"], 7: ["ENTRY SBY#2", "ENTRY BAS", "ENTRY KD"], 8: ["EXIT BAS", "EXIT KA", "EXIT SBY#3"], 9: ["ENTRY KA", "ENTRY BAS", "ENTRY MC"], 10: ["EXIT SBY#2", "EXIT MA", "EXIT KB"], 11: ["ENTRY SBY#1", "ENTRY KC", "ENTRY BDL/Autogate"], 12: ["EXIT KD", "EXIT LORI", "EXIT BAS"], 13: ["ENTRY SBY#3", "ENTRY KB", "ENTRY MC"], 14: ["EXIT KC", "EXIT MA", "EXIT SBY#1"], 15: ["ENTRY KD", "ENTRY SBY#2", "ENTRY BAS"], 16: ["EXIT SBY#3", "EXIT BAS", "EXIT KA"], 17: ["ENTRY BAS", "ENTRY MC", "ENTRY KA"], 18: ["EXIT MA", "EXIT KB", "EXIT SBY#2"], 19: ["ENTRY BDL/Autogate", "ENTRY SBY#1", "ENTRY KC"], 20: ["EXIT BAS", "EXIT KD", "EXIT LORI"], 21: ["ENTRY KB", "ENTRY MC", "ENTRY SBY#3"], 22: ["EXIT SBY#1", "EXIT KC", "EXIT MA"], 23: ["ENTRY BAS", "ENTRY KD", "ENTRY SBY#2"], 24: ["EXIT KA", "EXIT SBY#3", "EXIT BAS"] };
+        const S_ROW = { 1:1, 2:2, 3:1, 4:20, 5:13, 6:16, 7:17, 8:6, 9:3, 10:10, 11:7, 12:24, 13:15, 14:22, 15:5, 16:14, 17:19, 18:8, 19:9, 20:12, 21:21, 22:4, 23:11, 24:18, 25:23 };
+
+        function getDuty(date, plt) {
+            let base = new Date(2026, 0, 3);
+            let target = new Date(date); target.setHours(0,0,0,0);
+            let diff = Math.floor((target - base) / 86400000);
+            if (diff < 0) return { off: true };
+            let pos = diff % 4;
+            if (pos === 3) return { off: true };
+            let row = ((S_ROW[plt] + Math.floor(diff/4) - 1) % 24) + 1;
+            return { off: false, s: ["PETANG", "PAGI", "MALAM"][pos], l: J2[row][pos] };
         }
 
-        window.onerror = function(m, u, l) { addLog(`CRASH: ${m} at line ${l}`, "text-red-500"); };
-
-        try {
-            addLog("Langkah 1: Memuatkan konfigurasi...");
-            const firebaseConfig = { 
-                apiKey: "AIzaSyCQ9SBXkEILe6PZdmLyGBSFK63XhPM_V7o", 
-                authDomain: "bravorians-bsi.firebaseapp.com", 
-                databaseURL: "https://bravorians-bsi-default-rtdb.asia-southeast1.firebasedatabase.app", 
-                projectId: "bravorians-bsi", 
-                appId: "1:314220494464:web:d3b21e9b742e1db86f7065" 
-            };
-
-            addLog("Langkah 2: Menghubung ke Firebase...");
-            firebase.initializeApp(firebaseConfig);
-            addLog("Berjaya: Firebase App Initialized.", "text-green-400");
-
-            const auth = firebase.auth();
-            const db = firebase.database();
-
-            addLog("Langkah 3: Memeriksa sambungan Database...");
-            // Ujian sambungan database secara terus
-            const connectedRef = db.ref(".info/connected");
-            connectedRef.on("value", (snap) => {
-                if (snap.val() === true) {
-                    addLog("Status: DATABASE TERHUBUNG!", "text-green-400");
-                } else {
-                    addLog("Status: DATABASE TERPUTUS (Menunggu...)", "text-orange-400");
-                }
-            });
-
-            addLog("Langkah 4: Memeriksa status login...");
-            auth.onAuthStateChanged(user => {
-                addLog("Status: Auth State Changed.");
-                document.getElementById('spinner').style.display = 'none';
-                if (user) {
-                    addLog(`User dikesan: ${user.email}`, "text-green-400");
-                    document.getElementById('status-text').innerText = "ANDA TELAH LOGIN";
-                } else {
-                    addLog("Status: Tiada user login.", "text-yellow-400");
-                    document.getElementById('status-text').innerText = "SEDIA UNTUK LOGIN";
-                }
-            });
-
-        } catch (e) {
-            addLog(`RALAT KRITIKAL: ${e.message}`, "text-red-500");
+        function toggleMode() {
+            mode = mode === 'login' ? 'reg' : 'login';
+            document.getElementById('reg-fields').classList.toggle('hidden');
+            document.getElementById('auth-title').innerText = mode === 'login' ? 'BRAVORIAN' : 'DAFTAR';
+            document.getElementById('toggle-btn').innerText = mode === 'login' ? 'Daftar Akaun Baru' : 'Sudah ada akaun? Log Masuk';
         }
+
+        function doAuth() {
+            const e = document.getElementById('em').value;
+            const p = document.getElementById('pw').value;
+            if(mode === 'login') {
+                auth.signInWithEmailAndPassword(e, p).catch(err => alert("Gagal: " + err.message));
+            } else {
+                const name = document.getElementById('fn').value;
+                const plt = document.getElementById('plt').value;
+                auth.createUserWithEmailAndPassword(e, p).then(r => {
+                    db.ref('users/' + r.user.uid).set({ fullName: name, platoon: parseInt(plt), role: 'user', status: 'pending' });
+                    alert("Berjaya! Tunggu Admin luluskan."); auth.signOut();
+                }).catch(err => alert(err.message));
+            }
+        }
+
+        function showPage(p) {
+            const cont = document.getElementById('content');
+            toggleSidebar(false);
+            if(p === 'welcome') {
+                let d = new Date(); d.setDate(d.getDate() + 1);
+                let r = getDuty(d, uData.platoon);
+                cont.innerHTML = `<div class="text-center mt-10">
+                    <p class="text-xs font-bold text-slate-400 uppercase">Selamat Datang</p>
+                    <h2 class="text-2xl font-black uppercase mb-8">${uData.fullName}</h2>
+                    <div class="bg-black text-yellow-400 p-8 rounded-[2rem] shadow-xl">
+                        <p class="text-[10px] font-bold opacity-60 uppercase mb-2">Syif Esok (${d.toLocaleDateString()})</p>
+                        <h3 class="text-3xl font-black">${r.off ? 'OFF' : r.s}</h3>
+                        <p class="text-sm font-bold mt-2">${r.off ? '-' : r.l}</p>
+                    </div>
+                </div>`;
+            } else if (p === 'cal') {
+                let h = `<h2 class="text-xl font-black mb-6 uppercase text-center">Jadual Januari 2026</h2><div class="grid grid-cols-2 gap-3">`;
+                for(let i=1; i<=31; i++) {
+                    let d = new Date(2026, 0, i); let r = getDuty(d, uData.platoon);
+                    h += `<div class="p-4 rounded-2xl border ${r.off ? 'bg-slate-100 opacity-50' : 'bg-white shadow-sm'}">
+                        <p class="text-[9px] font-bold text-slate-400">${i} JAN</p>
+                        <p class="text-xs font-black uppercase">${r.off ? 'OFF' : r.s}</p>
+                        <p class="text-[9px] font-bold text-yellow-600 uppercase">${r.off ? '' : r.l}</p>
+                    </div>`;
+                }
+                cont.innerHTML = h + `</div>`;
+            }
+        }
+
+        function toggleSidebar(show = true) {
+            const s = document.getElementById('sidebar');
+            const c = document.getElementById('side-cont');
+            if(show && s.classList.contains('hidden')) {
+                s.classList.remove('hidden'); setTimeout(() => c.classList.remove('closed'), 10);
+            } else {
+                c.classList.add('closed'); setTimeout(() => s.classList.add('hidden'), 300);
+            }
+        }
+
+        auth.onAuthStateChanged(user => {
+            document.getElementById('loader').classList.add('hidden');
+            if(user) {
+                db.ref('users/' + user.uid).on('value', snap => {
+                    if(snap.exists() && snap.val().status === 'approved') {
+                        uData = snap.val();
+                        document.getElementById('auth-section').classList.add('hidden');
+                        document.getElementById('main-dashboard').classList.remove('hidden');
+                        if(uData.role === 'admin') document.getElementById('adm-btn').classList.remove('hidden');
+                        showPage('welcome');
+                    } else {
+                        if(snap.exists() && snap.val().status === 'pending') alert("Akaun dalam proses kelulusan.");
+                        auth.signOut();
+                        document.getElementById('auth-section').classList.remove('hidden');
+                        document.getElementById('main-dashboard').classList.add('hidden');
+                    }
+                });
+            } else {
+                document.getElementById('auth-section').classList.remove('hidden');
+                document.getElementById('main-dashboard').classList.add('hidden');
+            }
+        });
+
+        const splt = document.getElementById('plt');
+        for(let i=1; i<=25; i++) { let o = document.createElement('option'); o.value = i; o.text = "PLATUN " + i; splt.add(o); }
     </script>
 </body>
 </html>
