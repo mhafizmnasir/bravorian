@@ -3,187 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BRAVORIAN BSI</title>
+    <title>BRAVORIANS BSI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
-    
-    :root {
-        --bravorian-gold: #FFC107; /* Warna kuning dari logo anda */
-        --bravorian-dark: #1A1A1B; /* Warna hitam dari logo anda */
-        --bg-light: #F8FAFC;       /* Latar putih profesional */
-    }
-
-    body { 
-        font-family: 'Plus Jakarta Sans', sans-serif; 
-        background-color: var(--bg-light);
-        color: var(--bravorian-dark);
-        -webkit-tap-highlight-color: transparent;
-    }
-
-    /* Input & Kotak Teks - Nampak bersih dengan latar kelabu sangat cair */
-    input, select { 
-        background-color: #FFFFFF !important;
-        color: var(--bravorian-dark) !important;
-        border: 1.5px solid #E2E8F0 !important;
-        border-radius: 1rem !important;
-        padding: 1rem !important;
-        font-size: 12px !important;
-        font-weight: 600 !important;
-    }
-
-    input:focus {
-        border-color: var(--bravorian-gold) !important;
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.2);
-    }
-
-    /* Butang Utama - Kuning Gold dengan tulisan Hitam (Sangat menonjol) */
-    .btn-bravorian {
-        background-color: var(--bravorian-gold);
-        color: var(--bravorian-dark);
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    }
-
-    .btn-bravorian:active {
-        transform: translateY(2px);
-        box-shadow: none;
-    }
-
-    /* Kad Putih yang nampak 'floating' */
-    .card-clean {
-        background: #FFFFFF;
-        border-radius: 2rem;
-        border: 1px solid #F1F5F9;
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
-    }
-</style>
-
-</head>
-<body>
-
-    <div id="loader" class="fixed inset-0 bg-black z-[100] flex flex-col items-center justify-center">
-        <div class="w-12 h-12 border-4 border-bravorian-yellow border-t-transparent rounded-full animate-spin"></div>
-        <p class="mt-4 text-[10px] font-black uppercase tracking-[0.3em] text-bravorian-yellow">Bravorian System Loading...</p>
-    </div>
-
-    <div id="auth-section" class="hidden min-h-screen flex items-center justify-center p-6">
-    <div id="auth-section" class="hidden min-h-screen flex items-center justify-center p-6 bg-[#F8FAFC]">
-    <div class="card-clean p-10 w-full max-w-md text-center">
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
         
-        <div class="flex justify-center mb-8">
-            <img src="assets/img/logo.png" alt="Logo Bravorians" class="h-28 object-contain drop-shadow-md" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1067/1067357.png'">
-        </div>
+        :root {
+            --bravorian-gold: #FFC107; /* Kuning Logo */
+            --bravorian-dark: #1A1A1B; /* Hitam Logo */
+            --bg-light: #F8FAFC;       /* Putih Bersih */
+        }
 
-        <h1 id="auth-title" class="text-3xl font-extrabold text-[#1A1A1B] uppercase italic tracking-tighter">BRAVORIANS</h1>
-        <p class="text-[9px] font-bold text-slate-400 uppercase mb-8 tracking-[0.5em]">Border Security Initiative</p>
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: var(--bg-light);
+            color: var(--bravorian-dark);
+            -webkit-tap-highlight-color: transparent;
+        }
 
-        <div class="space-y-4">
-            <div id="reg-fields" class="hidden space-y-4">
-                <div class="flex gap-3">
-                    <input type="text" id="reg-fn" placeholder="NAMA DEPAN" oninput="this.value = this.value.toUpperCase()" class="w-1/2">
-                    <input type="text" id="reg-ln" placeholder="NAMA BELAKANG" oninput="this.value = this.value.toUpperCase()" class="w-1/2">
-                </div>
-                <select id="reg-plt" class="w-full"></select>
+        .card-clean {
+            background: #FFFFFF;
+            border-radius: 2.5rem;
+            border: 1px solid #F1F5F9;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-bravorian {
+            background-color: var(--bravorian-gold);
+            color: var(--bravorian-dark);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.2s;
+        }
+
+        .btn-bravorian:active { transform: scale(0.96); }
+
+        input, select { 
+            background-color: #F1F5F9 !important;
+            color: var(--bravorian-dark) !important;
+            border: 1.5px solid transparent !important;
+            border-radius: 1.25rem !important;
+            padding: 1.25rem !important;
+            font-size: 12px !important;
+            font-weight: 700 !important;
+            outline: none !important;
+        }
+
+        input:focus { border-color: var(--bravorian-gold) !important; background-color: white !important; }
+
+        .nav-active { border-left: 4px solid var(--bravorian-gold); background: #FFFBEB; color: var(--bravorian-dark); }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div id="loader" class="fixed inset-0 bg-white z-[100] flex flex-col items-center justify-center">
+        <div class="w-12 h-12 border-4 border-[#FFC107] border-t-transparent rounded-full animate-spin"></div>
+        <p class="mt-4 text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Bravorians System...</p>
+    </div>
+    <div id="auth-section" class="hidden min-h-screen flex items-center justify-center p-6">
+        <div class="card-clean p-10 w-full max-w-md text-center">
+            <div class="flex justify-center mb-8">
+                <img src="logo.png" alt="Logo" class="h-24 object-contain drop-shadow-sm" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1067/1067357.png'">
             </div>
 
-            <input type="email" id="auth-email" placeholder="ALAMAT EMEL" class="w-full">
-            <input type="password" id="auth-pass" placeholder="KATA LALUAN" class="w-full">
+            <h1 id="auth-title" class="text-3xl font-black text-black uppercase italic tracking-tighter">BRAVORIANS</h1>
+            <p id="auth-subtitle" class="text-[9px] font-bold text-slate-400 uppercase mb-8 tracking-[0.4em]">B.S.I Johor Bahru</p>
 
-            <button onclick="handleAuthSubmit()" id="main-auth-btn" class="btn-bravorian w-full py-5 rounded-2xl mt-4">
-                Masuk Sistem
-            </button>
-        </div>
+            <div class="space-y-4">
+                <div id="reg-fields" class="hidden space-y-4">
+                    <div class="flex gap-3">
+                        <input type="text" id="reg-fn" placeholder="NAMA DEPAN" oninput="this.value = this.value.toUpperCase()" class="w-1/2">
+                        <input type="text" id="reg-ln" placeholder="NAMA BELAKANG" oninput="this.value = this.value.toUpperCase()" class="w-1/2">
+                    </div>
+                    <select id="reg-plt" class="w-full"></select>
+                </div>
 
-        <div class="mt-10 flex flex-col gap-4">
-            <button onclick="showForgotView()" class="text-[10px] text-slate-400 font-bold uppercase tracking-widest hover:text-amber-500">Lupa Kata Laluan?</button>
-            <button id="toggle-reg-btn" onclick="showRegisterView()" class="text-[10px] text-[#1A1A1B] font-black uppercase border-b-2 border-[#FFC107] pb-1 mx-auto">Daftar Akaun Baru</button>
+                <input type="email" id="auth-email" placeholder="ALAMAT EMEL" class="w-full">
+                <div id="pass-field"><input type="password" id="auth-pass" placeholder="KATA LALUAN" class="w-full"></div>
+                
+                <div id="forgot-view" class="hidden text-[11px] text-slate-500 font-bold uppercase py-2">Sila masukkan emel untuk reset kata laluan.</div>
+
+                <button onclick="handleAuthSubmit()" id="main-auth-btn" class="btn-bravorian w-full py-5 rounded-2xl shadow-lg shadow-amber-500/10 mt-4">Log Masuk</button>
+            </div>
+
+            <div class="mt-10 flex flex-col gap-4">
+                <button onclick="showForgotView()" class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Lupa Kata Laluan?</button>
+                <button id="toggle-reg-btn" onclick="showRegisterView()" class="text-[10px] text-black font-black uppercase border-b-2 border-[#FFC107] pb-1 mx-auto tracking-widest">Daftar Akaun Baru</button>
+            </div>
         </div>
     </div>
-</div>
 
-        <div id="main-dashboard" class="hidden min-h-screen">
-        <nav class="bg-white/95 backdrop-blur-md border-b border-slate-100 p-5 sticky top-0 z-50 flex justify-between items-center px-6">
+    <div id="main-dashboard" class="hidden min-h-screen">
+        <nav class="bg-white/90 backdrop-blur-md border-b border-slate-100 p-5 sticky top-0 z-50 flex justify-between items-center px-6">
             <div class="flex items-center gap-4">
-                <button onclick="toggleSidebar(true)" class="p-3 bg-[#fbbf24] rounded-2xl shadow-lg shadow-yellow-500/20 active:scale-90 transition-transform">
-                    <svg class="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M4 6h16M4 12h16m-7 6h7"></path>
-                    </svg>
+                <button onclick="toggleSidebar(true)" class="p-3 bg-[#FFC107] rounded-2xl shadow-lg active:scale-90 transition-all">
+                    <svg class="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
                 </button>
                 <div class="flex flex-col">
-                    <span class="font-black text-black italic uppercase tracking-tighter text-xl leading-none">BRAVORIAN</span>
-                    <span id="live-clock" class="text-[9px] font-black text-slate-400 uppercase mt-1 tracking-widest"></span>
+                    <span class="font-black text-black italic uppercase tracking-tighter text-xl leading-none">BRAVORIANS</span>
+                    <span id="live-clock" class="text-[9px] font-bold text-slate-400 uppercase mt-1 tracking-widest"></span>
                 </div>
             </div>
-            <button onclick="handleLogout()" class="bg-slate-100 text-slate-500 px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest">Keluar</button>
+            <button onclick="handleLogout()" class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-4 py-2 bg-slate-100 rounded-xl">Keluar</button>
         </nav>
 
-        <div id="sidebar-overlay" onclick="toggleSidebar(false)" class="fixed inset-0 bg-black/60 z-[60] hidden backdrop-blur-sm">
-            
+        <div id="sidebar-overlay" onclick="toggleSidebar(false)" class="fixed inset-0 bg-black/40 z-[60] hidden backdrop-blur-sm">
             <div id="sidebar-container" onclick="event.stopPropagation()" class="bg-white w-72 h-full p-8 flex flex-col shadow-2xl transition-transform duration-300 -translate-x-full">
                 <div class="flex justify-between items-center mb-12">
                     <h2 class="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em]">Menu Navigasi</h2>
-                    <button onclick="toggleSidebar(false)" class="text-slate-400 font-bold p-2">✕</button>
+                    <button onclick="toggleSidebar(false)" class="text-slate-400 font-bold">✕</button>
                 </div>
-                
                 <div class="flex flex-col gap-2">
-                    <button onclick="showPage('welcome')" class="p-5 rounded-2xl text-left text-[11px] font-black uppercase tracking-widest flex items-center gap-4 hover:bg-slate-50 text-black">
-                        <span class="w-2 h-2 bg-[#fbbf24] rounded-full"></span> Utama
-                    </button>
-                    
-                    <button onclick="showPage('calendar')" class="p-5 rounded-2xl text-left text-[11px] font-black uppercase tracking-widest flex items-center gap-4 hover:bg-slate-50 text-black">
-                        <span class="w-2 h-2 bg-[#fbbf24] rounded-full"></span> Jadual Syif
-                    </button>
-                    
-                    <button onclick="showPage('settings')" class="p-5 rounded-2xl text-left text-[11px] font-black uppercase tracking-widest flex items-center gap-4 hover:bg-slate-50 text-black">
-                        <span class="w-2 h-2 bg-[#fbbf24] rounded-full"></span> Tetapan
-                    </button>
-                    
+                    <button onclick="showPage('welcome')" class="p-5 rounded-2xl text-left text-[11px] font-black uppercase tracking-widest flex items-center gap-4 hover:bg-slate-50">Utama</button>
+                    <button onclick="showPage('calendar')" class="p-5 rounded-2xl text-left text-[11px] font-black uppercase tracking-widest flex items-center gap-4 hover:bg-slate-50">Jadual Syif</button>
+                    <button onclick="showPage('settings')" class="p-5 rounded-2xl text-left text-[11px] font-black uppercase tracking-widest flex items-center gap-4 hover:bg-slate-50">Tetapan</button>
                     <div id="admin-menu-box" class="hidden mt-6 pt-6 border-t border-slate-100">
-                        <button onclick="showAdminPage()" class="w-full bg-black p-5 rounded-2xl text-left text-[11px] font-black uppercase tracking-widest text-[#fbbf24] flex items-center justify-between shadow-xl">
-                            Admin Panel 
-                            <span id="pending-badge" class="hidden bg-red-600 text-white text-[9px] px-2 py-1 rounded-full animate-pulse">0</span>
-                        </button>
+                        <button onclick="showAdminPage()" class="w-full bg-black p-5 rounded-2xl text-left text-[11px] font-black uppercase tracking-widest text-[#FFC107] flex justify-between">Admin Panel <span id="pending-badge" class="hidden bg-red-600 text-white text-[9px] px-2 py-1 rounded-full animate-pulse">0</span></button>
                     </div>
-                </div>
-
-                <div class="mt-auto py-6 text-center">
-                    <p class="text-[8px] text-slate-300 font-bold uppercase tracking-[0.3em]">Bravorian BSI v2.0</p>
                 </div>
             </div>
         </div>
 
-        <main id="dynamic-content" class="p-6 max-w-2xl mx-auto space-y-6">
-            </main>
+        <main id="dynamic-content" class="p-6 max-w-2xl mx-auto space-y-6"></main>
     </div>
 
     <template id="tpl-settings">
-        <div class="space-y-8 animate-in fade-in duration-500">
-            <h2 class="text-2xl font-black italic uppercase text-white">Tetapan Akaun</h2>
-            
-            <div class="bg-zinc-900 border border-zinc-800 p-6 rounded-[2rem] space-y-4">
-                <p class="text-[10px] font-black text-bravorian-yellow uppercase tracking-widest">Tukar Emel</p>
-                <input type="email" id="new-email" placeholder="EMEL BARU" class="w-full p-4 rounded-xl text-xs font-bold uppercase">
-                <button onclick="updateUserEmail()" class="btn-primary w-full py-4 rounded-xl text-[10px] uppercase tracking-widest">Simpan Emel Baru</button>
+        <div class="space-y-6 animate-in fade-in duration-500">
+            <h2 class="text-2xl font-black italic uppercase text-black">Tetapan Akaun</h2>
+            <div class="card-clean p-8 space-y-4">
+                <p class="text-[10px] font-black text-amber-500 uppercase tracking-widest">Kemas kini Emel</p>
+                <input type="email" id="new-email" placeholder="EMEL BARU" class="w-full">
+                <button onclick="updateUserEmail()" class="btn-bravorian w-full py-4 rounded-xl text-[10px]">Simpan Emel Baru</button>
             </div>
-
-            <div class="bg-zinc-900 border border-zinc-800 p-6 rounded-[2rem] space-y-4">
-                <p class="text-[10px] font-black text-bravorian-yellow uppercase tracking-widest">Tukar Kata Laluan</p>
-                <input type="password" id="new-password" placeholder="KATA LALUAN BARU" class="w-full p-4 rounded-xl text-xs font-bold uppercase">
-                <button onclick="updateUserPassword()" class="btn-primary w-full py-4 rounded-xl text-[10px] uppercase tracking-widest">Simpan Password Baru</button>
+            <div class="card-clean p-8 space-y-4">
+                <p class="text-[10px] font-black text-amber-500 uppercase tracking-widest">Kemas kini Kata Laluan</p>
+                <input type="password" id="new-password" placeholder="PASSWORD BARU" class="w-full">
+                <button onclick="updateUserPassword()" class="btn-bravorian w-full py-4 rounded-xl text-[10px]">Simpan Password Baru</button>
             </div>
         </div>
     </template>
         <script>
-        // 1. KONFIGURASI FIREBASE
         const firebaseConfig = { 
             apiKey: "AIzaSyCQ9SBXkEILe6PZdmLyGBSFK63XhPM_V7o", 
             authDomain: "bravorians-bsi.firebaseapp.com", 
@@ -195,115 +160,58 @@
         const auth = firebase.auth();
         const db = firebase.database();
 
-        // 2. DATA JADUAL & PLATOON
+        let uData = null;
+        let authView = 'login';
+
+        // JADUAL DATA
         const J2 = { 1: ["ENTRY MC", "ENTRY KA", "ENTRY BAS"], 2: ["EXIT KB", "EXIT SBY#2", "EXIT MA"], 3: ["ENTRY KC", "ENTRY BDL/Autogate", "ENTRY SBY#1"], 4: ["EXIT LORI", "EXIT BAS", "EXIT KD"], 5: ["ENTRY MC", "ENTRY SBY#3", "ENTRY KB"], 6: ["EXIT MA", "EXIT SBY#1", "EXIT KC"], 7: ["ENTRY SBY#2", "ENTRY BAS", "ENTRY KD"], 8: ["EXIT BAS", "EXIT KA", "EXIT SBY#3"], 9: ["ENTRY KA", "ENTRY BAS", "ENTRY MC"], 10: ["EXIT SBY#2", "EXIT MA", "EXIT KB"], 11: ["ENTRY SBY#1", "ENTRY KC", "ENTRY BDL/Autogate"], 12: ["EXIT KD", "EXIT LORI", "EXIT BAS"], 13: ["ENTRY SBY#3", "ENTRY KB", "ENTRY MC"], 14: ["EXIT KC", "EXIT MA", "EXIT SBY#1"], 15: ["ENTRY KD", "ENTRY SBY#2", "ENTRY BAS"], 16: ["EXIT SBY#3", "EXIT BAS", "EXIT KA"], 17: ["ENTRY BAS", "ENTRY MC", "ENTRY KA"], 18: ["EXIT MA", "EXIT KB", "EXIT SBY#2"], 19: ["ENTRY BDL/Autogate", "ENTRY SBY#1", "ENTRY KC"], 20: ["EXIT BAS", "EXIT KD", "EXIT LORI"], 21: ["ENTRY KB", "ENTRY MC", "ENTRY SBY#3"], 22: ["EXIT SBY#1", "EXIT KC", "EXIT MA"], 23: ["ENTRY BAS", "ENTRY KD", "ENTRY SBY#2"], 24: ["EXIT KA", "EXIT SBY#3", "EXIT BAS"] };
         const S_ROW = { 1:1, 2:2, 3:1, 4:20, 5:13, 6:16, 7:17, 8:6, 9:3, 10:10, 11:7, 12:24, 13:15, 14:22, 15:5, 16:14, 17:19, 18:8, 19:9, 20:12, 21:21, 22:4, 23:11, 24:18, 25:23 };
-        
-        let uData = null;
-        let authView = 'login'; // login, reg, forgot
 
-        // 3. FUNGSI UI (TOGGLE VIEWS)
-        function showRegisterView() {
-            authView = 'reg';
-            document.getElementById('reg-fields').classList.remove('hidden');
-            document.getElementById('pass-field').classList.remove('hidden');
-            document.getElementById('forgot-view').classList.add('hidden');
-            document.getElementById('auth-title').innerText = 'DAFTAR';
-            document.getElementById('main-auth-btn').innerText = 'Daftar Akaun';
-            document.getElementById('toggle-reg-btn').innerText = 'Sudah ada akaun? Log Masuk';
-            document.getElementById('toggle-reg-btn').onclick = showLoginView;
+        function getDuty(date, plt) {
+            let base = new Date(2026, 0, 3);
+            let target = new Date(date); target.setHours(0,0,0,0);
+            let diff = Math.floor((target - base) / 86400000);
+            if (diff < 0) return { off: true };
+            let pos = diff % 4;
+            if (pos === 3) return { off: true };
+            let row = ((S_ROW[plt] + Math.floor(diff/4) - 1) % 24) + 1;
+            return { off: false, s: ["PETANG", "PAGI", "MALAM"][pos], l: J2[row][pos] };
         }
 
-        function showLoginView() {
-            authView = 'login';
-            document.getElementById('reg-fields').classList.add('hidden');
-            document.getElementById('pass-field').classList.remove('hidden');
-            document.getElementById('forgot-view').classList.add('hidden');
-            document.getElementById('auth-title').innerText = 'BRAVORIAN';
-            document.getElementById('main-auth-btn').innerText = 'Log Masuk';
-            document.getElementById('toggle-reg-btn').innerText = 'Daftar Akaun Baru';
-            document.getElementById('toggle-reg-btn').onclick = showRegisterView;
-        }
+        // AUTH LOGIC
+        function showRegisterView() { authView = 'reg'; document.getElementById('reg-fields').classList.remove('hidden'); document.getElementById('pass-field').classList.remove('hidden'); document.getElementById('forgot-view').classList.add('hidden'); document.getElementById('auth-title').innerText = 'DAFTAR'; document.getElementById('main-auth-btn').innerText = 'Daftar Sekarang'; }
+        function showLoginView() { authView = 'login'; document.getElementById('reg-fields').classList.add('hidden'); document.getElementById('pass-field').classList.remove('hidden'); document.getElementById('forgot-view').classList.add('hidden'); document.getElementById('auth-title').innerText = 'BRAVORIANS'; document.getElementById('main-auth-btn').innerText = 'Log Masuk'; }
+        function showForgotView() { authView = 'forgot'; document.getElementById('reg-fields').classList.add('hidden'); document.getElementById('pass-field').classList.add('hidden'); document.getElementById('forgot-view').classList.remove('hidden'); document.getElementById('auth-title').innerText = 'RESET'; document.getElementById('main-auth-btn').innerText = 'Hantar Pautan'; }
 
-        function showForgotView() {
-            authView = 'forgot';
-            document.getElementById('reg-fields').classList.add('hidden');
-            document.getElementById('pass-field').classList.add('hidden');
-            document.getElementById('forgot-view').classList.remove('hidden');
-            document.getElementById('auth-title').innerText = 'RESET';
-            document.getElementById('main-auth-btn').innerText = 'Hantar Pautan Reset';
-            document.getElementById('toggle-reg-btn').innerText = 'Kembali ke Log Masuk';
-            document.getElementById('toggle-reg-btn').onclick = showLoginView;
-        }
-
-        // 4. LOGIK AUTHENTICATION
         function handleAuthSubmit() {
-            const email = document.getElementById('auth-email').value.trim();
+            const email = document.getElementById('auth-email').value;
             const pass = document.getElementById('auth-pass').value;
-
-            if (authView === 'login') {
-                auth.signInWithEmailAndPassword(email, pass).catch(e => alert("Gagal: " + e.message));
-            } 
-            else if (authView === 'reg') {
-                const fn = document.getElementById('reg-fn').value.trim();
-                const ln = document.getElementById('reg-ln').value.trim();
+            if(authView === 'login') auth.signInWithEmailAndPassword(email, pass).catch(e => alert(e.message));
+            else if(authView === 'reg') {
+                const fn = document.getElementById('reg-fn').value;
+                const ln = document.getElementById('reg-ln').value;
                 const plt = document.getElementById('reg-plt').value;
-                if(!fn || !ln || !plt) return alert("Sila isi nama dan platun.");
-                
                 auth.createUserWithEmailAndPassword(email, pass).then(res => {
-                    db.ref('users/' + res.user.uid).set({
-                        fullName: `${fn} ${ln}`,
-                        platoon: parseInt(plt),
-                        role: 'user',
-                        status: 'pending'
-                    });
-                    alert("Pendaftaran Berjaya! Sila tunggu kelulusan Admin.");
-                    auth.signOut();
-                    showLoginView();
+                    db.ref('users/' + res.user.uid).set({ fullName: `${fn} ${ln}`, platoon: parseInt(plt), role: 'user', status: 'pending' });
+                    alert("Berjaya! Sila tunggu kelulusan admin."); auth.signOut(); showLoginView();
                 }).catch(e => alert(e.message));
-            }
-            else if (authView === 'forgot') {
-                auth.sendPasswordResetEmail(email).then(() => {
-                    alert("Pautan reset kata laluan telah dihantar ke emel anda.");
-                    showLoginView();
-                }).catch(e => alert(e.message));
+            } else if(authView === 'forgot') {
+                auth.sendPasswordResetEmail(email).then(() => { alert("Pautan reset dihantar!"); showLoginView(); }).catch(e => alert(e.message));
             }
         }
 
-        // 5. FUNGSI UPDATE (TETAPAN)
-        function updateUserEmail() {
-            const newEmail = document.getElementById('new-email').value.trim();
-            const user = auth.currentUser;
-            if(!newEmail) return;
-            user.updateEmail(newEmail).then(() => {
-                alert("Emel berjaya dikemaskini.");
-                location.reload();
-            }).catch(e => alert("Sila log masuk semula sebelum menukar emel (Security Check)."));
-        }
-
-        function updateUserPassword() {
-            const newPw = document.getElementById('new-password').value;
-            const user = auth.currentUser;
-            if(newPw.length < 6) return alert("Password mesti sekurang-kurangnya 6 aksara.");
-            user.updatePassword(newPw).then(() => {
-                alert("Kata laluan berjaya dikemaskini.");
-            }).catch(e => alert(e.message));
-        }
-
-        // 6. MONITOR STATUS USER
         auth.onAuthStateChanged(user => {
             document.getElementById('loader').classList.add('hidden');
-            if (user) {
+            if(user) {
                 db.ref('users/' + user.uid).on('value', snap => {
-                    const data = snap.val();
-                    if (data && data.status === 'approved') {
-                        uData = data;
+                    uData = snap.val();
+                    if(uData && uData.status === 'approved') {
                         document.getElementById('auth-section').classList.add('hidden');
                         document.getElementById('main-dashboard').classList.remove('hidden');
                         if(uData.role === 'admin') document.getElementById('admin-menu-box').classList.remove('hidden');
                         showPage('welcome');
                     } else {
-                        if(data && data.status === 'pending') alert("Akaun anda masih menunggu kelulusan.");
+                        if(uData && uData.status === 'pending') alert("Akaun dalam proses kelulusan.");
                         auth.signOut();
                     }
                 });
@@ -313,141 +221,41 @@
             }
         });
 
-        // 7. UTILITY FUNCTIONS
-        function toggleSidebar(show) {
-            const overlay = document.getElementById('sidebar-overlay');
-            const container = document.getElementById('sidebar-container');
-            if(show) {
-                overlay.classList.remove('hidden');
-                setTimeout(() => container.classList.remove('-translate-x-full'), 10);
-            } else {
-                container.classList.add('-translate-x-full');
-                setTimeout(() => overlay.classList.add('hidden'), 300);
-            }
-        }
-        // 8. LOGIK PENGIRAAN JADUAL SYIF
-        function getDuty(date, plt) {
-            let baseDate = new Date(2026, 0, 3); // Rujukan kitaran: 3 Jan 2026
-            let targetDate = new Date(date); 
-            targetDate.setHours(0,0,0,0);
-            
-            let diffDays = Math.floor((targetDate - baseDate) / 86400000);
-            if (diffDays < 0) return { off: true };
-
-            let cyclePos = diffDays % 4; // Kitaran 4 hari (Petang, Pagi, Malam, OFF)
-            if (cyclePos === 3) return { off: true };
-
-            // Kira baris Jadual 2 berdasarkan pusingan 24 baris
-            let row = ((S_ROW[plt] + Math.floor(diffDays/4) - 1) % 24) + 1;
-            return { 
-                off: false, 
-                shift: ["PETANG", "PAGI", "MALAM"][cyclePos], 
-                loc: J2[row][cyclePos] 
-            };
-        }
-
-        // 9. PENGURUSAN HALAMAN (PAGING)
         function showPage(p, targetMonth = new Date().getMonth()) {
-            const cont = document.getElementById('dynamic-content');
-            toggleSidebar(false);
-            
-            if (p === 'welcome') {
-                let d = new Date(); d.setDate(d.getDate() + 1); // Lihat esok
-                let r = getDuty(d, uData.platoon);
-                cont.innerHTML = `
-                    <div class="animate-in fade-in slide-in-from-bottom-4 duration-700">
-                        <div class="bg-zinc-900 border border-zinc-800 p-8 rounded-[3rem] text-center shadow-2xl relative overflow-hidden">
-                            <div class="absolute top-0 left-0 w-full h-1 bg-bravorian-yellow"></div>
-                            <p class="text-[10px] font-black text-zinc-500 uppercase tracking-[0.3em] mb-2">Selamat Datang</p>
-                            <h2 class="text-2xl font-black text-white uppercase italic tracking-tighter">${uData.fullName}</h2>
-                            <span class="inline-block mt-3 px-4 py-1.5 bg-zinc-800 text-bravorian-yellow text-[9px] font-black rounded-full border border-zinc-700 uppercase">Platun ${uData.platoon}</span>
-                            
-                            <div class="mt-10 py-8 border-t border-zinc-800/50">
-                                <p class="text-[9px] font-bold text-zinc-500 uppercase mb-4 tracking-widest">Tugasan Esok (${d.toLocaleDateString('ms-MY')})</p>
-                                <h3 class="text-5xl font-black ${r.off ? 'text-zinc-700' : 'text-white'} italic uppercase">${r.off ? 'OFF' : r.shift}</h3>
-                                ${!r.off ? `<p class="text-bravorian-yellow font-black text-sm mt-4 tracking-widest">${r.loc}</p>` : ''}
-                            </div>
-                        </div>
+            const cont = document.getElementById('dynamic-content'); toggleSidebar(false);
+            if(p === 'welcome') {
+                let d = new Date(); d.setDate(d.getDate() + 1); let r = getDuty(d, uData.platoon);
+                cont.innerHTML = `<div class="card-clean p-10 text-center animate-in slide-in-from-bottom-5 duration-700">
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Tugasan Esok</p>
+                    <h3 class="text-5xl font-black text-black italic uppercase">${r.off ? 'OFF' : r.s}</h3>
+                    <p class="text-amber-500 font-bold mt-4">${r.off ? '-' : r.l}</p>
+                </div>`;
+            } else if(p === 'calendar') {
+                let html = `<div class="grid grid-cols-2 gap-4">`;
+                for(let i=1; i<=31; i++) {
+                    let d = new Date(2026, 0, i); let r = getDuty(d, uData.platoon);
+                    html += `<div class="card-clean p-5 ${r.off ? 'opacity-40' : ''}">
+                        <p class="text-[9px] font-bold text-slate-400">${i} JAN</p>
+                        <p class="text-xs font-black">${r.off ? 'OFF' : r.s}</p>
+                        <p class="text-[8px] font-bold text-amber-500 truncate">${r.off ? '' : r.l}</p>
                     </div>`;
-            } 
-            else if (p === 'calendar') {
-                const months = ["JANUARI", "FEBRUARI", "MAC", "APRIL", "MEI", "JUN", "JULAI", "OGOS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DISEMBER"];
-                let html = `
-                    <div class="bg-zinc-900 p-4 rounded-2xl mb-6 border border-zinc-800">
-                        <select onchange="showPage('calendar', this.value)" class="w-full p-4 bg-transparent text-white text-xs font-black uppercase outline-none">
-                            ${months.map((m, i) => `<option value="${i}" ${i == targetMonth ? 'selected' : ''} class="bg-zinc-900">${m} 2026</option>`).join('')}
-                        </select>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">`;
-                
-                const daysInMonth = new Date(2026, parseInt(targetMonth) + 1, 0).getDate();
-                for(let i=1; i<=daysInMonth; i++) {
-                    let d = new Date(2026, targetMonth, i);
-                    let r = getDuty(d, uData.platoon);
-                    html += `
-                        <div class="p-5 rounded-[2rem] border ${r.off ? 'bg-zinc-950/50 border-zinc-900' : 'bg-zinc-900 border-zinc-800 shadow-lg'}">
-                            <p class="text-[9px] font-bold text-zinc-600 mb-1">${i} ${months[targetMonth].substring(0,3)} (${d.toLocaleDateString('ms-MY',{weekday:'short'}).toUpperCase()})</p>
-                            <p class="text-sm font-black ${r.off ? 'text-zinc-800' : 'text-white'} uppercase">${r.off ? 'OFF' : r.shift}</p>
-                            <p class="text-[8px] font-black text-bravorian-yellow mt-2 uppercase truncate">${r.off ? '' : r.loc}</p>
-                        </div>`;
                 }
                 cont.innerHTML = html + `</div>`;
-            }
-            else if (p === 'settings') {
-                const tpl = document.getElementById('tpl-settings');
-                cont.innerHTML = tpl.innerHTML;
-            }
+            } else if(p === 'settings') { cont.innerHTML = document.getElementById('tpl-settings').innerHTML; }
         }
 
-        // 10. FUNGSI ADMIN PANEL
-        function showAdminPage() {
-            const cont = document.getElementById('dynamic-content');
-            toggleSidebar(false);
-            cont.innerHTML = `<h2 class="text-xl font-black text-white uppercase mb-6 italic">Pengesahan Pengguna</h2><div id="admin-list" class="space-y-4"></div>`;
-            
-            db.ref('users').once('value').then(snap => {
-                const list = document.getElementById('admin-list');
-                let count = 0;
-                snap.forEach(child => {
-                    const u = child.val();
-                    if(u.status === 'pending') {
-                        count++;
-                        const div = document.createElement('div');
-                        div.className = "p-6 bg-zinc-900 border border-zinc-800 rounded-[2rem] flex justify-between items-center animate-in zoom-in-95 duration-300";
-                        div.innerHTML = `
-                            <div>
-                                <p class="text-xs font-black text-white uppercase">${u.fullName}</p>
-                                <p class="text-[9px] font-bold text-zinc-500 uppercase tracking-widest">Platun ${u.platoon}</p>
-                            </div>
-                            <button onclick="approveUser('${child.key}')" class="bg-bravorian-yellow text-black px-5 py-2.5 rounded-xl text-[10px] font-black uppercase shadow-lg shadow-yellow-500/10">Lulus</button>
-                        `;
-                        list.appendChild(div);
-                    }
-                });
-                if(count === 0) list.innerHTML = `<p class="text-zinc-600 text-xs font-bold uppercase text-center py-10">Tiada permohonan baru.</p>`;
-            });
+        function toggleSidebar(s) {
+            const o = document.getElementById('sidebar-overlay');
+            const c = document.getElementById('sidebar-container');
+            if(s) { o.classList.remove('hidden'); setTimeout(() => c.classList.remove('-translate-x-full'), 10); }
+            else { c.classList.add('-translate-x-full'); setTimeout(() => o.classList.add('hidden'), 300); }
         }
 
-        function approveUser(uid) {
-            if(confirm("Luluskan pengguna ini?")) {
-                db.ref('users/' + uid).update({ status: 'approved' }).then(() => {
-                    alert("Pengguna telah diluluskan.");
-                    showAdminPage();
-                });
-            }
-        }
-            
         function handleLogout() { if(confirm("Log keluar?")) auth.signOut(); }
 
-        // Load Platoon Options
-        const pltSelect = document.getElementById('reg-plt');
-        for(let i=1; i<=25; i++) {
-            let opt = document.createElement('option');
-            opt.value = i; opt.text = "PLATUN " + i;
-            pltSelect.add(opt);
-        }
+        const pltS = document.getElementById('reg-plt');
+        for(let i=1; i<=25; i++) { let o = document.createElement('option'); o.value = i; o.text = "PLATUN " + i; pltS.add(o); }
 
-        // Live Clock
         setInterval(() => {
             const el = document.getElementById('live-clock');
             if(el) el.innerText = new Date().toLocaleString('ms-MY', { weekday: 'short', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).toUpperCase();
@@ -455,4 +263,3 @@
     </script>
 </body>
 </html>
-
