@@ -12,48 +12,58 @@
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
     
+    :root {
+        --bravorian-gold: #FFC107; /* Warna kuning dari logo anda */
+        --bravorian-dark: #1A1A1B; /* Warna hitam dari logo anda */
+        --bg-light: #F8FAFC;       /* Latar putih profesional */
+    }
+
     body { 
         font-family: 'Plus Jakarta Sans', sans-serif; 
-        background-color: #f8fafc; /* Kembali ke kelabu sangat cair supaya kad putih nampak timbul */
-        color: #0f172a;
+        background-color: var(--bg-light);
+        color: var(--bravorian-dark);
         -webkit-tap-highlight-color: transparent;
     }
 
-    /* Warna Identiti Bravorian */
-    .bg-bravorian { background-color: #000000; } /* Hitam */
-    .text-bravorian { color: #000000; }
-    .bg-gold { background-color: #fbbf24; } /* Kuning logo */
-    .text-gold { color: #fbbf24; }
-
+    /* Input & Kotak Teks - Nampak bersih dengan latar kelabu sangat cair */
     input, select { 
-        background-color: #f1f5f9 !important;
-        color: #0f172a !important;
-        border: none !important;
-        -webkit-appearance: none;
+        background-color: #FFFFFF !important;
+        color: var(--bravorian-dark) !important;
+        border: 1.5px solid #E2E8F0 !important;
+        border-radius: 1rem !important;
+        padding: 1rem !important;
+        font-size: 12px !important;
+        font-weight: 600 !important;
     }
 
     input:focus {
-        ring: 2px solid #fbbf24 !important;
+        border-color: var(--bravorian-gold) !important;
         outline: none;
+        box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.2);
     }
 
-    .btn-main {
-        background-color: #000000;
-        color: #fbbf24;
+    /* Butang Utama - Kuning Gold dengan tulisan Hitam (Sangat menonjol) */
+    .btn-bravorian {
+        background-color: var(--bravorian-gold);
+        color: var(--bravorian-dark);
         font-weight: 800;
-        border-radius: 1rem;
-        transition: all 0.2s;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     }
 
-    .btn-main:active { transform: scale(0.95); }
-    .hidden { display: none !important; }
-    
-    /* Card Style yang kita guna sebelum ni */
-    .bravorian-card {
-        background: white;
-        border-radius: 2.5rem;
-        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-        border: 1px solid #f1f5f9;
+    .btn-bravorian:active {
+        transform: translateY(2px);
+        box-shadow: none;
+    }
+
+    /* Kad Putih yang nampak 'floating' */
+    .card-clean {
+        background: #FFFFFF;
+        border-radius: 2rem;
+        border: 1px solid #F1F5F9;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
     }
 </style>
 
@@ -66,43 +76,36 @@
     </div>
 
     <div id="auth-section" class="hidden min-h-screen flex items-center justify-center p-6">
-    <div class="bravorian-card p-10 w-full max-w-md text-center relative overflow-hidden">
-        <div class="absolute top-0 left-0 w-full h-2 bg-gold"></div>
+    <div id="auth-section" class="hidden min-h-screen flex items-center justify-center p-6 bg-[#F8FAFC]">
+    <div class="card-clean p-10 w-full max-w-md text-center">
         
-        <div class="flex justify-center mb-6">
-            <img src="assets/img/logo.png" alt="Logo" class="h-20 object-contain" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1067/1067357.png'">
+        <div class="flex justify-center mb-8">
+            <img src="assets/img/logo.png" alt="Logo Bravorians" class="h-28 object-contain drop-shadow-md" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1067/1067357.png'">
         </div>
 
-        <h1 id="auth-title" class="text-4xl font-black text-black uppercase italic tracking-tighter">BRAVORIAN</h1>
-        <p id="auth-subtitle" class="text-[10px] font-bold text-slate-400 uppercase mb-10 tracking-[0.4em]">B.S.I Johor Bahru</p>
+        <h1 id="auth-title" class="text-3xl font-extrabold text-[#1A1A1B] uppercase italic tracking-tighter">BRAVORIANS</h1>
+        <p class="text-[9px] font-bold text-slate-400 uppercase mb-8 tracking-[0.5em]">Border Security Initiative</p>
 
         <div class="space-y-4">
             <div id="reg-fields" class="hidden space-y-4">
                 <div class="flex gap-3">
-                    <input type="text" id="reg-fn" placeholder="NAMA DEPAN" oninput="this.value = this.value.toUpperCase()" class="w-1/2 p-5 rounded-2xl text-[12px] font-black uppercase">
-                    <input type="text" id="reg-ln" placeholder="NAMA BELAKANG" oninput="this.value = this.value.toUpperCase()" class="w-1/2 p-5 rounded-2xl text-[12px] font-black uppercase">
+                    <input type="text" id="reg-fn" placeholder="NAMA DEPAN" oninput="this.value = this.value.toUpperCase()" class="w-1/2">
+                    <input type="text" id="reg-ln" placeholder="NAMA BELAKANG" oninput="this.value = this.value.toUpperCase()" class="w-1/2">
                 </div>
-                <select id="reg-plt" class="w-full p-5 rounded-2xl text-[12px] font-black uppercase"></select>
+                <select id="reg-plt" class="w-full"></select>
             </div>
 
-            <input type="email" id="auth-email" placeholder="ALAMAT EMEL" class="w-full p-5 rounded-2xl text-[12px] font-black">
-            
-            <div id="pass-field">
-                <input type="password" id="auth-pass" placeholder="KATA LALUAN" class="w-full p-5 rounded-2xl text-[12px] font-black">
-            </div>
+            <input type="email" id="auth-email" placeholder="ALAMAT EMEL" class="w-full">
+            <input type="password" id="auth-pass" placeholder="KATA LALUAN" class="w-full">
 
-            <div id="forgot-view" class="hidden py-2 text-[11px] text-slate-500 font-bold uppercase">
-                Masukkan emel untuk menerima pautan reset.
-            </div>
-
-            <button onclick="handleAuthSubmit()" id="main-auth-btn" class="btn-main w-full py-5 rounded-2xl text-[12px] uppercase tracking-widest shadow-lg mt-4">
-                Log Masuk
+            <button onclick="handleAuthSubmit()" id="main-auth-btn" class="btn-bravorian w-full py-5 rounded-2xl mt-4">
+                Masuk Sistem
             </button>
         </div>
 
         <div class="mt-10 flex flex-col gap-4">
-            <button onclick="showForgotView()" class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Lupa Kata Laluan?</button>
-            <button id="toggle-reg-btn" onclick="showRegisterView()" class="text-[10px] text-black font-black uppercase border-b-2 border-gold pb-1 mx-auto tracking-widest">Daftar Akaun Baru</button>
+            <button onclick="showForgotView()" class="text-[10px] text-slate-400 font-bold uppercase tracking-widest hover:text-amber-500">Lupa Kata Laluan?</button>
+            <button id="toggle-reg-btn" onclick="showRegisterView()" class="text-[10px] text-[#1A1A1B] font-black uppercase border-b-2 border-[#FFC107] pb-1 mx-auto">Daftar Akaun Baru</button>
         </div>
     </div>
 </div>
