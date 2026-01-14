@@ -2,78 +2,93 @@
 <html lang="ms">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BRAVORIAN BSI</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body { background-color: #f8fafc; font-family: sans-serif; }
-        #debug-log { font-size: 10px; color: red; padding: 10px; }
-    </style>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </head>
-<body>
-    <div id="loading-overlay" class="fixed inset-0 bg-white z-[100] flex flex-col items-center justify-center">
-        <div class="w-12 h-12 border-4 border-yellow-400 border-t-black rounded-full animate-spin"></div>
-        <p class="mt-4 text-[10px] font-bold">MEMUATKAN DATA...</p>
-        <div id="debug-log"></div>
+<body class="bg-slate-50 font-sans">
+
+    <div id="loader" class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center">
+        <div class="w-10 h-10 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
+        <p class="mt-4 text-xs font-bold text-slate-500 uppercase tracking-widest">Menghubung ke Server...</p>
     </div>
 
-    <div id="auth-section" class="hidden p-6 mt-10">
-        <h1 class="text-2xl font-bold text-center">BRAVORIAN LOGIN</h1>
-        <div class="mt-6 space-y-4">
-            <input type="email" id="email" placeholder="Emel" class="w-full p-4 border rounded-xl">
-            <input type="password" id="password" placeholder="Kata Laluan" class="w-full p-4 border rounded-xl">
-            <button id="btn-action" class="w-full bg-black text-yellow-400 py-4 rounded-xl font-bold">LOG MASUK</button>
+    <div id="app" class="hidden">
+        <div id="login-page" class="hidden min-h-screen flex items-center justify-center p-6">
+            <div class="bg-white p-8 rounded-[2rem] shadow-xl w-full max-w-md text-center">
+                <h1 class="text-3xl font-black italic mb-2">BRAVORIAN</h1>
+                <p class="text-[10px] text-slate-400 font-bold mb-8 tracking-widest uppercase">B.S.I Johor Bahru</p>
+                
+                <input type="email" id="email" placeholder="EMEL" class="w-full p-4 bg-slate-100 rounded-xl mb-4 outline-none focus:ring-2 focus:ring-yellow-400 text-sm">
+                <input type="password" id="password" placeholder="KATA LALUAN" class="w-full p-4 bg-slate-100 rounded-xl mb-6 outline-none focus:ring-2 focus:ring-yellow-400 text-sm">
+                
+                <button onclick="handleLogin()" class="w-full bg-black text-yellow-400 py-4 rounded-xl font-bold text-sm shadow-lg active:scale-95 transition-all">MASUK</button>
+                <p id="error-msg" class="mt-4 text-red-500 text-[10px] font-bold uppercase"></p>
+            </div>
+        </div>
+
+        <div id="dash-page" class="hidden p-6 text-center">
+            <h2 class="text-xl font-bold">Selamat Datang, <span id="user-name">...</span></h2>
+            <button onclick="handleLogout()" class="mt-8 bg-red-100 text-red-600 px-6 py-2 rounded-lg font-bold text-xs uppercase">Log Keluar</button>
         </div>
     </div>
 
-    <div id="main-dashboard" class="hidden p-6">
-        <h1 class="text-xl font-bold">Selamat Datang</h1>
-        <button id="btn-logout" class="mt-4 p-2 bg-red-100 text-red-600 rounded">Keluar</button>
-    </div>
+    <script>
+        // Konfigurasi Firebase anda
+        const firebaseConfig = {
+            apiKey: "AIzaSyCQ9SBXkEILe6PZdmLyGBSFK63XhPM_V7o",
+            authDomain: "bravorians-bsi.firebaseapp.com",
+            databaseURL: "https://bravorians-bsi-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "bravorians-bsi",
+            appId: "1:314220494464:web:d3b21e9b742e1db86f7065"
+        };
 
-    <script type="module">
-        // Fungsi untuk kesan ralat pada HP
-        function logError(msg) {
-            document.getElementById('debug-log').innerText += "\nERR: " + msg;
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.database();
+
+        // Pantau Status Login
+        auth.onAuthStateChanged((user) => {
+            document.getElementById('loader').classList.add('hidden');
+            document.getElementById('app').classList.remove('hidden');
+
+            if (user) {
+                document.getElementById('dash-page').classList.remove('hidden');
+                document.getElementById('login-page').classList.add('hidden');
+                
+                // Ambil Nama Pengguna
+                db.ref('users/' + user.uid).once('value').then((snap) => {
+                    if(snap.exists()) {
+                        document.getElementById('user-name').innerText = snap.val().fullName;
+                    }
+                });
+            } else {
+                document.getElementById('login-page').classList.remove('hidden');
+                document.getElementById('dash-page').classList.add('hidden');
+            }
+        });
+
+        // Fungsi Login
+        function handleLogin() {
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('password').value;
+            const errorEl = document.getElementById('error-msg');
+            
+            errorEl.innerText = "Cuba Masuk...";
+            
+            auth.signInWithEmailAndPassword(email, pass)
+                .catch((err) => {
+                    errorEl.innerText = "Ralat: " + err.message;
+                });
         }
 
-        try {
-            import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-            import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-            import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
-            const firebaseConfig = { 
-                apiKey: "AIzaSyCQ9SBXkEILe6PZdmLyGBSFK63XhPM_V7o", 
-                authDomain: "bravorians-bsi.firebaseapp.com", 
-                databaseURL: "https://bravorians-bsi-default-rtdb.asia-southeast1.firebasedatabase.app", 
-                projectId: "bravorians-bsi", 
-                appId: "1:314220494464:web:d3b21e9b742e1db86f7065" 
-            };
-
-            const app = initializeApp(firebaseConfig);
-            const auth = getAuth(app);
-            const db = getDatabase(app);
-
-            onAuthStateChanged(auth, async (user) => {
-                document.getElementById('loading-overlay').classList.add('hidden');
-                if (user) {
-                    document.getElementById('main-dashboard').classList.remove('hidden');
-                } else {
-                    document.getElementById('auth-section').classList.remove('hidden');
-                }
-            });
-
-            document.getElementById('btn-action').onclick = async () => {
-                const e = document.getElementById('email').value;
-                const p = document.getElementById('password').value;
-                try { await signInWithEmailAndPassword(auth, e, p); } 
-                catch(err) { alert("Ralat: " + err.message); }
-            };
-
-            document.getElementById('btn-logout').onclick = () => signOut(auth);
-
-        } catch (e) {
-            logError(e.message);
+        // Fungsi Logout
+        function handleLogout() {
+            auth.signOut();
         }
     </script>
 </body>
