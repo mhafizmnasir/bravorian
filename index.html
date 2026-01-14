@@ -2,94 +2,252 @@
 <html lang="ms">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>BRAVORIAN BSI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; background-color: #f8fafc; }
+        .mobile-menu { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .mobile-menu.closed { transform: translateX(-100%); }
+        input, select { -webkit-appearance: none; border-radius: 1rem; }
+    </style>
 </head>
-<body class="bg-slate-50 font-sans">
+<body class="min-h-screen text-slate-900">
 
-    <div id="loader" class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center">
-        <div class="w-10 h-10 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
-        <p class="mt-4 text-xs font-bold text-slate-500 uppercase tracking-widest">Menghubung ke Server...</p>
+    <div id="loader" class="fixed inset-0 bg-white z-[100] flex flex-col items-center justify-center text-center p-6">
+        <div class="w-12 h-12 border-4 border-yellow-400 border-t-black rounded-full animate-spin"></div>
+        <p class="mt-4 text-[10px] font-black uppercase tracking-widest text-slate-400">Sistem Bravorian Sedang Dimuatkan...</p>
     </div>
 
-    <div id="app" class="hidden">
-        <div id="login-page" class="hidden min-h-screen flex items-center justify-center p-6">
-            <div class="bg-white p-8 rounded-[2rem] shadow-xl w-full max-w-md text-center">
-                <h1 class="text-3xl font-black italic mb-2">BRAVORIAN</h1>
-                <p class="text-[10px] text-slate-400 font-bold mb-8 tracking-widest uppercase">B.S.I Johor Bahru</p>
-                
-                <input type="email" id="email" placeholder="EMEL" class="w-full p-4 bg-slate-100 rounded-xl mb-4 outline-none focus:ring-2 focus:ring-yellow-400 text-sm">
-                <input type="password" id="password" placeholder="KATA LALUAN" class="w-full p-4 bg-slate-100 rounded-xl mb-6 outline-none focus:ring-2 focus:ring-yellow-400 text-sm">
-                
-                <button onclick="handleLogin()" class="w-full bg-black text-yellow-400 py-4 rounded-xl font-bold text-sm shadow-lg active:scale-95 transition-all">MASUK</button>
-                <p id="error-msg" class="mt-4 text-red-500 text-[10px] font-bold uppercase"></p>
+    <div id="auth-section" class="hidden flex items-center justify-center min-h-screen p-6">
+        <div class="bg-white p-10 rounded-[3rem] shadow-2xl w-full max-w-md border border-slate-100 text-center relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-2 bg-yellow-400"></div>
+            <div class="flex justify-center mb-6">
+                <img src="assets/img/logo.png" alt="Logo" class="h-20 object-contain" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1067/1067357.png'">
+            </div>
+            <h1 id="auth-title" class="text-4xl font-black text-black uppercase italic mb-2 tracking-tighter">BRAVORIAN</h1>
+            <p id="auth-subtitle" class="text-[11px] font-bold text-slate-400 uppercase mb-10 tracking-[0.4em]">B.S.I JOHOR BAHRU</p>
+            
+            <div id="register-fields" class="hidden space-y-4 mb-4 text-left">
+                <div class="flex gap-3">
+                    <input type="text" id="reg-firstname" placeholder="NAMA DEPAN" class="w-1/2 p-5 bg-slate-50 border-none text-[12px] font-bold uppercase outline-none focus:ring-2 focus:ring-yellow-400">
+                    <input type="text" id="reg-lastname" placeholder="NAMA BELAKANG" class="w-1/2 p-5 bg-slate-50 border-none text-[12px] font-bold uppercase outline-none focus:ring-2 focus:ring-yellow-400">
+                </div>
+                <select id="reg-platoon" class="w-full p-5 bg-slate-50 border-none text-[12px] font-bold outline-none focus:ring-2 focus:ring-yellow-400 uppercase"></select>
+            </div>
+
+            <div class="space-y-4">
+                <input type="email" id="email" placeholder="EMEL" class="w-full p-5 bg-slate-50 border-none text-[12px] font-bold outline-none focus:ring-2 focus:ring-yellow-400">
+                <input type="password" id="password" placeholder="KATA LALUAN" class="w-full p-5 bg-slate-50 border-none text-[12px] font-bold outline-none focus:ring-2 focus:ring-yellow-400">
+            </div>
+
+            <button onclick="handleAuthAction()" id="btn-action" class="w-full bg-black text-yellow-400 font-black py-5 rounded-2xl mt-8 uppercase text-[12px] tracking-widest shadow-xl active:scale-95 transition-all">Log Masuk</button>
+            
+            <div class="mt-8 flex flex-col gap-4">
+                <button onclick="handleForgotPassword()" class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Lupa Kata Laluan?</button>
+                <button onclick="toggleAuthMode()" id="auth-toggle-btn" class="w-max mx-auto text-[10px] text-black font-black uppercase tracking-widest border-b-2 border-yellow-400 pb-1">Daftar Akaun Baru</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="main-dashboard" class="hidden">
+        <nav class="bg-white/90 backdrop-blur-lg border-b border-slate-100 p-5 sticky top-0 z-50 flex justify-between items-center px-8">
+            <div class="flex items-center gap-4">
+                <button onclick="openMenu()" class="p-3 text-black bg-yellow-400 rounded-2xl">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+                <div class="flex flex-col leading-none">
+                    <span class="font-black text-black italic uppercase tracking-tighter text-lg">Bravorian</span>
+                    <span id="live-clock" class="text-[9px] font-bold text-slate-400 mt-1 uppercase"></span>
+                </div>
+            </div>
+            <button onclick="handleLogout()" class="bg-slate-100 text-slate-600 px-5 py-2.5 rounded-xl text-[10px] font-black uppercase">Keluar</button>
+        </nav>
+
+        <div id="mobile-sidebar" class="fixed inset-0 bg-black/40 z-[60] hidden backdrop-blur-sm">
+            <div id="sidebar-container" class="mobile-menu closed bg-white w-80 h-full p-10 flex flex-col shadow-2xl">
+                <div class="mb-12 flex justify-between items-center">
+                    <h2 class="text-[11px] font-black text-black uppercase opacity-30 tracking-[0.3em]">Menu</h2>
+                    <button onclick="closeMenu()" class="p-2 text-slate-400">✕</button>
+                </div>
+                <div class="space-y-4 font-black text-[13px] uppercase tracking-widest text-slate-400">
+                    <button onclick="showPage('welcome')" id="nav-welcome" class="flex items-center gap-4 w-full text-left p-5 hover:bg-yellow-50 rounded-2xl transition-all">Utama</button>
+                    <button onclick="showPage('calendar')" id="nav-calendar" class="flex items-center gap-4 w-full text-left p-5 hover:bg-yellow-50 rounded-2xl transition-all">Kalendar Syif</button>
+                    <button onclick="showPage('settings')" id="nav-settings" class="flex items-center gap-4 w-full text-left p-5 hover:bg-yellow-50 rounded-2xl transition-all">Tetapan</button>
+                    <button onclick="showAdminPage()" id="admin-nav" class="hidden flex items-center justify-between w-full p-5 bg-black text-yellow-400 rounded-2xl mt-10">
+                        <span>Admin Panel</span>
+                        <span id="pending-count" class="hidden bg-yellow-400 text-black text-[10px] px-2 py-1 rounded-full font-bold">0</span>
+                    </button>
+                </div>
             </div>
         </div>
 
-        <div id="dash-page" class="hidden p-6 text-center">
-            <h2 class="text-xl font-bold">Selamat Datang, <span id="user-name">...</span></h2>
-            <button onclick="handleLogout()" class="mt-8 bg-red-100 text-red-600 px-6 py-2 rounded-lg font-bold text-xs uppercase">Log Keluar</button>
-        </div>
+        <main class="max-w-4xl mx-auto p-6 md:p-12"><div id="dynamic-content" class="space-y-8"></div></main>
     </div>
 
     <script>
-        // Konfigurasi Firebase anda
-        const firebaseConfig = {
-            apiKey: "AIzaSyCQ9SBXkEILe6PZdmLyGBSFK63XhPM_V7o",
-            authDomain: "bravorians-bsi.firebaseapp.com",
-            databaseURL: "https://bravorians-bsi-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "bravorians-bsi",
-            appId: "1:314220494464:web:d3b21e9b742e1db86f7065"
+        const firebaseConfig = { 
+            apiKey: "AIzaSyCQ9SBXkEILe6PZdmLyGBSFK63XhPM_V7o", 
+            authDomain: "bravorians-bsi.firebaseapp.com", 
+            databaseURL: "https://bravorians-bsi-default-rtdb.asia-southeast1.firebasedatabase.app", 
+            projectId: "bravorians-bsi", 
+            appId: "1:314220494464:web:d3b21e9b742e1db86f7065" 
         };
 
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.database();
 
-        // Pantau Status Login
-        auth.onAuthStateChanged((user) => {
-            document.getElementById('loader').classList.add('hidden');
-            document.getElementById('app').classList.remove('hidden');
+        const JADUAL_2 = { 1: ["ENTRY MC", "ENTRY KA", "ENTRY BAS"], 2: ["EXIT KB", "EXIT SBY#2", "EXIT MA"], 3: ["ENTRY KC", "ENTRY BDL/Autogate", "ENTRY SBY#1"], 4: ["EXIT LORI", "EXIT BAS", "EXIT KD"], 5: ["ENTRY MC", "ENTRY SBY#3", "ENTRY KB"], 6: ["EXIT MA", "EXIT SBY#1", "EXIT KC"], 7: ["ENTRY SBY#2", "ENTRY BAS", "ENTRY KD"], 8: ["EXIT BAS", "EXIT KA", "EXIT SBY#3"], 9: ["ENTRY KA", "ENTRY BAS", "ENTRY MC"], 10: ["EXIT SBY#2", "EXIT MA", "EXIT KB"], 11: ["ENTRY SBY#1", "ENTRY KC", "ENTRY BDL/Autogate"], 12: ["EXIT KD", "EXIT LORI", "EXIT BAS"], 13: ["ENTRY SBY#3", "ENTRY KB", "ENTRY MC"], 14: ["EXIT KC", "EXIT MA", "EXIT SBY#1"], 15: ["ENTRY KD", "ENTRY SBY#2", "ENTRY BAS"], 16: ["EXIT SBY#3", "EXIT BAS", "EXIT KA"], 17: ["ENTRY BAS", "ENTRY MC", "ENTRY KA"], 18: ["EXIT MA", "EXIT KB", "EXIT SBY#2"], 19: ["ENTRY BDL/Autogate", "ENTRY SBY#1", "ENTRY KC"], 20: ["EXIT BAS", "EXIT KD", "EXIT LORI"], 21: ["ENTRY KB", "ENTRY MC", "ENTRY SBY#3"], 22: ["EXIT SBY#1", "EXIT KC", "EXIT MA"], 23: ["ENTRY BAS", "ENTRY KD", "ENTRY SBY#2"], 24: ["EXIT KA", "EXIT SBY#3", "EXIT BAS"] };
+        const START_ROW = { 1:1, 2:2, 3:1, 4:20, 5:13, 6:16, 7:17, 8:6, 9:3, 10:10, 11:7, 12:24, 13:15, 14:22, 15:5, 16:14, 17:19, 18:8, 19:9, 20:12, 21:21, 22:4, 23:11, 24:18, 25:23 };
+        
+        let userData = null;
+        let authMode = 'login';
 
-            if (user) {
-                document.getElementById('dash-page').classList.remove('hidden');
-                document.getElementById('login-page').classList.add('hidden');
-                
-                // Ambil Nama Pengguna
-                db.ref('users/' + user.uid).once('value').then((snap) => {
-                    if(snap.exists()) {
-                        document.getElementById('user-name').innerText = snap.val().fullName;
+        function getDuty(date, platoon) {
+            let baseDate = new Date(2026, 0, 3); 
+            let targetDate = new Date(date); targetDate.setHours(0,0,0,0);
+            let diffDays = Math.floor((targetDate - baseDate) / 86400000);
+            if (diffDays < 0) return { off: true };
+            let cyclePos = diffDays % 4; 
+            if (cyclePos === 3) return { off: true };
+            let row = ((START_ROW[platoon] + Math.floor(diffDays/4) - 1) % 24) + 1;
+            return { off: false, shift: ["PETANG", "PAGI", "MALAM"][cyclePos], loc: JADUAL_2[row][cyclePos] };
+        }
+
+        function showPage(p, targetMonth = new Date().getMonth()) {
+            const cont = document.getElementById('dynamic-content');
+            closeMenu();
+            
+            if (p === 'welcome') {
+                let listHtml = '';
+                for (let i = 1; i <= 3; i++) {
+                    const tkh = new Date(); tkh.setDate(tkh.getDate() + i);
+                    const dty = getDuty(tkh, userData.platoon);
+                    listHtml += `<div class="flex justify-between items-center p-6 ${i < 3 ? 'border-b border-slate-50' : ''}">
+                        <div class="text-left"><p class="text-[12px] font-black text-black uppercase">${tkh.toLocaleDateString('ms-MY', { weekday: 'long' })}</p><p class="text-[10px] font-bold text-slate-400 uppercase">${tkh.toLocaleDateString('ms-MY', { day: '2-digit', month: 'short' })}</p></div>
+                        <div class="text-right">${dty.off ? `<p class="text-sm font-black text-slate-300 italic tracking-widest">OFF</p>` : `<p class="text-[13px] font-black text-black uppercase leading-tight">${dty.shift}</p><p class="text-[10px] font-extrabold text-yellow-500 uppercase">${dty.loc}</p>`}</div>
+                    </div>`;
+                }
+                cont.innerHTML = `<div class="flex flex-col items-center justify-center min-h-[60vh] text-center">
+                    <div class="w-24 h-24 bg-black rounded-[2.5rem] flex items-center justify-center mb-8 relative shadow-2xl overflow-hidden">
+                        <div class="absolute inset-0 border-4 border-yellow-400 rounded-[2.5rem] animate-pulse"></div>
+                        <svg class="w-12 h-12 text-yellow-400 relative z-10" fill="currentColor" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+                    </div>
+                    <h1 class="text-3xl font-black text-black uppercase italic mb-2 tracking-tighter">BRAVORIAN</h1>
+                    <div class="mb-10"><p class="text-[14px] font-black text-slate-800 uppercase tracking-widest">${userData.fullName}</p><span class="inline-block mt-2 px-5 py-2 bg-yellow-400 text-black text-[10px] font-black rounded-full uppercase">PLATUN ${userData.platoon}</span></div>
+                    <div class="bg-white rounded-[3rem] border border-slate-100 shadow-xl w-full max-w-md overflow-hidden">
+                        <div class="bg-black py-4"><p class="text-[10px] font-black text-yellow-400 uppercase tracking-widest">Syif Seterusnya</p></div>
+                        ${listHtml}
+                    </div></div>`;
+            } 
+            else if (p === 'calendar') {
+                const months = ["JANUARI", "FEBRUARI", "MAC", "APRIL", "MEI", "JUN", "JULAI", "OGOS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DISEMBER"];
+                let html = `<div class="bg-white p-5 rounded-[2.5rem] mb-6 border border-slate-100 shadow-sm"><select id="month-select" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-[12px] font-black uppercase outline-none focus:ring-2 focus:ring-yellow-400" onchange="showPage('calendar', this.value)">
+                    ${months.map((m, i) => `<option value="${i}" ${i == targetMonth ? 'selected' : ''}>${m} 2026</option>`).join('')}
+                </select></div><div class="grid grid-cols-2 gap-4">`;
+                const daysInMonth = new Date(2026, parseInt(targetMonth) + 1, 0).getDate();
+                for(let i=1; i<=daysInMonth; i++){
+                    let d = new Date(2026, targetMonth, i); let r = getDuty(d, userData.platoon);
+                    html += `<div class="p-6 rounded-[2rem] border flex flex-col justify-center min-h-[120px] ${r.off ? 'bg-slate-50 opacity-50' : 'bg-white shadow-sm border-slate-100'}">
+                        <p class="text-[10px] font-black uppercase text-slate-400 mb-1">${d.toLocaleDateString('ms-MY',{weekday:'short', day:'2-digit'})}</p>
+                        <p class="text-sm font-black text-black uppercase">${r.off ? 'OFF' : r.shift}</p>
+                        <p class="text-[9px] font-black text-yellow-500 uppercase mt-2">${r.off ? '' : r.loc}</p>
+                    </div>`;
+                }
+                cont.innerHTML = html + '</div>';
+            }
+            else if (p === 'settings') {
+                cont.innerHTML = `<div class="max-w-md mx-auto space-y-8"><div class="text-center"><h2 class="text-2xl font-black text-black uppercase tracking-tighter italic">Tetapan Akaun</h2></div>
+                    <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl space-y-4 text-center">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase">Ganti Kata Laluan Baru</p>
+                        <input type="password" id="new-password" placeholder="MIN 6 AKSARA" class="w-full p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold uppercase outline-none focus:ring-2 focus:ring-yellow-400">
+                        <button onclick="handleUpdatePassword()" class="w-full bg-black text-yellow-400 font-black py-4 rounded-2xl uppercase text-[10px]">Kemaskini</button>
+                    </div></div>`;
+            }
+        }
+
+        function showAdminPage() {
+            const cont = document.getElementById('dynamic-content');
+            closeMenu();
+            cont.innerHTML = `<div id="adm-list" class="space-y-4"><h3 class="text-[11px] font-black text-slate-400 uppercase tracking-widest px-6">Pengesahan Pengguna Baru</h3></div>`;
+            db.ref('users').once('value').then(snap => {
+                snap.forEach(c => {
+                    if(c.val().status === 'pending') {
+                        const div = document.createElement('div');
+                        div.className = "p-6 bg-white rounded-[2.5rem] flex justify-between items-center border border-slate-100 shadow-sm";
+                        div.innerHTML = `<div><p class="text-[13px] font-black uppercase text-black">${c.val().fullName}</p><p class="text-[10px] font-bold text-yellow-600 uppercase">Platun ${c.val().platoon}</p></div>`;
+                        const btn = document.createElement('button');
+                        btn.className = "bg-black text-yellow-400 px-6 py-3 rounded-2xl text-[10px] font-black uppercase";
+                        btn.innerText = "Lulus";
+                        btn.onclick = () => db.ref('users/' + c.key).update({ status: 'approved' }).then(() => showAdminPage());
+                        div.appendChild(btn); document.getElementById('adm-list').appendChild(div);
                     }
                 });
-            } else {
-                document.getElementById('login-page').classList.remove('hidden');
-                document.getElementById('dash-page').classList.add('hidden');
-            }
-        });
+            });
+        }
 
-        // Fungsi Login
-        function handleLogin() {
-            const email = document.getElementById('email').value;
+        function handleAuthAction() {
+            const email = document.getElementById('email').value.trim();
             const pass = document.getElementById('password').value;
-            const errorEl = document.getElementById('error-msg');
-            
-            errorEl.innerText = "Cuba Masuk...";
-            
-            auth.signInWithEmailAndPassword(email, pass)
-                .catch((err) => {
-                    errorEl.innerText = "Ralat: " + err.message;
-                });
+            if (authMode === 'login') {
+                auth.signInWithEmailAndPassword(email, pass).catch(e => alert("Akses Gagal: Emel/Kata Laluan Salah"));
+            } else {
+                const fn = document.getElementById('reg-firstname').value.toUpperCase();
+                const ln = document.getElementById('reg-lastname').value.toUpperCase();
+                const plt = document.getElementById('reg-platoon').value;
+                if(!fn || !ln || !plt) return alert("Sila lengkapkan maklumat");
+                auth.createUserWithEmailAndPassword(email, pass).then(res => {
+                    db.ref('users/' + res.user.uid).set({ fullName: fn + " " + ln, platoon: parseInt(plt), role: "user", status: "pending" });
+                    alert("Daftar Berjaya! Tunggu kelulusan Admin.");
+                    auth.signOut();
+                }).catch(e => alert(e.message));
+            }
         }
 
-        // Fungsi Logout
-        function handleLogout() {
-            auth.signOut();
+        function toggleAuthMode() {
+            authMode = authMode === 'login' ? 'register' : 'login';
+            document.getElementById('register-fields').classList.toggle('hidden');
+            document.getElementById('auth-title').innerText = authMode === 'login' ? 'BRAVORIAN' : 'DAFTAR';
+            document.getElementById('btn-action').innerText = authMode === 'login' ? 'Log Masuk' : 'Daftar Akaun';
+            document.getElementById('auth-toggle-btn').innerText = authMode === 'login' ? 'Daftar Akaun Baru' : 'Sudah ada akaun? Log Masuk';
         }
-    </script>
-</body>
-</html>
+
+        function handleForgotPassword() {
+            const email = document.getElementById('email').value.trim();
+            if(!email) return alert("Masukkan emel anda");
+            auth.sendPasswordResetEmail(email).then(() => alert("Pautan reset telah dihantar ke emel anda.")).catch(e => alert("Ralat emel."));
+        }
+
+        function handleLogout() { if(confirm("Log keluar?")) auth.signOut(); }
+
+        const openMenu = () => { document.getElementById('mobile-sidebar').classList.remove('hidden'); setTimeout(() => document.getElementById('sidebar-container').classList.remove('closed'), 10); };
+        const closeMenu = () => { document.getElementById('sidebar-container').classList.add('closed'); setTimeout(() => document.getElementById('mobile-sidebar').classList.add('hidden'), 300); };
+
+        auth.onAuthStateChanged(user => {
+            document.getElementById('loader').classList.add('hidden');
+            if (user) {
+                db.ref('users/' + user.uid).on('value', snap => {
+                    if (snap.exists() && snap.val().status === "approved") {
+                        userData = snap.val();
+                        document.getElementById('auth-section').classList.add('hidden');
+                        document.getElementById('main-dashboard').classList.remove('hidden');
+                        if(userData.role === 'admin') { 
+                            document.getElementById('admin-nav').classList.remove('hidden');
+                            db.ref('users').on('value', s => {
+                                let c = 0; s.forEach(u => { if(u.val().status === 'pending') c++; });
+                                if(c > 0) { document.getElementById('pending-count').innerText = c; document.getElementById('pending-count').classList.remove('hidden'); }
+                            });
+                        }
+                        showPage('welcome');
+                    } else if(snap.exists() && snap.val().status === "pending") {
+                        alert("Akaun belum diluluskan Admin."); auth.signOut();
+                    } else { auth.signOut(); }
+                });
+            } else {
+                document.getElementById('auth-section').classList.remove('hidden');
+                document.getElementById('main-dash
