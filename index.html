@@ -328,12 +328,16 @@ function toggleAuthMode(target) {
     const isForgot = target === 'forgot';
 
     // 1. Kawalan Paparan Input
-    document.getElementById('login-fields').classList.toggle('hidden', isForgot || isReg);
+    // login-fields (Emel & Password) perlu muncul untuk Log Masuk DAN Daftar
+    document.getElementById('login-fields').classList.toggle('hidden', isForgot);
+    
+    // register-fields (Nama & Platun) hanya muncul untuk Daftar
     document.getElementById('register-fields').classList.toggle('hidden', !isReg);
+    
+    // forgot-fields (Emel Reset) hanya muncul untuk Lupa Kata Laluan
     document.getElementById('forgot-fields').classList.toggle('hidden', !isForgot);
 
-    // 2. Kawalan Butang "Lupa Kata Laluan?" (Buang terus jika bukan mod login)
-    // Butang ini hanya akan muncul apabila user berada di skrin Log Masuk utama
+    // 2. Kawalan Butang "Lupa Kata Laluan?"
     const forgotBtn = document.getElementById('forgot-toggle-btn');
     if (isLogin) {
         forgotBtn.classList.remove('hidden');
