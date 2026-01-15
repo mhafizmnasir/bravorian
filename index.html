@@ -34,39 +34,40 @@
         <p id="auth-subtitle" class="text-[11px] font-bold text-slate-400 uppercase mb-10 tracking-[0.4em]">B.S.I JOHOR BAHRU</p>
         
         <div id="register-fields" class="hidden space-y-4 mb-4 text-left">
-    <div class="flex gap-3">
-        <input type="text" id="reg-firstname" placeholder="NAMA DEPAN" class="w-1/2 p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold uppercase outline-none focus:ring-2 focus:ring-yellow-400">
-        <input type="text" id="reg-lastname" placeholder="NAMA BELAKANG" class="w-1/2 p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold uppercase outline-none focus:ring-2 focus:ring-yellow-400">
-    </div>
-    <select id="reg-platoon" class="w-full p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold outline-none focus:ring-2 focus:ring-yellow-400 uppercase"></select>
-</div>
+            <div class="flex gap-3">
+                <input type="text" id="reg-firstname" placeholder="NAMA DEPAN" class="w-1/2 p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold uppercase outline-none focus:ring-2 focus:ring-yellow-400">
+                <input type="text" id="reg-lastname" placeholder="NAMA BELAKANG" class="w-1/2 p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold uppercase outline-none focus:ring-2 focus:ring-yellow-400">
+            </div>
+            <select id="reg-platoon" class="w-full p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold outline-none focus:ring-2 focus:ring-yellow-400 uppercase"></select>
+        </div>
 
-<div id="login-fields" class="space-y-4">
-    <input type="email" id="email" placeholder="EMEL" class="w-full p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold outline-none focus:ring-2 focus:ring-yellow-400">
-    
-    <div class="relative">
-        <input type="password" id="password" placeholder="KATA LALUAN" class="w-full p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold outline-none focus:ring-2 focus:ring-yellow-400">
-        <button type="button" id="toggle-password-btn" class="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-black">
-            <svg id="eye-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path id="eye-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-            </svg>
-        </button>
-    </div>
-</div>
+        <div id="login-fields" class="space-y-4">
+            <input type="email" id="email" placeholder="EMEL" class="w-full p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold outline-none focus:ring-2 focus:ring-yellow-400">
+            <div class="relative">
+                <input type="password" id="password" placeholder="KATA LALUAN" class="w-full p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold outline-none focus:ring-2 focus:ring-yellow-400">
+                <button type="button" id="toggle-password-btn" class="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-black">
+                    <svg id="eye-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path id="eye-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
 
         <div id="forgot-fields" class="hidden space-y-4 mb-4">
-            <p class="text-[10px] text-slate-500 font-bold uppercase mb-4 text-center">Sila masukkan emel anda untuk menerima pautan tetapan semula kata laluan.</p>
+            <p class="text-[10px] text-slate-500 font-bold uppercase mb-4 text-center">Sila masukkan emel berdaftar anda.</p>
             <input type="email" id="forgot-email" placeholder="EMEL BERDAFTAR" class="w-full p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold outline-none focus:ring-2 focus:ring-yellow-400">
         </div>
 
-        <button id="btn-action" class="w-full bg-black text-yellow-400 font-black py-5 rounded-2xl mt-8 uppercase text-[12px] tracking-widest shadow-xl active:scale-95 transition-all">Log Masuk</button>
+        <button id="btn-action" class="w-full bg-black text-yellow-400 font-black py-5 rounded-2xl mt-8 uppercase text-[12px] tracking-widest shadow-xl active:scale-95 transition-all flex items-center justify-center gap-3">
+            <span id="btn-text">Log Masuk</span>
+            <div id="btn-spinner" class="hidden w-4 h-4 border-2 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
+        </button>
         
         <div class="mt-8 flex flex-col gap-4">
-    <button id="auth-toggle-btn" class="text-[10px] text-black font-black uppercase tracking-widest border-b-2 border-yellow-400 inline-block pb-1 w-max mx-auto">Daftar Akaun Baru</button>
-    
-    <button id="forgot-toggle-btn" class="text-[10px] text-slate-400 font-bold uppercase tracking-widest hover:text-black transition-colors">Lupa Kata Laluan?</button>
-</div>
+            <button id="auth-toggle-btn" class="text-[10px] text-black font-black uppercase tracking-widest border-b-2 border-yellow-400 inline-block pb-1 w-max mx-auto">Daftar Akaun Baru</button>
+            <button id="forgot-toggle-btn" class="text-[10px] text-slate-400 font-bold uppercase tracking-widest hover:text-black transition-colors">Lupa Kata Laluan?</button>
+        </div>
     </div>
 </div>
 
@@ -288,91 +289,121 @@
                 clockEl.innerHTML = `<span class="text-black font-black">${hari}</span> <span class="text-yellow-500 mx-1">|</span> <span class="text-slate-400">${tarikh}</span> <span class="text-yellow-500 mx-1">|</span> <span class="text-black font-black">${masa}</span>`;
             }
         }, 1000);
-                            // Pastikan let authMode = 'login'; sudah ada di bahagian atas skrip
+
+
+// --- KOD BARU BERMULA DI SINI ---
+
+// 1. Logik Butang Aksi Utama (Login / Daftar / Reset)
 document.getElementById('btn-action').onclick = async () => {
-    const email = document.getElementById('email').value.trim();
-    const pass = document.getElementById('password').value;
-    const forgotEmail = document.getElementById('forgot-email').value.trim();
+    const btnText = document.getElementById('btn-text');
+    const btnSpinner = document.getElementById('btn-spinner');
+    const btnAction = document.getElementById('btn-action');
+
+    // Aktifkan Loading
+    btnSpinner.classList.remove('hidden');
+    btnAction.disabled = true;
+    btnAction.classList.add('opacity-80');
 
     try {
         if (authMode === 'login') {
-            if(!email || !pass) return alert("Sila isi emel dan kata laluan!");
+            const email = document.getElementById('email').value.trim();
+            const pass = document.getElementById('password').value;
+            if(!email || !pass) throw new Error("Sila masukkan emel dan kata laluan!");
             await signInWithEmailAndPassword(auth, email, pass);
         } 
         else if (authMode === 'register') {
+            const email = document.getElementById('email').value.trim();
+            const pass = document.getElementById('password').value;
             const fn = document.getElementById('reg-firstname').value.trim().toUpperCase();
             const ln = document.getElementById('reg-lastname').value.trim().toUpperCase();
             const plt = document.getElementById('reg-platoon').value;
-            if(!fn || !ln || !plt || !email || !pass) return alert("Lengkapkan maklumat pendaftaran!");
+            if(!fn || !ln || !plt || !email || !pass) throw new Error("Lengkapkan maklumat pendaftaran!");
             
             const res = await createUserWithEmailAndPassword(auth, email, pass);
             await set(ref(db, 'users/' + res.user.uid), { 
-                firstName: fn, 
-                lastName: ln, 
                 fullName: fn + " " + ln, 
                 platoon: parseInt(plt), 
                 role: "user", 
                 status: "pending" 
             });
-            alert("Pendaftaran Berjaya! Sila hubungi Admin untuk kelulusan."); 
-            signOut(auth); 
+            alert("Berjaya! Sila hubungi Admin untuk kelulusan.");
+            signOut(auth);
             toggleAuthMode('login');
         }
         else if (authMode === 'forgot') {
-            if(!forgotEmail) return alert("Sila masukkan emel berdaftar!");
-            await sendPasswordResetEmail(auth, forgotEmail);
-            alert("Pautan tetapan semula telah dihantar ke emel anda.");
+            const email = document.getElementById('forgot-email').value.trim();
+            if(!email) throw new Error("Sila masukkan emel berdaftar!");
+            await sendPasswordResetEmail(auth, email);
+            alert("Pautan reset kata laluan telah dihantar ke emel anda.");
             toggleAuthMode('login');
         }
     } catch(e) {
-        console.error(e);
-        alert("Ralat: " + e.message);
+        alert(e.message);
+    } finally {
+        // Matikan Loading
+        btnSpinner.classList.add('hidden');
+        btnAction.disabled = false;
+        btnAction.classList.remove('opacity-80');
     }
 };
 
+// 2. Fungsi Tukar Mod Paparan (Toggle)
 function toggleAuthMode(target) {
     authMode = target;
     const isLogin = target === 'login';
     const isReg = target === 'register';
     const isForgot = target === 'forgot';
 
-    // 1. Kawalan Paparan Input
-    // login-fields (emel & password) perlu ADA untuk login dan register, tapi HIDE untuk forgot
     document.getElementById('login-fields').classList.toggle('hidden', isForgot);
-    
-    // register-fields (nama & platun) hanya ADA untuk register
     document.getElementById('register-fields').classList.toggle('hidden', !isReg);
-    
-    // forgot-fields (emel khas reset) hanya ADA untuk forgot
     document.getElementById('forgot-fields').classList.toggle('hidden', !isForgot);
-
-    // 2. Kawalan Butang "Lupa Kata Laluan?"
+    
     const forgotBtn = document.getElementById('forgot-toggle-btn');
-    if (isLogin) {
-        forgotBtn.classList.remove('hidden');
-    } else {
-        forgotBtn.classList.add('hidden');
-    }
+    forgotBtn.classList.toggle('hidden', !isLogin);
 
-    // 3. Kemas Kini Teks Tajuk & Butang
     const title = document.getElementById('auth-title');
-    const btnAction = document.getElementById('btn-action');
+    const btnText = document.getElementById('btn-text');
     const toggleBtn = document.getElementById('auth-toggle-btn');
 
     if (isLogin) {
         title.innerText = 'BRAVORIAN';
-        btnAction.innerText = 'Log Masuk';
+        btnText.innerText = 'Log Masuk';
         toggleBtn.innerText = 'Daftar Akaun Baru';
     } else if (isReg) {
         title.innerText = 'DAFTAR';
-        btnAction.innerText = 'Hantar Pendaftaran';
-        toggleBtn.innerText = 'Sudah Ada Akaun? Log Masuk';
+        btnText.innerText = 'Hantar Pendaftaran';
+        toggleBtn.innerText = 'Kembali Ke Log Masuk';
     } else if (isForgot) {
         title.innerText = 'RESET';
-        btnAction.innerText = 'Hantar Emel';
+        btnText.innerText = 'Hantar Emel';
         toggleBtn.innerText = 'Kembali Ke Log Masuk';
     }
 }
+
+// 3. Logik Tunjuk/Sembunyi Password
+document.getElementById('toggle-password-btn').onclick = function() {
+    const passwordInput = document.getElementById('password');
+    const eyeIcon = document.getElementById('eye-icon');
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        eyeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"></path>`;
+    } else {
+        passwordInput.type = 'password';
+        eyeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>`;
+    }
+};
+
+// 4. Event Listeners untuk butang-butang toggle
+document.getElementById('forgot-toggle-btn').onclick = () => toggleAuthMode('forgot');
+document.getElementById('auth-toggle-btn').onclick = () => {
+    if (authMode === 'login') toggleAuthMode('register');
+    else toggleAuthMode('login');
+};
+                    
+
+                    
+
+
 
 document.getElementById('toggle-password-btn').onclick = function() {
     const passwordInput = document.getElementById('password');
@@ -393,13 +424,6 @@ document.getElementById('toggle-password-btn').onclick = function() {
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
         `;
     }
-};
-                    
-
-// Event Listeners
-document.getElementById('auth-toggle-btn').onclick = () => {
-    if (authMode === 'login') toggleAuthMode('register');
-    else toggleAuthMode('login');
 };
 
 document.getElementById('forgot-toggle-btn').onclick = () => {
