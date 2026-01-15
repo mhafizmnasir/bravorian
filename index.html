@@ -277,73 +277,92 @@
                 clockEl.innerHTML = `<span class="text-black font-black">${hari}</span> <span class="text-yellow-500 mx-1">|</span> <span class="text-slate-400">${tarikh}</span> <span class="text-yellow-500 mx-1">|</span> <span class="text-black font-black">${masa}</span>`;
             }
         }, 1000);
-                            document.getElementById('btn-action').onclick = async () => {
-    if (authMode === 'login') {
-        const email = document.getElementById('email').value.trim();
-        const pass = document.getElementById('password').value;
-        try { 
-            await signInWithEmailAndPassword(auth, email, pass); 
-        } catch(e) { 
-            alert("Akaun atau Kata Laluan Salah!"); 
-        }
-    } 
-    else if (authMode === 'register') {
-        const email = document.getElementById('email').value.trim();
-        const pass = document.getElementById('password').value;
-        const fn = document.getElementById('reg-firstname').value.trim().toUpperCase();
-        const ln = document.getElementById('reg-lastname').value.trim().toUpperCase();
-        const plt = document.getElementById('reg-platoon').value;
-        if(!fn || !ln || !plt || !email || !pass) return alert("Lengkapkan maklumat!");
-        try {
+                            // Pastikan let authMode = 'login'; sudah ada di bahagian atas skrip
+document.getElementById('btn-action').onclick = async () => {
+    const email = document.getElementById('email').value.trim();
+    const pass = document.getElementById('password').value;
+    const forgotEmail = document.getElementById('forgot-email').value.trim();
+
+    try {
+        if (authMode === 'login') {
+            if(!email || !pass) return alert("Sila isi emel dan kata laluan!");
+            await signInWithEmailAndPassword(auth, email, pass);
+        } 
+        else if (authMode === 'register') {
+            const fn = document.getElementById('reg-firstname').value.trim().toUpperCase();
+            const ln = document.getElementById('reg-lastname').value.trim().toUpperCase();
+            const plt = document.getElementById('reg-platoon').value;
+            if(!fn || !ln || !plt || !email || !pass) return alert("Lengkapkan maklumat pendaftaran!");
+            
             const res = await createUserWithEmailAndPassword(auth, email, pass);
-            await set(ref(db, 'users/' + res.user.uid), { firstName: fn, lastName: ln, fullName: fn + " " + ln, platoon: parseInt(plt), role: "user", status: "pending" });
+            await set(ref(db, 'users/' + res.user.uid), { 
+                firstName: fn, 
+                lastName: ln, 
+                fullName: fn + " " + ln, 
+                platoon: parseInt(plt), 
+                role: "user", 
+                status: "pending" 
+            });
             alert("Pendaftaran Berjaya! Sila hubungi Admin untuk kelulusan."); 
             signOut(auth); 
             toggleAuthMode('login');
-        } catch(e) { alert(e.message); }
-    }
-    else if (authMode === 'forgot') {
-        const email = document.getElementById('forgot-email').value.trim();
-        if(!email) return alert("Sila masukkan emel!");
-        try {
-            await sendPasswordResetEmail(auth, email);
-            alert("Pautan tetapan semula kata laluan telah dihantar ke emel anda.");
-            toggleAuthMode('login');
-        } catch(e) {
-            alert("Ralat: " + e.message);
         }
+        else if (authMode === 'forgot') {
+            if(!forgotEmail) return alert("Sila masukkan emel berdaftar!");
+            await sendPasswordResetEmail(auth, forgotEmail);
+            alert("Pautan tetapan semula telah dihantar ke emel anda.");
+            toggleAuthMode('login');
+        }
+    } catch(e) {
+        console.error(e);
+        alert("Ralat: " + e.message);
     }
 };
-        function toggleAuthMode(target) {
+
+function toggleAuthMode(target) {
     authMode = target;
-    const isLogin = target === 'login';
-    const isReg = target === 'register';
-    const isForgot = target === 'forgot';
-
-    // Tunjuk/Sembunyi bahagian input
-    document.getElementById('login-fields').classList.toggle('hidden', isForgot);
-    document.getElementById('register-fields').classList.toggle('hidden', !isReg);
-    document.getElementById('forgot-fields').classList.toggle('hidden', !isForgot);
-
-    // Tukar teks tajuk & butang
-    const title = document.getElementById('auth-title');
+    
+    // Elemen-elemen yang terlibat
+    const regFields = document.getElementById('register-fields');
+    const loginFields = document.getElementById('login-fields');
+    const forgotFields = document.getElementById('forgot-fields');
+    const authTitle = document.getElementById('auth-title');
     const btnAction = document.getElementById('btn-action');
-    const toggleBtn = document.getElementById('auth-toggle-btn');
+    const authToggleBtn = document.getElementById('auth-toggle-btn');
 
-    if (isLogin) {
-        title.innerText = 'BRAVORIAN';
+    // Reset paparan
+    regFields.classList.add('hidden');
+    loginFields.classList.add('hidden');
+    forgotFields.classList.add('hidden');
+
+    if (target === 'login') {
+        loginFields.classList.remove('hidden');
+        authTitle.innerText = 'BRAVORIAN';
         btnAction.innerText = 'Log Masuk';
-        toggleBtn.innerText = 'Daftar Akaun Baru';
-    } else if (isReg) {
-        title.innerText = 'DAFTAR';
+        authToggleBtn.innerText = 'Daftar Akaun Baru';
+    } else if (target === 'register') {
+        regFields.classList.remove('hidden');
+        loginFields.classList.remove('hidden'); // Kekalkan emel/pass untuk register
+        authTitle.innerText = 'DAFTAR';
         btnAction.innerText = 'Hantar Pendaftaran';
-        toggleBtn.innerText = 'Sudah Ada Akaun? Log Masuk';
-    } else if (isForgot) {
-        title.innerText = 'RESET';
+        authToggleBtn.innerText = 'Kembali Ke Log Masuk';
+    } else if (target === 'forgot') {
+        forgotFields.classList.remove('hidden');
+        authTitle.innerText = 'RESET';
         btnAction.innerText = 'Hantar Emel';
-        toggleBtn.innerText = 'Kembali Ke Log Masuk';
+        authToggleBtn.innerText = 'Kembali Ke Log Masuk';
     }
 }
+
+// Event Listeners
+document.getElementById('auth-toggle-btn').onclick = () => {
+    if (authMode === 'login') toggleAuthMode('register');
+    else toggleAuthMode('login');
+};
+
+document.getElementById('forgot-toggle-btn').onclick = () => {
+    toggleAuthMode('forgot');
+};
 
 // Tambah event listener untuk butang lupa kata laluan
 document.getElementById('forgot-toggle-btn').onclick = () => {
