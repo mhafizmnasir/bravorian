@@ -34,17 +34,17 @@
         <p id="auth-subtitle" class="text-[11px] font-bold text-slate-400 uppercase mb-10 tracking-[0.4em]">B.S.I JOHOR BAHRU</p>
         
         <div id="register-fields" class="hidden space-y-4 mb-4 text-left">
-            <div class="flex gap-3">
-                <input type="text" id="reg-firstname" placeholder="NAMA DEPAN" class="w-1/2 p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold uppercase outline-none focus:ring-2 focus:ring-yellow-400">
-                <input type="text" id="reg-lastname" placeholder="NAMA BELAKANG" class="w-1/2 p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold uppercase outline-none focus:ring-2 focus:ring-yellow-400">
-            </div>
-            <select id="reg-platoon" class="w-full p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold outline-none focus:ring-2 focus:ring-yellow-400 uppercase"></select>
-        </div>
+    <div class="flex gap-3">
+        <input type="text" id="reg-firstname" placeholder="NAMA DEPAN" class="w-1/2 p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold uppercase outline-none focus:ring-2 focus:ring-yellow-400">
+        <input type="text" id="reg-lastname" placeholder="NAMA BELAKANG" class="w-1/2 p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold uppercase outline-none focus:ring-2 focus:ring-yellow-400">
+    </div>
+    <select id="reg-platoon" class="w-full p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold outline-none focus:ring-2 focus:ring-yellow-400 uppercase"></select>
+</div>
 
-        <div id="login-fields" class="space-y-4">
-            <input type="email" id="email" placeholder="EMEL" class="w-full p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold outline-none focus:ring-2 focus:ring-yellow-400">
-            <input type="password" id="password" placeholder="KATA LALUAN" class="w-full p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold outline-none focus:ring-2 focus:ring-yellow-400">
-        </div>
+<div id="login-fields" class="space-y-4">
+    <input type="email" id="email" placeholder="EMEL" class="w-full p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold outline-none focus:ring-2 focus:ring-yellow-400">
+    <input type="password" id="password" placeholder="KATA LALUAN" class="w-full p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold outline-none focus:ring-2 focus:ring-yellow-400">
+</div>
 
         <div id="forgot-fields" class="hidden space-y-4 mb-4">
             <p class="text-[10px] text-slate-500 font-bold uppercase mb-4 text-center">Sila masukkan emel anda untuk menerima pautan tetapan semula kata laluan.</p>
@@ -328,13 +328,13 @@ function toggleAuthMode(target) {
     const isForgot = target === 'forgot';
 
     // 1. Kawalan Paparan Input
-    // login-fields (Emel & Password) perlu muncul untuk Log Masuk DAN Daftar
+    // login-fields (emel & password) perlu ADA untuk login dan register, tapi HIDE untuk forgot
     document.getElementById('login-fields').classList.toggle('hidden', isForgot);
     
-    // register-fields (Nama & Platun) hanya muncul untuk Daftar
+    // register-fields (nama & platun) hanya ADA untuk register
     document.getElementById('register-fields').classList.toggle('hidden', !isReg);
     
-    // forgot-fields (Emel Reset) hanya muncul untuk Lupa Kata Laluan
+    // forgot-fields (emel khas reset) hanya ADA untuk forgot
     document.getElementById('forgot-fields').classList.toggle('hidden', !isForgot);
 
     // 2. Kawalan Butang "Lupa Kata Laluan?"
@@ -345,7 +345,7 @@ function toggleAuthMode(target) {
         forgotBtn.classList.add('hidden');
     }
 
-    // 3. Kemas Kini Teks Tajuk & Butang Aksi
+    // 3. Kemas Kini Teks Tajuk & Butang
     const title = document.getElementById('auth-title');
     const btnAction = document.getElementById('btn-action');
     const toggleBtn = document.getElementById('auth-toggle-btn');
@@ -364,6 +364,7 @@ function toggleAuthMode(target) {
         toggleBtn.innerText = 'Kembali Ke Log Masuk';
     }
 }
+
 
 
 // Event Listeners
