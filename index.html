@@ -32,6 +32,11 @@
             
             <h1 id="auth-title" class="text-4xl font-black text-black uppercase italic mb-2 tracking-tighter">BRAVORIAN</h1>
             <p class="text-[11px] font-bold text-slate-400 uppercase mb-10 tracking-[0.4em]">B.S.I JOHOR BAHRU</p>
+
+            <div id="forgot-password-fields" class="hidden space-y-4 mb-4 text-left">
+            <p class="text-[10px] font-bold text-slate-500 uppercase mb-2 px-2">Masukkan emel ynag berdaftar: </p>
+            <input type="email" id="forgot-email" placeholder="EMEL PEMULIHAN" class="w-full p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold outline-none focus:ring-2 focus:ring-yellow-400">
+            </div>
             
             <div id="register-fields" class="hidden space-y-4 mb-4 text-left">
                 <div class="flex gap-3">
@@ -47,6 +52,7 @@
             </div>
 
             <button id="btn-action" class="w-full bg-black text-yellow-400 font-black py-5 rounded-2xl mt-8 uppercase text-[12px] tracking-widest shadow-xl active:scale-95 transition-all">Log Masuk</button>
+            <button id="forgot-password-toggle" class="w-full text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-4 block mx-auto">Lupa Kata Laluan?</button>
             <button id="auth-toggle-btn" class="w-full text-[10px] text-black font-black uppercase tracking-widest mt-8 border-b-2 border-yellow-400 inline-block pb-1 w-max mx-auto">Daftar Akaun Baru</button>
         </div>
         </div>
@@ -287,12 +293,30 @@
         };
 
         function toggleAuthMode(target) {
-            authMode = target;
-            document.getElementById('register-fields').classList.toggle('hidden', target !== 'register');
-            document.getElementById('auth-title').innerText = target === 'login' ? 'BRAVORIAN' : 'DAFTAR';
-            document.getElementById('btn-action').innerText = target === 'login' ? 'Log Masuk' : 'Hantar Pendaftaran';
-        }
+    authMode = target;
+    
+    // Sembunyi/Papar medan mengikut mod
+    document.getElementById('register-fields').classList.toggle('hidden', target !== 'register');
+    document.getElementById('forgot-password-fields').classList.toggle('hidden', target !== 'forgot');
+    
+    // Tukar input emel/password asal kepada hidden jika dalam mod 'forgot'
+    document.getElementById('email').parentElement.classList.toggle('hidden', target === 'forgot');
 
+    // Kemaskini Teks UI
+    if (target === 'login') {
+        document.getElementById('auth-title').innerText = 'BRAVORIAN';
+        document.getElementById('btn-action').innerText = 'Log Masuk';
+        document.getElementById('auth-toggle-btn').innerText = 'Daftar Akaun Baru';
+    } else if (target === 'register') {
+        document.getElementById('auth-title').innerText = 'DAFTAR';
+        document.getElementById('btn-action').innerText = 'Hantar Pendaftaran';
+        document.getElementById('auth-toggle-btn').innerText = 'Kembali ke Log Masuk';
+    } else if (target === 'forgot') {
+        document.getElementById('auth-title').innerText = 'PULIHKAN';
+        document.getElementById('btn-action').innerText = 'Hantar Emel';
+        document.getElementById('auth-toggle-btn').innerText = 'Kembali ke Log Masuk';
+    }
+}
         document.getElementById('auth-toggle-btn').onclick = () => toggleAuthMode(authMode === 'login' ? 'register' : 'login');
 
         const sel = document.getElementById('reg-platoon');
