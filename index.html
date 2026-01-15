@@ -54,9 +54,10 @@
         <button id="btn-action" class="w-full bg-black text-yellow-400 font-black py-5 rounded-2xl mt-8 uppercase text-[12px] tracking-widest shadow-xl active:scale-95 transition-all">Log Masuk</button>
         
         <div class="mt-8 flex flex-col gap-4">
-            <button id="auth-toggle-btn" class="text-[10px] text-black font-black uppercase tracking-widest border-b-2 border-yellow-400 inline-block pb-1 w-max mx-auto">Daftar Akaun Baru</button>
-            <button id="forgot-toggle-btn" class="text-[10px] text-slate-400 font-bold uppercase tracking-widest hover:text-black transition-colors">Lupa Kata Laluan?</button>
-        </div>
+    <button id="auth-toggle-btn" class="text-[10px] text-black font-black uppercase tracking-widest border-b-2 border-yellow-400 inline-block pb-1 w-max mx-auto">Daftar Akaun Baru</button>
+    
+    <button id="forgot-toggle-btn" class="text-[10px] text-slate-400 font-bold uppercase tracking-widest hover:text-black transition-colors">Lupa Kata Laluan?</button>
+</div>
     </div>
 </div>
 
@@ -322,38 +323,44 @@ document.getElementById('btn-action').onclick = async () => {
 
 function toggleAuthMode(target) {
     authMode = target;
-    
-    // Elemen-elemen yang terlibat
-    const regFields = document.getElementById('register-fields');
-    const loginFields = document.getElementById('login-fields');
-    const forgotFields = document.getElementById('forgot-fields');
-    const authTitle = document.getElementById('auth-title');
+    const isLogin = target === 'login';
+    const isReg = target === 'register';
+    const isForgot = target === 'forgot';
+
+    // 1. Kawalan Paparan Input
+    document.getElementById('login-fields').classList.toggle('hidden', isForgot || isReg);
+    document.getElementById('register-fields').classList.toggle('hidden', !isReg);
+    document.getElementById('forgot-fields').classList.toggle('hidden', !isForgot);
+
+    // 2. Kawalan Butang "Lupa Kata Laluan?" (Buang terus jika bukan mod login)
+    // Butang ini hanya akan muncul apabila user berada di skrin Log Masuk utama
+    const forgotBtn = document.getElementById('forgot-toggle-btn');
+    if (isLogin) {
+        forgotBtn.classList.remove('hidden');
+    } else {
+        forgotBtn.classList.add('hidden');
+    }
+
+    // 3. Kemas Kini Teks Tajuk & Butang Aksi
+    const title = document.getElementById('auth-title');
     const btnAction = document.getElementById('btn-action');
-    const authToggleBtn = document.getElementById('auth-toggle-btn');
+    const toggleBtn = document.getElementById('auth-toggle-btn');
 
-    // Reset paparan
-    regFields.classList.add('hidden');
-    loginFields.classList.add('hidden');
-    forgotFields.classList.add('hidden');
-
-    if (target === 'login') {
-        loginFields.classList.remove('hidden');
-        authTitle.innerText = 'BRAVORIAN';
+    if (isLogin) {
+        title.innerText = 'BRAVORIAN';
         btnAction.innerText = 'Log Masuk';
-        authToggleBtn.innerText = 'Daftar Akaun Baru';
-    } else if (target === 'register') {
-        regFields.classList.remove('hidden');
-        loginFields.classList.remove('hidden'); // Kekalkan emel/pass untuk register
-        authTitle.innerText = 'DAFTAR';
+        toggleBtn.innerText = 'Daftar Akaun Baru';
+    } else if (isReg) {
+        title.innerText = 'DAFTAR';
         btnAction.innerText = 'Hantar Pendaftaran';
-        authToggleBtn.innerText = 'Kembali Ke Log Masuk';
-    } else if (target === 'forgot') {
-        forgotFields.classList.remove('hidden');
-        authTitle.innerText = 'RESET';
+        toggleBtn.innerText = 'Sudah Ada Akaun? Log Masuk';
+    } else if (isForgot) {
+        title.innerText = 'RESET';
         btnAction.innerText = 'Hantar Emel';
-        authToggleBtn.innerText = 'Kembali Ke Log Masuk';
+        toggleBtn.innerText = 'Kembali Ke Log Masuk';
     }
 }
+
 
 // Event Listeners
 document.getElementById('auth-toggle-btn').onclick = () => {
