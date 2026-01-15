@@ -150,7 +150,83 @@
                     document.getElementById('auth-section').classList.add('hidden');
                     document.getElementById('main-dashboard').classList.remove('hidden');
                     if(userData.role === 'admin') {
-                        document.getElementById('admin-nav').classList.remove('hidden');
+  async function showPage(p, targetMonth = new Date().getMonth()) {
+    const cont = document.getElementById('dynamic-content');
+    
+    if (p === 'welcome') {
+        // 1. DAPATKAN TUGAS HARI INI
+        const tkhHariIni = new Date();
+        const dtyToday = getDuty(tkhHariIni, userData.platoon);
+        const tarikhHariIni = tkhHariIni.toLocaleDateString('ms-MY', { day: '2-digit', month: 'long', year: 'numeric' }).toUpperCase();
+
+        // 2. JANA SENARAI JADUAL AKAN DATANG (KEKALKAN LOGIK ASAL)
+        let htmlList = '';
+        for (let i = 1; i <= 3; i++) {
+            const tkh = new Date();
+            tkh.setDate(tkh.getDate() + i);
+            const dty = getDuty(tkh, userData.platoon);
+            const namaHari = tkh.toLocaleDateString('ms-MY', { weekday: 'long' }).toUpperCase();
+            const tarikhRingkas = tkh.toLocaleDateString('ms-MY', { day: '2-digit', month: 'short' });
+
+            htmlList += `
+                <div class="flex justify-between items-center p-6 ${i < 3 ? 'border-b border-slate-50' : ''}">
+                    <div class="text-left">
+                        <p class="text-[12px] font-black text-black uppercase tracking-tighter">${namaHari}</p>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">${tarikhRingkas}</p>
+                    </div>
+                    <div class="text-right">
+                        ${dty.off ? 
+                            `<p class="text-sm font-black text-slate-300 uppercase italic">OFF</p>` : 
+                            `<p class="text-[13px] font-black text-black uppercase leading-none">${dty.shift}</p>
+                             <p class="text-[10px] font-extrabold text-yellow-500 uppercase mt-1 tracking-tighter leading-none">${dty.loc}</p>`
+                        }
+                    </div>
+                </div>`;
+        }
+
+        // 3. MASUKKAN KE DALAM HTML (TAMBAH BAHAGIAN HARI INI)
+        cont.innerHTML = `
+            <div class="flex flex-col items-center justify-center min-h-[60vh] text-center p-4">
+                <div class="w-24 h-24 bg-black rounded-[2.5rem] flex items-center justify-center mb-8 shadow-2xl relative">
+                    <div class="absolute inset-0 border-4 border-yellow-400 rounded-[2.5rem] animate-pulse"></div>
+                    <svg class="w-12 h-12 text-yellow-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+                </div>
+                <h1 class="text-3xl font-black text-black uppercase italic tracking-tighter mb-2">SELAMAT DATANG</h1>
+                <div class="mb-6">
+                    <p class="text-[14px] font-black text-slate-800 uppercase tracking-widest">${userData.fullName}</p>
+                    <span class="inline-block mt-2 px-4 py-1.5 bg-yellow-400 text-black text-[10px] font-black rounded-full uppercase tracking-widest">PLATUN ${userData.platoon}</span>
+                </div>
+
+                <div class="bg-white rounded-[2rem] border-2 border-yellow-400 shadow-lg w-full max-w-md overflow-hidden mb-8">
+                    <div class="bg-yellow-400 py-2">
+                        <p class="text-[9px] font-black text-black uppercase tracking-[0.2em]">Tugasan Hari Ini</p>
+                    </div>
+                    <div class="p-6 flex justify-between items-center">
+                        <div class="text-left">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">${tarikhHariIni}</p>
+                            <p class="text-lg font-black text-black uppercase tracking-tighter leading-tight">HARI INI</p>
+                        </div>
+                        <div class="text-right">
+                            ${dtyToday.off ? 
+                                `<p class="text-xl font-black text-slate-300 uppercase italic">OFF</p>` : 
+                                `<p class="text-xl font-black text-black uppercase leading-none">${dtyToday.shift}</p>
+                                 <p class="text-xs font-extrabold text-yellow-600 uppercase mt-1 tracking-tighter">${dtyToday.loc}</p>`
+                            }
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-[3rem] border border-slate-100 shadow-xl w-full max-w-md overflow-hidden">
+                    <div class="bg-black py-4">
+                        <p class="text-[10px] font-black text-yellow-400 uppercase tracking-[0.3em]">Jadual Akan Datang</p>
+                    </div>
+                    ${htmlList}
+                </div>
+            </div>`;
+    }
+    // ... sambungan kod lain ...
+}
+                      document.getElementById('admin-nav').classList.remove('hidden');
                         monitorPendingUsers();
                     }
                     showPage('welcome');
@@ -174,53 +250,7 @@
                 else { b.classList.add('hidden'); }
             });
         }
-                            async function showPage(p, targetMonth = new Date().getMonth()) {
-            const cont = document.getElementById('dynamic-content');
-            
-            if (p === 'welcome') {
-                let htmlList = '';
-                for (let i = 0; i <= 3; i++) {
-                    const tkh = new Date();
-                    tkh.setDate(tkh.getDate() + i);
-                    const dty = getDuty(tkh, userData.platoon);
-                    const namaHari = tkh.toLocaleDateString('ms-MY', { weekday: 'long' }).toUpperCase();
-                    const tarikhRingkas = tkh.toLocaleDateString('ms-MY', { day: '2-digit', month: 'short' });
-
-                    htmlList += `
-                        <div class="flex justify-between items-center p-6 ${i < 3 ? 'border-b border-slate-50' : ''}">
-                            <div class="text-left">
-                                <p class="text-[12px] font-black text-black uppercase tracking-tighter">${namaHari}</p>
-                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">${tarikhRingkas}</p>
-                            </div>
-                            <div class="text-right">
-                                ${dty.off ? 
-                                    `<p class="text-sm font-black text-slate-300 uppercase italic">OFF</p>` : 
-                                    `<p class="text-[13px] font-black text-black uppercase leading-none">${dty.shift}</p>
-                                     <p class="text-[10px] font-extrabold text-yellow-500 uppercase mt-1 tracking-tighter leading-none">${dty.loc}</p>`
-                                }
-                            </div>
-                        </div>`;
-                }
-
-                cont.innerHTML = `
-                    <div class="flex flex-col items-center justify-center min-h-[60vh] text-center">
-                        <div class="w-24 h-24 bg-black rounded-[2.5rem] flex items-center justify-center mb-8 shadow-2xl relative">
-                            <div class="absolute inset-0 border-4 border-yellow-400 rounded-[2.5rem] animate-pulse"></div>
-                            <svg class="w-12 h-12 text-yellow-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
-                        </div>
-                        <h1 class="text-3xl font-black text-black uppercase italic tracking-tighter mb-2">SELAMAT DATANG</h1>
-                        <div class="mb-10">
-                            <p class="text-[14px] font-black text-slate-800 uppercase tracking-widest">${userData.fullName}</p>
-                            <span class="inline-block mt-2 px-4 py-1.5 bg-yellow-400 text-black text-[10px] font-black rounded-full uppercase tracking-widest">PLATUN ${userData.platoon}</span>
-                        </div>
-                        
-                        <div class="bg-white rounded-[3rem] border border-slate-100 shadow-xl w-full max-w-md overflow-hidden">
-                            <div class="bg-black py-4">
-                                <p class="text-[10px] font-black text-yellow-400 uppercase tracking-[0.3em]">Jadual Akan Datang</p>
-                            </div>
-                            ${htmlList}
-                        </div>
-                    </div>`;
+                            
                             } else if (p === 'jadual-induk') {
                 const months = ["JANUARI", "FEBRUARI", "MAC", "APRIL", "MEI", "JUN", "JULAI", "OGOS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DISEMBER"];
                 const skrg = new Date();
