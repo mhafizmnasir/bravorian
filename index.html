@@ -27,35 +27,38 @@
         <div class="w-12 h-12 border-4 border-yellow-400 border-t-black rounded-full animate-spin"></div>
     </div>
         <div id="auth-section" class="hidden flex items-center justify-center min-h-screen p-6">
-        <div class="bg-white p-10 rounded-[3rem] shadow-2xl w-full max-w-md border border-slate-100 text-center relative overflow-hidden">
-            <div class="absolute top-0 left-0 w-full h-2 bg-bravorian-gold"></div>
-            
-            <h1 id="auth-title" class="text-4xl font-black text-black uppercase italic mb-2 tracking-tighter">BRAVORIAN</h1>
-            <p class="text-[11px] font-bold text-slate-400 uppercase mb-10 tracking-[0.4em]">B.S.I JOHOR BAHRU</p>
-
-            <div id="forgot-password-fields" class="hidden space-y-4 mb-4 text-left">
-            <p class="text-[10px] font-bold text-slate-500 uppercase mb-2 px-2">Masukkan emel ynag berdaftar: </p>
-            <input type="email" id="forgot-email" placeholder="EMEL PEMULIHAN" class="w-full p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold outline-none focus:ring-2 focus:ring-yellow-400">
+    <div class="bg-white p-10 rounded-[3rem] shadow-2xl w-full max-w-md border border-slate-100 text-center relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-2 bg-bravorian-gold"></div>
+        
+        <h1 id="auth-title" class="text-4xl font-black text-black uppercase italic mb-2 tracking-tighter">BRAVORIAN</h1>
+        <p id="auth-subtitle" class="text-[11px] font-bold text-slate-400 uppercase mb-10 tracking-[0.4em]">B.S.I JOHOR BAHRU</p>
+        
+        <div id="register-fields" class="hidden space-y-4 mb-4 text-left">
+            <div class="flex gap-3">
+                <input type="text" id="reg-firstname" placeholder="NAMA DEPAN" class="w-1/2 p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold uppercase outline-none focus:ring-2 focus:ring-yellow-400">
+                <input type="text" id="reg-lastname" placeholder="NAMA BELAKANG" class="w-1/2 p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold uppercase outline-none focus:ring-2 focus:ring-yellow-400">
             </div>
-            
-            <div id="register-fields" class="hidden space-y-4 mb-4 text-left">
-                <div class="flex gap-3">
-                    <input type="text" id="reg-firstname" placeholder="NAMA DEPAN" class="w-1/2 p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold uppercase outline-none focus:ring-2 focus:ring-yellow-400">
-                    <input type="text" id="reg-lastname" placeholder="NAMA BELAKANG" class="w-1/2 p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold uppercase outline-none focus:ring-2 focus:ring-yellow-400">
-                </div>
-                <select id="reg-platoon" class="w-full p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold outline-none focus:ring-2 focus:ring-yellow-400 uppercase"></select>
-            </div>
+            <select id="reg-platoon" class="w-full p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold outline-none focus:ring-2 focus:ring-yellow-400 uppercase"></select>
+        </div>
 
-            <div class="space-y-4">
-                <input type="email" id="email" placeholder="EMEL" class="w-full p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold outline-none focus:ring-2 focus:ring-yellow-400">
-                <input type="password" id="password" placeholder="KATA LALUAN" class="w-full p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold outline-none focus:ring-2 focus:ring-yellow-400">
-            </div>
+        <div id="login-fields" class="space-y-4">
+            <input type="email" id="email" placeholder="EMEL" class="w-full p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold outline-none focus:ring-2 focus:ring-yellow-400">
+            <input type="password" id="password" placeholder="KATA LALUAN" class="w-full p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold outline-none focus:ring-2 focus:ring-yellow-400">
+        </div>
 
-            <button id="btn-action" class="w-full bg-black text-yellow-400 font-black py-5 rounded-2xl mt-8 uppercase text-[12px] tracking-widest shadow-xl active:scale-95 transition-all">Log Masuk</button>
-            <button id="forgot-password-toggle" class="w-full text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-4 block mx-auto">Lupa Kata Laluan?</button>
-            <button id="auth-toggle-btn" class="w-full text-[10px] text-black font-black uppercase tracking-widest mt-8 border-b-2 border-yellow-400 inline-block pb-1 w-max mx-auto">Daftar Akaun Baru</button>
+        <div id="forgot-fields" class="hidden space-y-4 mb-4">
+            <p class="text-[10px] text-slate-500 font-bold uppercase mb-4">Sila masukkan emel anda untuk menerima pautan tetapan semula kata laluan.</p>
+            <input type="email" id="forgot-email" placeholder="EMEL BERDAFTAR" class="w-full p-5 bg-slate-50 border-none rounded-2xl text-[12px] font-bold outline-none focus:ring-2 focus:ring-yellow-400">
+        </div>
+
+        <button id="btn-action" class="w-full bg-black text-yellow-400 font-black py-5 rounded-2xl mt-8 uppercase text-[12px] tracking-widest shadow-xl active:scale-95 transition-all">Log Masuk</button>
+        
+        <div class="mt-8 flex flex-col gap-4">
+            <button id="auth-toggle-btn" class="text-[10px] text-black font-black uppercase tracking-widest border-b-2 border-yellow-400 inline-block pb-1 w-max mx-auto">Daftar Akaun Baru</button>
+            <button id="forgot-toggle-btn" class="text-[10px] text-slate-400 font-bold uppercase tracking-widest hover:text-black transition-colors">Lupa Kata Laluan?</button>
         </div>
         </div>
+
             <div id="main-dashboard" class="hidden">
         <nav class="bg-white/90 backdrop-blur-lg border-b border-slate-100 p-5 sticky top-0 z-50 flex justify-between items-center px-8">
             <div class="flex items-center gap-4">
@@ -74,7 +77,7 @@
             <div id="sidebar-container" class="mobile-menu closed bg-white w-80 h-full p-10 flex flex-col shadow-2xl">
                 <div class="mb-12 flex justify-between items-center">
                     <h2 class="text-[11px] font-black text-black uppercase opacity-30 tracking-[0.3em]">Menu Utama</h2>
-                    <button id="menu-close" class="p-2 text-slate-400">✕</button>
+                    <button id="menu-close" class="p-2 text-slate-400">âœ•</button>
                 </div>
                 <div class="space-y-4 font-black text-[13px] uppercase tracking-widest text-slate-400">
                     <button id="nav-welcome" class="flex items-center gap-4 w-full text-left p-5 hover:bg-yellow-50 rounded-2xl transition-all text-black border-l-4 border-yellow-400">Utama</button>
@@ -275,48 +278,84 @@
             }
         }, 1000);
                             document.getElementById('btn-action').onclick = async () => {
-            const email = document.getElementById('email').value.trim();
-            const pass = document.getElementById('password').value;
-            if (authMode === 'login') {
-                try { await signInWithEmailAndPassword(auth, email, pass); } catch(e) { alert("Akaun atau Kata Laluan Salah!"); }
-            } else if (authMode === 'register') {
-                const fn = document.getElementById('reg-firstname').value.trim().toUpperCase();
-                const ln = document.getElementById('reg-lastname').value.trim().toUpperCase();
-                const plt = document.getElementById('reg-platoon').value;
-                if(!fn || !ln || !plt || !email || !pass) return alert("Lengkapkan maklumat!");
-                try {
-                    const res = await createUserWithEmailAndPassword(auth, email, pass);
-                    await set(ref(db, 'users/' + res.user.uid), { firstName: fn, lastName: ln, fullName: fn + " " + ln, platoon: parseInt(plt), role: "user", status: "pending" });
-                    alert("Pendaftaran Berjaya! Sila hubungi Admin untuk kelulusan."); signOut(auth); toggleAuthMode('login');
-                } catch(e) { alert(e.message); }
-            }
-        };
-
+    if (authMode === 'login') {
+        const email = document.getElementById('email').value.trim();
+        const pass = document.getElementById('password').value;
+        try { 
+            await signInWithEmailAndPassword(auth, email, pass); 
+        } catch(e) { 
+            alert("Akaun atau Kata Laluan Salah!"); 
+        }
+    } 
+    else if (authMode === 'register') {
+        const email = document.getElementById('email').value.trim();
+        const pass = document.getElementById('password').value;
+        const fn = document.getElementById('reg-firstname').value.trim().toUpperCase();
+        const ln = document.getElementById('reg-lastname').value.trim().toUpperCase();
+        const plt = document.getElementById('reg-platoon').value;
+        if(!fn || !ln || !plt || !email || !pass) return alert("Lengkapkan maklumat!");
+        try {
+            const res = await createUserWithEmailAndPassword(auth, email, pass);
+            await set(ref(db, 'users/' + res.user.uid), { firstName: fn, lastName: ln, fullName: fn + " " + ln, platoon: parseInt(plt), role: "user", status: "pending" });
+            alert("Pendaftaran Berjaya! Sila hubungi Admin untuk kelulusan."); 
+            signOut(auth); 
+            toggleAuthMode('login');
+        } catch(e) { alert(e.message); }
+    }
+    else if (authMode === 'forgot') {
+        const email = document.getElementById('forgot-email').value.trim();
+        if(!email) return alert("Sila masukkan emel!");
+        try {
+            await sendPasswordResetEmail(auth, email);
+            alert("Pautan tetapan semula kata laluan telah dihantar ke emel anda.");
+            toggleAuthMode('login');
+        } catch(e) {
+            alert("Ralat: " + e.message);
+        }
+    }
+};
         function toggleAuthMode(target) {
     authMode = target;
-    
-    // Sembunyi/Papar medan mengikut mod
-    document.getElementById('register-fields').classList.toggle('hidden', target !== 'register');
-    document.getElementById('forgot-password-fields').classList.toggle('hidden', target !== 'forgot');
-    
-    // Tukar input emel/password asal kepada hidden jika dalam mod 'forgot'
-    document.getElementById('email').parentElement.classList.toggle('hidden', target === 'forgot');
+    const isLogin = target === 'login';
+    const isReg = target === 'register';
+    const isForgot = target === 'forgot';
 
-    // Kemaskini Teks UI
-    if (target === 'login') {
-        document.getElementById('auth-title').innerText = 'BRAVORIAN';
-        document.getElementById('btn-action').innerText = 'Log Masuk';
-        document.getElementById('auth-toggle-btn').innerText = 'Daftar Akaun Baru';
-    } else if (target === 'register') {
-        document.getElementById('auth-title').innerText = 'DAFTAR';
-        document.getElementById('btn-action').innerText = 'Hantar Pendaftaran';
-        document.getElementById('auth-toggle-btn').innerText = 'Kembali ke Log Masuk';
-    } else if (target === 'forgot') {
-        document.getElementById('auth-title').innerText = 'PULIHKAN';
-        document.getElementById('btn-action').innerText = 'Hantar Emel';
-        document.getElementById('auth-toggle-btn').innerText = 'Kembali ke Log Masuk';
+    // Tunjuk/Sembunyi bahagian input
+    document.getElementById('login-fields').classList.toggle('hidden', isForgot);
+    document.getElementById('register-fields').classList.toggle('hidden', !isReg);
+    document.getElementById('forgot-fields').classList.toggle('hidden', !isForgot);
+
+    // Tukar teks tajuk & butang
+    const title = document.getElementById('auth-title');
+    const btnAction = document.getElementById('btn-action');
+    const toggleBtn = document.getElementById('auth-toggle-btn');
+
+    if (isLogin) {
+        title.innerText = 'BRAVORIAN';
+        btnAction.innerText = 'Log Masuk';
+        toggleBtn.innerText = 'Daftar Akaun Baru';
+    } else if (isReg) {
+        title.innerText = 'DAFTAR';
+        btnAction.innerText = 'Hantar Pendaftaran';
+        toggleBtn.innerText = 'Sudah Ada Akaun? Log Masuk';
+    } else if (isForgot) {
+        title.innerText = 'RESET';
+        btnAction.innerText = 'Hantar Emel';
+        toggleBtn.innerText = 'Kembali Ke Log Masuk';
     }
 }
+
+// Tambah event listener untuk butang lupa kata laluan
+document.getElementById('forgot-toggle-btn').onclick = () => {
+    if (authMode !== 'forgot') toggleAuthMode('forgot');
+    else toggleAuthMode('login');
+};
+
+document.getElementById('auth-toggle-btn').onclick = () => {
+    if (authMode === 'login') toggleAuthMode('register');
+    else toggleAuthMode('login');
+};
+
         document.getElementById('auth-toggle-btn').onclick = () => toggleAuthMode(authMode === 'login' ? 'register' : 'login');
 
         const sel = document.getElementById('reg-platoon');
