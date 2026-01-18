@@ -1,0 +1,24 @@
+{
+  "rules": {
+    "users": {
+      // Hanya pengguna yang telah log masuk boleh melihat senarai pengguna (untuk Admin)
+      // Atau pengguna boleh membaca data profil mereka sendiri
+      ".read": "auth != null",
+      
+      "$uid": {
+        // Pengguna hanya boleh menulis data mereka sendiri semasa pendaftaran
+        // Admin mempunyai kuasa penuh untuk mengubah (Luluskan/Admin role)
+        ".write": "auth != null && (auth.uid === $uid || root.child('users').child(auth.uid).child('role').val() === 'admin')",
+        
+        // Memastikan pengguna tidak boleh menukar status 'pending' atau 'role' mereka sendiri
+        // Hanya Admin yang boleh mengubah 'status' dan 'role'
+        "status": {
+          ".write": "root.child('users').child(auth.uid).child('role').val() === 'admin'"
+        },
+        "role": {
+          ".write": "root.child('users').child(auth.uid).child('role').val() === 'admin'"
+        }
+      }
+    }
+  }
+}
