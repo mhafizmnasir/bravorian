@@ -355,7 +355,7 @@
     
     const daysInMonth = new Date(2026, parseInt(targetMonth) + 1, 0).getDate();
     
-            for(let i=1; i<=daysInMonth; i++){
+                for(let i=1; i<=daysInMonth; i++){
         let d = new Date(2026, targetMonth, i);
         let r = getDuty(d, userData.platoon);
         const adakahHariIni = (i === skrg.getDate() && targetMonth == skrg.getMonth());
@@ -365,11 +365,14 @@
             <div onclick="bukaModal(${i}, ${targetMonth}, \`${teksNota.replace(/"/g, '&quot;')}\`)" 
                  class="relative p-5 rounded-[2rem] border flex flex-col min-h-[130px] active:scale-95 transition-all cursor-pointer overflow-hidden ${r.off ? 'bg-slate-50' : 'bg-white shadow-sm'} ${adakahHariIni ? 'ring-4 ring-yellow-400 z-10 scale-[1.02]' : 'border-slate-100'}">
                 
-                <div class="flex justify-between items-start mb-1 relative z-10">
-                    <div class="flex flex-col">
-                        <p class="text-[10px] font-black ${adakahHariIni ? 'text-black' : 'text-slate-400'} uppercase">${d.toLocaleDateString('ms-MY',{weekday:'short', day:'2-digit'})}</p>
-                        ${adakahHariIni ? '<p class="text-[7px] font-black text-yellow-600 bg-yellow-100 px-2 py-0.5 rounded-full w-fit mt-0.5 animate-bounce">HARI INI</p>' : ''}
+                ${adakahHariIni ? `
+                    <div class="absolute top-0 left-1/2 -translate-x-1/2 bg-yellow-400 px-3 py-1 rounded-b-xl z-20 animate-bounce">
+                        <p class="text-[7px] font-black text-black leading-none">HARI INI</p>
                     </div>
+                ` : ''}
+
+                <div class="flex justify-between items-start mb-1 relative z-10">
+                    <p class="text-[10px] font-black ${adakahHariIni ? 'text-black' : 'text-slate-400'} uppercase">${d.toLocaleDateString('ms-MY',{weekday:'short', day:'2-digit'})}</p>
                     
                     <div class="p-1">
                         ${teksNota 
@@ -390,6 +393,7 @@
                 </div>` : ''}
             </div>`;
     }
+
 
 
 
