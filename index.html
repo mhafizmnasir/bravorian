@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-     <title>BRAVORIAN - BSI</title>
+     <title>BRAVORIANS - BSI</title>
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
@@ -53,7 +53,7 @@
     <div class="bg-white p-10 rounded-[3rem] shadow-2xl w-full max-w-md border border-slate-100 text-center relative overflow-hidden">
         <div class="absolute top-0 left-0 w-full h-2 bg-bravorian-gold"></div>
         
-        <h1 id="auth-title" class="text-4xl font-black text-black uppercase italic mb-2 tracking-tighter">BRAVORIAN</h1>
+        <h1 id="auth-title" class="text-4xl font-black text-black uppercase italic mb-2 tracking-tighter">BRAVORIANS</h1>
         <p id="auth-subtitle" class="text-[11px] font-bold text-slate-400 uppercase mb-10 tracking-[0.4em]">B.S.I JOHOR BAHRU</p>
         
         <div id="register-fields" class="hidden space-y-4 mb-4 text-left">
@@ -100,7 +100,7 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
                 </button>
                 <div class="flex flex-col leading-none">
-                    <span class="font-black text-black italic uppercase tracking-tighter text-lg">Bravorian</span>
+                    <span class="font-black text-black italic uppercase tracking-tighter text-lg">Bravorians</span>
                     <span id="live-clock" class="text-[9px] font-bold text-slate-400 mt-1 uppercase">00:00:00</span>
                 </div>
             </div>
@@ -175,7 +175,7 @@
         "1-0": "Cuti Sekolah", "2-0": "Cuti Sekolah", "3-0": "Cuti Sekolah", "4-0": "Cuti Sekolah", "5-0": "Cuti Sekolah",
         "6-0": "Cuti Sekolah", "7-0": "Cuti Sekolah", "8-0": "Cuti Sekolah", "9-0": "Cuti Sekolah", "10-0": "Cuti Sekolah",
         "11-0": "Cuti Sekolah", "1-1": "Thaipusam", "17-1": "Tahun Baru Cina", "18-1": "Tahun Baru Cina (Hari Ke-2)",
-        "19-1": "Awal Ramadan*", "21-2": "Hari Raya Aidilfitri* & Cuti Sekolah", "22-2": "Hari Raya Aidilfitri (Hari Ke-2)* & Cuti Sekolah",
+        "19-1": "Awal Ramadan", "21-2": "Hari Raya Aidilfitri & Cuti Sekolah", "22-2": "Hari Raya Aidilfitri (Hari Ke-2)* & Cuti Sekolah",
         "23-2": "Cuti Sekolah", "24-2": "Hari Keputeraan Sultan Johor & Cuti Sekolah", "25-2": "Cuti Sekolah", 
         "26-2": "Cuti Sekolah", "27-2": "Cuti Sekolah", "28-2": "Cuti Sekolah", "29-2": "Cuti Sekolah", "1-4": "Hari Pekerja",
         "23-4": "Cuti Sekolah", "24-4": "Cuti Sekolah", "25-4": "Cuti Sekolah", "26-4": "Cuti Sekolah", 
@@ -634,7 +634,7 @@ document.getElementById('auth-toggle-btn').onclick = () => {
     if (authMode === 'forgot') {
         // Jika sedang di skrin lupa kata laluan, kembali ke login
         authMode = 'login';
-        document.getElementById('auth-title').innerText = 'BRAVORIAN';
+        document.getElementById('auth-title').innerText = 'BRAVORIANS';
         document.getElementById('btn-action').innerText = 'Log Masuk';
         document.getElementById('auth-toggle-btn').innerText = 'Daftar Akaun Baru';
         document.getElementById('forgot-fields').classList.add('hidden');
@@ -643,7 +643,7 @@ document.getElementById('auth-toggle-btn').onclick = () => {
     } else {
         // Logik asal tukar Login <-> Daftar
         authMode = isLogin ? 'register' : 'login';
-        document.getElementById('auth-title').innerText = isLogin ? 'DAFTAR' : 'BRAVORIAN';
+        document.getElementById('auth-title').innerText = isLogin ? 'DAFTAR' : 'BRAVORIANS';
         document.getElementById('btn-action').innerText = isLogin ? 'Hantar Pendaftaran' : 'Log Masuk';
         document.getElementById('auth-toggle-btn').innerText = isLogin ? 'Sudah Ada Akaun? Log Masuk' : 'Daftar Akaun Baru';
         document.getElementById('register-fields').classList.toggle('hidden', !isLogin);
