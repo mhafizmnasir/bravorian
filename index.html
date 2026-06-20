@@ -138,13 +138,13 @@
             </button>
         </div>
 
-       <div id="admin-section" class="mt-10 hidden border-t border-slate-50 pt-10">
+      <div id="admin-section" class="mt-10 hidden border-t border-slate-50 pt-10">
     <h2 class="text-[11px] font-black text-black uppercase opacity-30 tracking-[0.3em] mb-6 px-2">Admin Panel</h2>
     <div class="flex flex-col gap-3 font-black text-[13px] uppercase tracking-widest">
         
-        <button id="admin-nav" class="hidden flex items-center justify-between w-full p-5 bg-black text-yellow-400 rounded-2xl hover:opacity-90 transition-all shadow-lg shadow-black/5">
+        <button id="admin-nav" class="hidden flex items-center justify-between w-full p-5 hover:bg-yellow-50 rounded-2xl transition-all text-black border-l-4 border-yellow-400">
             <div class="flex items-center gap-4">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-5 h-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
                 </svg>
                 <span>Permohonan Baru</span>
@@ -206,29 +206,60 @@
     let JADUAL_2 = {};
     let START_ROW = {};
     let userData = null;
-    let authMode = 'login';
 
-    const CUTI_JOHOR = {
-        "1-0": "Cuti Sekolah", "2-0": "Cuti Sekolah", "3-0": "Cuti Sekolah", "4-0": "Cuti Sekolah", "5-0": "Cuti Sekolah",
-        "6-0": "Cuti Sekolah", "7-0": "Cuti Sekolah", "8-0": "Cuti Sekolah", "9-0": "Cuti Sekolah", "10-0": "Cuti Sekolah",
-        "11-0": "Cuti Sekolah", "1-1": "Thaipusam", "17-1": "Tahun Baru Cina", "18-1": "Tahun Baru Cina (Hari Ke-2)",
-        "19-1": "Awal Ramadan", "21-2": "Hari Raya Aidilfitri & Cuti Sekolah", "22-2": "Hari Raya Aidilfitri (Hari Ke-2)* & Cuti Sekolah",
-        "23-2": "Cuti Sekolah", "24-2": "Hari Keputeraan Sultan Johor & Cuti Sekolah", "25-2": "Cuti Sekolah", 
-        "26-2": "Cuti Sekolah", "27-2": "Cuti Sekolah", "28-2": "Cuti Sekolah", "29-2": "Cuti Sekolah", "1-4": "Hari Pekerja",
-        "23-4": "Cuti Sekolah", "24-4": "Cuti Sekolah", "25-4": "Cuti Sekolah", "26-4": "Cuti Sekolah", 
-        "27-4": "Hari Raya Haji* & Cuti Sekolah", "28-4": "Cuti Sekolah", "29-4": "Cuti Sekolah", "30-4": "Pesta Kaamatan 1 & Cuti Sekolah",
-        "31-4": "Pesta Kaamatan 2, Hari Wesak & Cuti Sekolah", "1-5": "Hari Gawai 1, Hari Keputeraan YDP Agong & Cuti Sekolah", "2-5": "Hari Gawai 2 & Cuti Sekolah",
-        "3-5": "Cuti Sekolah", "4-5": "Cuti Sekolah", "5-5": "Cuti Sekolah", "6-5": "Cuti Sekolah", "7-5": "Cuti Sekolah",
-        "17-5": "Awal Muharram", "22-6": "Hari Hol Almarhum Sultan Iskandar", "25-7": "Maulidur Rasul", "29-7": "Cuti Sekolah",
-        "30-7": "Cuti Sekolah", "31-7": "Hari Kebangsaan & Cuti Sekolah", "1-8": "Cuti Sekolah", "2-8": "Cuti Sekolah",
-        "3-8": "Cuti Sekolah", "4-8": "Cuti Sekolah", "5-8": "Cuti Sekolah", "6-8": "Cuti Sekolah", "16-8": "Hari Malaysia",
-        "8-10": "Hari Deepavali", "5-11": "Cuti Sekolah", "6-11": "Cuti Sekolah", "7-11": "Cuti Sekolah", "8-11": "Cuti Sekolah",
-        "9-11": "Cuti Sekolah", "10-11": "Cuti Sekolah", "11-11": "Cuti Sekolah", "12-11": "Cuti Sekolah", "13-11": "Cuti Sekolah",
-        "14-11": "Cuti Sekolah", "15-11": "Cuti Sekolah", "16-11": "Cuti Sekolah", "17-11": "Cuti Sekolah", "18-11": "Cuti Sekolah",
-        "19-11": "Cuti Sekolah", "20-11": "Cuti Sekolah", "21-11": "Cuti Sekolah", "22-11": "Cuti Sekolah", "23-11": "Cuti Sekolah",
-        "24-11": "Cuti Sekolah", "25-11": "Hari Krismas & Cuti Sekolah", "26-11": "Cuti Sekolah", "27-11": "Cuti Sekolah",
-        "28-11": "Cuti Sekolah", "29-11": "Cuti Sekolah", "30-11": "Cuti Sekolah", "31-11": "Cuti Sekolah",
-    };
+// Pembolehubah cache untuk kurangkan panggilan API
+let cacheCutiGoogle = {};
+
+async function dapatkanCutiGoogle(tahun) {
+    // Jika data cuti untuk tahun tersebut sudah diambil, guna semula data tersebut
+    if (cacheCutiGoogle[tahun]) return cacheCutiGoogle[tahun];
+
+    // API Key ini diambil terus dari konfigurasi Firebase sedia ada anda
+    const apiKey = "AIzaSyCQ9SBXkEILe6PZdmLyGBSFK63XhPM_V7o"; 
+    
+    // ID Rasmi Kalendar Cuti Awam Malaysia daripada Google
+    const calendarId = encodeURIComponent("en.malaysia#holiday@group.v.calendar.google.com");
+    
+    // Hadkan tarikh carian kepada bermula 1 Jan hingga 31 Dis bagi tahun pilihan
+    const timeMin = new Date(tahun, 0, 1).toISOString();
+    const timeMax = new Date(tahun, 11, 31, 23, 59, 59).toISOString();
+    
+    const url = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?key=${apiKey}&timeMin=${timeMin}&timeMax=${timeMax}&singleEvents=true&orderBy=startTime`;
+
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("Google Calendar API tidak dapat diakses.");
+        
+        const data = await response.json();
+        let senaraiCuti = {};
+        
+        // Memformat tarikh dari API Google supaya sepadan dengan struktur jadual kita
+        data.items.forEach(item => {
+            if (item.start && item.start.date) {
+                const parts = item.start.date.split('-');
+                const hari = parseInt(parts[2]);
+                const bulan = parseInt(parts[1]) - 1; // Bulan JavaScript bermula dari 0
+                
+                const kunci = `${hari}-${bulan}`;
+                senaraiCuti[kunci] = item.summary; // Menyimpan nama cuti (cth: "Labour Day")
+            }
+        });
+        
+        // Tambahan Manual (Opsional): Oleh kerana Google memberikan cuti peringkat Kebangsaan, 
+        // anda boleh menyelitkan cuti tetap spesifik untuk Johor di sini jika perlu:
+        senaraiCuti['23-2'] = senaraiCuti['23-2'] || "Hari Keputeraan Sultan Johor";
+        
+        cacheCutiGoogle[tahun] = senaraiCuti;
+        return senaraiCuti;
+        
+    } catch (error) {
+        console.error("Ralat memuat turun cuti:", error);
+        return {}; // Jika ralat/tiada internet, pulangkan objek kosong supaya sistem tidak tergendala
+    }
+}
+
+                   
+    let authMode = 'login';
 
     async function fetchSystemData() {
         try {
@@ -300,7 +331,7 @@ onAuthStateChanged(auth, async (user) => {
         }
     }
 });
-            async function showPage(p, targetMonth = new Date().getMonth()) {
+            async function showPage(p, targetMonth = new Date().getMonth(), targetYear = new Date().getFullYear()) {
             const cont = document.getElementById('dynamic-content');
                                 
             if (p === 'welcome') {
@@ -378,66 +409,81 @@ onAuthStateChanged(auth, async (user) => {
     const months = ["JANUARI", "FEBRUARI", "MAC", "APRIL", "MEI", "JUN", "JULAI", "OGOS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DISEMBER"];
     const skrg = new Date();
     
+    // Jana senarai tahun secara dinamik (Tahun lepas, Tahun ini, dan 2 tahun akan datang)
+    const tahunSemasa = skrg.getFullYear();
+    const years = [tahunSemasa - 1, tahunSemasa, tahunSemasa + 1, tahunSemasa + 2];
+
     // Ambil nota dari Firebase
-    const notesSnap = await get(ref(db, `notes/${auth.currentUser.uid}/${targetMonth}`));
+    const notesSnap = await get(ref(db, `notes/${auth.currentUser.uid}/${targetYear}/${targetMonth}`));
     const userNotes = notesSnap.exists() ? notesSnap.val() : {};
 
+    // Panggil API Google Calendar sebelum melukis jadual
+    const cutiGoogle = await dapatkanCutiGoogle(targetYear);
+
     let html = `
-        <div class="bg-white p-5 rounded-[2.5rem] mb-6 shadow-sm border border-slate-100">
+        <div class="bg-white p-5 rounded-[2.5rem] mb-6 shadow-sm border border-slate-100 grid grid-cols-2 gap-4">
+            <select id="year-select" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-[12px] font-black uppercase outline-none focus:ring-2 focus:ring-yellow-400">
+                ${years.map(y => `<option value="${y}" ${y == targetYear ? 'selected' : ''}>${y}</option>`).join('')}
+            </select>
             <select id="month-select" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-[12px] font-black uppercase outline-none focus:ring-2 focus:ring-yellow-400">
-                ${months.map((m, i) => `<option value="${i}" ${i == targetMonth ? 'selected' : ''}>${m} 2026</option>`).join('')}
+                ${months.map((m, i) => `<option value="${i}" ${i == targetMonth ? 'selected' : ''}>${m}</option>`).join('')}
             </select>
         </div>
         <div class="grid grid-cols-2 gap-4">`;
     
-    const daysInMonth = new Date(2026, parseInt(targetMonth) + 1, 0).getDate();
+    // Gunakan targetYear secara dinamik
+    const daysInMonth = new Date(targetYear, parseInt(targetMonth) + 1, 0).getDate();
     
-               for(let i=1; i<=daysInMonth; i++){
-    let d = new Date(2026, targetMonth, i);
-    let r = getDuty(d, userData.platoon);
-    const adakahHariIni = (i === skrg.getDate() && targetMonth == skrg.getMonth());
-    const teksNota = userNotes[i] || "";
-    const kunciCuti = `${i}-${targetMonth}`;
-    const namaCuti = CUTI_JOHOR[kunciCuti] || "";
+    for(let i=1; i<=daysInMonth; i++){
+        let d = new Date(targetYear, targetMonth, i);
+        let r = getDuty(d, userData.platoon);
+        const adakahHariIni = (i === skrg.getDate() && targetMonth == skrg.getMonth() && targetYear == skrg.getFullYear());
+        const teksNota = userNotes[i] || "";
+        
+        // Semak cuti dari hasil Google menggunakan format Hari-Bulan
+        const kunciCuti = `${i}-${targetMonth}`;
+        const namaCuti = cutiGoogle[kunciCuti] || "";
 
-    html += `
-        <div onclick="bukaModal(${i}, ${targetMonth}, \`${teksNota.replace(/"/g, '&quot;')}\`)" 
-             class="relative p-5 rounded-[2rem] border flex flex-col min-h-[130px] active:scale-95 transition-all cursor-pointer overflow-hidden ${r.off ? 'bg-slate-50' : 'bg-white shadow-sm'} ${adakahHariIni ? 'ring-4 ring-yellow-400 z-10 scale-[1.02]' : 'border-slate-100'}">
-            
-            ${adakahHariIni ? `
-                <div class="absolute top-0 left-1/2 -translate-x-1/2 bg-yellow-400 px-3 py-1 rounded-b-xl z-20 animate-bounce">
-                    <p class="text-[7px] font-black text-black leading-none">HARI INI</p>
-                </div>
-            ` : ''}
+        html += `
+            <div onclick="bukaModal(${i}, ${targetMonth}, ${targetYear}, \`${teksNota.replace(/"/g, '&quot;')}\`)" 
+                 class="relative p-5 rounded-[2rem] border flex flex-col min-h-[130px] active:scale-95 transition-all cursor-pointer overflow-hidden ${r.off ? 'bg-slate-50' : 'bg-white shadow-sm'} ${adakahHariIni ? 'ring-4 ring-yellow-400 z-10 scale-[1.02]' : 'border-slate-100'}">
+                
+                ${adakahHariIni ? `
+                    <div class="absolute top-0 left-1/2 -translate-x-1/2 bg-yellow-400 px-3 py-1 rounded-b-xl z-20 animate-bounce">
+                        <p class="text-[7px] font-black text-black leading-none">HARI INI</p>
+                    </div>
+                ` : ''}
 
-            <div class="flex justify-between items-start mb-1 relative z-10">
-                <div>
-                    <p class="text-[10px] font-black ${adakahHariIni ? 'text-black' : 'text-slate-400'} uppercase">${d.toLocaleDateString('ms-MY',{weekday:'short', day:'2-digit'})}</p>
+                <div class="flex justify-between items-start mb-1 relative z-10">
+                    <div>
+                        <p class="text-[10px] font-black ${adakahHariIni ? 'text-black' : 'text-slate-400'} uppercase">${d.toLocaleDateString('ms-MY',{weekday:'short', day:'2-digit'})}</p>
+                        ${namaCuti ? `<p class="text-[7px] font-extrabold text-red-500 uppercase leading-tight mt-0.5">${namaCuti}</p>` : ''}
+                    </div>
                     
-                    ${namaCuti ? `<p class="text-[7px] font-extrabold text-red-500 uppercase leading-tight mt-0.5">${namaCuti}</p>` : ''}
+                    <div class="p-1">
+                        ${teksNota 
+                            ? '<span class="flex h-2 w-2 bg-yellow-400 rounded-full animate-pulse"></span>' 
+                            : `<svg class="w-3 h-3 text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>`
+                        }
+                    </div>
                 </div>
                 
-                <div class="p-1">
-                    ${teksNota 
-                        ? '<span class="flex h-2 w-2 bg-yellow-400 rounded-full animate-pulse"></span>' 
-                        : `<svg class="w-3 h-3 text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>`
-                    }
+                <div class="relative z-10 mt-auto">
+                    <p class="text-[12px] font-black ${adakahHariIni ? 'text-black' : 'text-slate-700'} uppercase">${r.off ? 'OFF' : r.shift}</p>
+                    <p class="text-[9px] font-black text-yellow-500 uppercase tracking-tighter">${r.off ? '' : r.loc}</p>
                 </div>
-            </div>
-            
-            <div class="relative z-10 mt-auto">
-                <p class="text-[12px] font-black ${adakahHariIni ? 'text-black' : 'text-slate-700'} uppercase">${r.off ? 'OFF' : r.shift}</p>
-                <p class="text-[9px] font-black text-yellow-500 uppercase tracking-tighter">${r.off ? '' : r.loc}</p>
-            </div>
-            
-            ${teksNota ? `
-            <div class="mt-2 pt-2 border-t border-dashed border-slate-100 note-preview relative z-10">
-                <p class="text-[9px] font-bold text-slate-400 italic line-clamp-2 leading-tight">${teksNota}</p>
-            </div>` : ''}
-        </div>`;
-}
+                
+                ${teksNota ? `
+                <div class="mt-2 pt-2 border-t border-dashed border-slate-100 note-preview relative z-10">
+                    <p class="text-[9px] font-bold text-slate-400 italic line-clamp-2 leading-tight">${teksNota}</p>
+                </div>` : ''}
+            </div>`;
+    }
     cont.innerHTML = html + '</div>';
-    document.getElementById('month-select').onchange = (e) => showPage('jadual-induk', e.target.value);
+
+    // Event listener untuk perubahan dropdown bulan dan tahun
+    document.getElementById('month-select').onchange = (e) => showPage('jadual-induk', e.target.value, document.getElementById('year-select').value);
+    document.getElementById('year-select').onchange = (e) => showPage('jadual-induk', document.getElementById('month-select').value, e.target.value);
 }                      
 
 else if (p === 'settings') {
@@ -484,7 +530,7 @@ else if (p === 'settings') {
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
             </svg>
         </div>
-        <p class="text-[11px] font-black text-black uppercase tracking-widest">Tukar Kata Laluan</p>
+        <p class="text-[11px] font-black text-black uppercase tracking-widest">Keselamatan Akaun</p>
     </div>
     <div class="space-y-3">
     <div class="relative">
@@ -847,7 +893,11 @@ document.getElementById('menu-close').onclick = closeMenu;
 sidebar.onclick = (e) => { if (e.target === sidebar) closeMenu(); };
 
 document.getElementById('nav-welcome').onclick = () => { showPage('welcome'); closeMenu(); };
-document.getElementById('nav-calendar').onclick = () => { showPage('jadual-induk'); closeMenu(); };
+document.getElementById('nav-calendar').onclick = () => { 
+    const skrg = new Date();
+    showPage('jadual-induk', skrg.getMonth(), skrg.getFullYear()); 
+    closeMenu(); 
+};
 document.getElementById('admin-nav').onclick = () => { showAdminPage(); closeMenu(); };
 document.getElementById('btn-logout').onclick = () => { if(confirm("Log keluar?")) signOut(auth); };
 document.getElementById('admin-users-nav').onclick = () => { 
@@ -868,12 +918,12 @@ setInterval(() => {
 
 let currentEditingData = null;
 
-window.bukaModal = function(hari, bulan, teks) {
-    currentEditingData = { hari, bulan };
+window.bukaModal = function(hari, bulan, tahun, teks) {
+    currentEditingData = { hari, bulan, tahun }; // Menyimpan data tahun ke dalam objek global
     const modal = document.getElementById('note-modal');
     const input = document.getElementById('note-input');
     const title = document.getElementById('modal-title');
-    title.innerText = `NOTA: ${hari}/${parseInt(bulan) + 1}`;
+    title.innerText = `NOTA: ${hari}/${parseInt(bulan) + 1}/${tahun}`; // Memaparkan tahun pada tajuk modal
     input.value = teks;
     modal.classList.remove('hidden');
     input.focus();
@@ -886,18 +936,26 @@ window.tutupModal = function() {
 document.getElementById('btn-save-note').onclick = async () => {
     const teks = document.getElementById('note-input').value.trim();
     if (!currentEditingData) return;
-    const path = `notes/${auth.currentUser.uid}/${currentEditingData.bulan}/${currentEditingData.hari}`;
+    
+    // Path Firebase dikemas kini dengan menambah sub-node tahun: notes/uid/tahun/bulan/hari
+    const path = `notes/${auth.currentUser.uid}/${currentEditingData.tahun}/${currentEditingData.bulan}/${currentEditingData.hari}`;
     await set(ref(db, path), teks || null);
     tutupModal();
-    showPage('jadual-induk', currentEditingData.bulan);
+    
+    // Memuatkan semula halaman jadual-induk dengan parameter bulan dan tahun yang tepat
+    showPage('jadual-induk', currentEditingData.bulan, currentEditingData.tahun);
 };
 
 document.getElementById('btn-delete-note').onclick = async () => {
     if (!currentEditingData || !confirm("Hapus nota ini?")) return;
-    const path = `notes/${auth.currentUser.uid}/${currentEditingData.bulan}/${currentEditingData.hari}`;
+    
+    // Path Firebase dikemas kini dengan menambah sub-node tahun: notes/uid/tahun/bulan/hari
+    const path = `notes/${auth.currentUser.uid}/${currentEditingData.tahun}/${currentEditingData.bulan}/${currentEditingData.hari}`;
     await set(ref(db, path), null);
     tutupModal();
-    showPage('jadual-induk', currentEditingData.bulan);
+    
+    // Memuatkan semula halaman jadual-induk dengan parameter bulan dan tahun yang tepat
+    showPage('jadual-induk', currentEditingData.bulan, currentEditingData.tahun);
 };
 
 // 4. TOAST NOTIFICATION
