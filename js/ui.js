@@ -70,8 +70,14 @@ export async function showPage(p, targetMonth = new Date().getMonth(), targetYea
         const tahunSemasa = skrg.getFullYear();
         const years = [tahunSemasa, tahunSemasa + 1, tahunSemasa + 2, tahunSemasa + 3];
 
-        const notesSnap = await get(ref(db, `notes/${auth.currentUser.uid}/${targetYear}/${targetMonth}`));
-        const userNotes = notesSnap.exists() ? notesSnap.val() : {};
+        let notesSnap = await get(ref(db, `notes/${auth.currentUser.uid}/${targetYear}/${targetMonth}`));
+    let userNotes = notesSnap.exists() ? notesSnap.val() : null;
+
+    // 2. Jika tiada, cari di struktur lama (Tanpa Tahun) - Keserasian data lama
+    if (!userNotes) {
+        let oldNotesSnap = await get(ref(db, `notes/${auth.currentUser.uid}/${targetMonth}`));
+        userNotes = oldNotesSnap.exists() ? oldNotesSnap.val() : {};
+    }
         const cutiGoogle = await dapatkanCutiGoogle(targetYear);
 
         let html = `
