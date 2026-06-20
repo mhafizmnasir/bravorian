@@ -1,10 +1,9 @@
-import { auth, db } from './config.js';
+import { auth, db } from './config.js?v=1.1';
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { ref, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-import { fetchSystemData } from './duty.js';
-import { setUserData, handleAuthAction } from './auth.js';
-import { showPage, showAdminPage, showUsersListPage, closeMenu } from './ui.js';
-import { showPage, showAdminPage, showUsersListPage, closeMenu } from './ui.js?v=kemaskini-1';
+import { fetchSystemData } from './duty.js?v=1.1';
+import { setUserData, handleAuthAction } from './auth.js?v=1.1';
+import { showPage, showAdminPage, showUsersListPage, closeMenu } from './ui.js?v=1.1';
 
 let authMode = 'login';
 
