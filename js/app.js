@@ -4,6 +4,7 @@ import { ref, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-dat
 import { fetchSystemData } from './duty.js';
 import { setUserData, handleAuthAction } from './auth.js';
 import { showPage, showAdminPage, showUsersListPage, closeMenu } from './ui.js';
+import { showPage, showAdminPage, showUsersListPage, closeMenu } from './ui.js?v=kemaskini-1';
 
 let authMode = 'login';
 
