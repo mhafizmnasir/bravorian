@@ -94,7 +94,7 @@ export async function showPage(p, targetMonth = new Date().getMonth(), targetYea
     
     const teksNota = userNotes[i] || "";
     // BUKAN LAGI replace, kita gunakan encodeURIComponent untuk keselamatan 100%
-    const notaEncoded = teksNota ? encodeURIComponent(teksNota) : "";
+    const notaEncoded = teksNota ? encodeURIComponent(teksNota).replace(/'/g, "%27") : "";
     
     const kunciCuti = `${i}-${targetMonth}`;
     const namaCuti = cutiGoogle[kunciCuti] || "";
