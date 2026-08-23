@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ms-MY">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#08090b" />
+  <meta name="description" content="BRAVORIANS — pengemaskinian URL baharu untuk akses aplikasi jadual induk. Akses melalui go.gov.my/bravorians." />
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="assets/logo-bravorians.png" />
+  
+  <!-- Open Graph Meta Tags (Untuk WhatsApp, Telegram, Facebook dll) -->
+  <meta property="og:title" content="BRAVORIANS | Akses Baharu B.S.I" />
+  <meta property="og:description" content="Pengemaskinian URL baharu untuk akses aplikasi jadual induk BRAVORIANS. Akses melalui go.gov.my/bravorians." />
+  <meta property="og:image" content="assets/poster-bravorians.png" />
+  <meta property="og:url" content="https://go.gov.my/bravorians" />
+
+  <title>BRAVORIANS | B.S.I</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root{
+  --yellow:#ffd000; --yellow2:#ffb800; --black:#070809; --panel:#101215;
+  --panel2:#15181c; --white:#f7f7f5; --muted:#a7abb2; --line:rgba(255,208,0,.25);
+  --shadow:0 22px 70px rgba(0,0,0,.45); --radius:24px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+
+/* TAMBAHAN PENTING: overflow-x:hidden ditambah pada html untuk elak skrin lari kiri/kanan di iPhone */
+html{scroll-behavior:smooth; overflow-x:hidden}
+body{font-family:Inter,system-ui,sans-serif;background:var(--black);color:var(--white);line-height:1.6;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+button{font:inherit}
+.container{width:min(1160px,92%);margin:auto}
+.bg-grid{position:fixed;inset:0;pointer-events:none;opacity:.13;background-image:linear-gradient(rgba(255,208,0,.15) 1px,transparent 1px),linear-gradient(90deg,rgba(255,208,0,.15) 1px,transparent 1px);background-size:55px 55px;mask-image:linear-gradient(to bottom,#000,transparent 75%);z-index:-2}
+.glow{position:absolute;width:500px;height:500px;background:var(--yellow);filter:blur(180px);opacity:.08;border-radius:50%;pointer-events:none;z-index:-1}
+.glow.one{top:0;left:-220px}.glow.two{top:700px;right:-250px}
+
+header{position:fixed;top:0;left:0;right:0;z-index:20;background:rgba(7,8,9,.78);backdrop-filter:blur(18px);border-bottom:1px solid rgba(255,255,255,.06)}
+nav{height:74px;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:.04em}
+.brand img{width:43px;height:43px;object-fit:contain;border-radius:10px}
+.brand span{font-size:18px}.brand small{display:block;font-size:9px;color:var(--muted);letter-spacing:.18em}
+.navlinks{display:flex;gap:26px;align-items:center;font-size:13px;color:#d8d9dc}.navlinks a:hover{color:var(--yellow)}
+.nav-cta{background:var(--yellow);color:#080808;padding:11px 17px;border-radius:999px;font-weight:900;font-size:12px;box-shadow:0 8px 25px rgba(255,208,0,.18)}
+
+.hero{min-height:850px;padding:145px 0 90px;display:grid;grid-template-columns:1.05fr .95fr;gap:50px;align-items:center;position:relative}
+.eyebrow{display:inline-flex;gap:8px;align-items:center;border:1px solid var(--line);background:rgba(255,208,0,.06);padding:8px 13px;border-radius:999px;color:var(--yellow);font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin-bottom:22px}
+h1{font-family:Oswald,Impact,sans-serif;text-transform:uppercase;font-size:clamp(38px,6vw,86px);line-height:.95;letter-spacing:-.025em;margin-bottom:25px}
+h1 span{color:var(--yellow);display:block}
+.hero-copy{max-width:680px;color:#d3d5d9;font-size:18px}.hero-copy strong{color:var(--yellow)}
+.url-card{margin-top:32px;border:1px solid var(--yellow);background:linear-gradient(145deg,rgba(255,208,0,.1),rgba(255,255,255,.025));border-radius:20px;padding:18px;box-shadow:0 0 40px rgba(255,208,0,.08)}
+.url-label{font-size:11px;font-weight:800;color:var(--yellow);letter-spacing:.14em;text-transform:uppercase}.url-row{display:flex;gap:10px;align-items:center;margin-top:6px}
+
+/* TUKAR: break-word lebih baik dari break-all */
+.url{font-size:clamp(18px,3vw,31px);font-weight:900;word-break:break-word}
+.copy-btn{flex:0 0 auto;border:0;background:var(--yellow);color:#070809;border-radius:12px;padding:11px 14px;font-weight:900;cursor:pointer}.copy-btn:active{transform:scale(.97)}
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:25px}
+.btn{display:inline-flex;justify-content:center;align-items:center;gap:9px;padding:14px 20px;border-radius:13px;font-weight:900;font-size:13px;transition:.2s}
+.btn-primary{background:var(--yellow);color:#070809}.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(255,208,0,.18)}
+.btn-secondary{border:1px solid rgba(255,255,255,.14);background:#111318}.btn-secondary:hover{border-color:var(--yellow);color:var(--yellow)}
+.hero-art{position:relative}.hero-art img{width:100%;display:block;filter:drop-shadow(0 35px 45px rgba(0,0,0,.65));border-radius:30px}.hero-art:after{content:"";position:absolute;inset:9% 4% 2%;border:1px solid rgba(255,208,0,.25);border-radius:35px;transform:rotate(2deg);z-index:-1}
+
+section{padding:95px 0}.section-head{max-width:720px;margin-bottom:42px}.kicker{color:var(--yellow);font-size:11px;font-weight:900;letter-spacing:.16em;text-transform:uppercase}.section-title{font-family:Oswald,Impact,sans-serif;text-transform:uppercase;font-size:clamp(30px,5vw,58px);line-height:1.1;margin-top:10px}.section-desc{color:var(--muted);margin-top:14px}
+.features{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.feature{background:linear-gradient(160deg,#15181c,#0c0e10);border:1px solid rgba(255,255,255,.08);padding:27px;border-radius:var(--radius);transition:.25s;min-height:230px}.feature:hover{transform:translateY(-7px);border-color:rgba(255,208,0,.5);box-shadow:var(--shadow)}.icon{width:52px;height:52px;display:grid;place-items:center;background:rgba(255,208,0,.1);border:1px solid rgba(255,208,0,.25);border-radius:16px;color:var(--yellow);font-size:25px;margin-bottom:20px}.feature h3{font-size:17px;margin-bottom:8px}.feature p{font-size:13px;color:var(--muted)}
+
+.access{display:grid;grid-template-columns:.8fr 1.2fr;gap:35px;align-items:center;background:linear-gradient(135deg,#121519,#0b0d0f);border:1px solid rgba(255,208,0,.24);border-radius:32px;padding:40px}.qr-wrap{text-align:center}.qr-wrap img{width:min(290px,75%);background:white;padding:12px;border-radius:22px;box-shadow:0 20px 50px rgba(0,0,0,.5)}.qr-note{color:var(--muted);font-size:12px;margin-top:12px}.steps{display:grid;gap:14px}.step{display:flex;gap:17px;align-items:flex-start;padding:18px;border-radius:18px;background:#0c0f12;border:1px solid rgba(255,255,255,.06)}.num{width:38px;height:38px;border-radius:12px;background:var(--yellow);color:#050607;font-weight:900;display:grid;place-items:center;flex:0 0 auto}.step h3{font-size:15px}.step p{font-size:12px;color:var(--muted);margin-top:3px}
+
+.showcase{display:grid;grid-template-columns:1fr 1fr;gap:35px;align-items:center}.poster{border-radius:25px;border:1px solid rgba(255,255,255,.09);box-shadow:var(--shadow);width:100%;display:block}.showcase-copy ul{list-style:none;margin-top:25px;display:grid;gap:14px}.showcase-copy li{display:flex;gap:12px;align-items:flex-start;color:#d4d6da}.tick{color:var(--yellow);font-weight:900}.showcase-copy li span:last-child{font-size:14px}
+
+.cta{padding:90px 0}.cta-box{text-align:center;padding:65px 25px;border:1px solid var(--yellow);border-radius:32px;background:radial-gradient(circle at 50% 0,rgba(255,208,0,.15),transparent 45%),#101214;box-shadow:0 0 70px rgba(255,208,0,.07)}.cta-box h2{font-family:Oswald,Impact,sans-serif;text-transform:uppercase;font-size:clamp(32px,6vw,70px);line-height:1}.cta-box h2 span{color:var(--yellow)}.cta-box p{color:var(--muted);margin:16px auto 25px;max-width:600px}.cta-url{font-weight:900;font-size:22px;color:var(--yellow);margin-bottom:25px}
+
+footer{border-top:1px solid rgba(255,255,255,.07);padding:35px 0;color:var(--muted);font-size:12px}.footer-row{display:flex;justify-content:space-between;align-items:center;gap:20px}.footer-brand{font-weight:900;color:white}.footer-brand span{color:var(--yellow)}
+.toast{position:fixed;bottom:25px;left:50%;transform:translate(-50%,20px);background:var(--yellow);color:#070809;padding:12px 18px;border-radius:999px;font-size:12px;font-weight:900;opacity:0;pointer-events:none;transition:.25s;z-index:50}.toast.show{opacity:1;transform:translate(-50%,0)}
+.reveal{opacity:0;transform:translateY(22px);transition:.7s ease}.reveal.visible{opacity:1;transform:none}
+
+/* MEDIA QUERIES UNTUK TABLET */
+@media(max-width:900px){
+  .navlinks{display:none}
+  .hero{grid-template-columns:1fr;padding-top:125px}
+  .hero-art{max-width:650px;margin:auto}
+  .features{grid-template-columns:repeat(2,1fr)}
+  .access,.showcase{grid-template-columns:1fr}
+  .qr-wrap img{width:220px}
+  .showcase-copy{order:-1}
+}
+
+/* KEMASKINI: MEDIA QUERIES UNTUK MOBILE - Baiki tulisan terpotong & susunan */
+@media(max-width:560px){
+  .container{width:min(90%,430px)}
+  nav{height:65px}
+  .brand img{width:38px;height:38px}
+  .brand span{font-size:15px}
+  .hero{min-height:auto;padding:100px 0 50px;gap:20px}
+  
+  /* Saiz tajuk utama dikecilkan untuk muat perkataan panjang */
+  h1 {font-size:32px; margin-bottom:15px;} 
+  .hero-copy{font-size:14px}
+  
+  .url-row{align-items:stretch;flex-direction:column;gap:12px}
+  .url{font-size:16px}
+  .copy-btn{width:100%; padding:14px}
+  
+  /* Susunan butang dibaiki */
+  .actions{display:flex; flex-direction:column; gap:10px}
+  .btn{width:100%}
+  
+  section{padding:60px 0}
+  .section-title {font-size:26px;}
+  .features{grid-template-columns:1fr}
+  .feature{min-height:auto; padding:20px}
+  .access{padding:25px 20px}
+  .cta-box{padding:40px 15px}
+  .cta-box h2 {font-size:28px}
+  .footer-row{flex-direction:column;text-align:center; gap:10px}
+  .poster{border-radius:15px}
+}
+  </style>
+</head>
+<body>
+  <div class="bg-grid"></div><div class="glow one"></div><div class="glow two"></div>
+
+  <header>
+    <div class="container">
+      <nav>
+        <a href="#utama" class="brand" aria-label="BRAVORIANS">
+          <img src="assets/logo-bravorians.png" alt="Logo BRAVORIANS">
+          <div><span>BRAVORIANS</span><small>B.S.I. • JOHOR BAHRU</small></div>
+        </a>
+        <div class="navlinks">
+          <a href="#ciri">Ciri Utama</a><a href="#cara">Cara Akses</a><a href="#paparan">Paparan</a>
+          <a href="https://go.gov.my/bravorians" target="_blank" rel="noopener" class="nav-cta">AKSES APLIKASI</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="utama">
+    <section class="hero container">
+      <div class="hero-copy reveal">
+        <div class="eyebrow">⚡ Pengumuman Penting • URL Baharu</div>
+        <h1>Pengemaskinian <span>URL Baharu</span> Untuk Aplikasi BRAVORIANS</h1>
+        <p class="hero-copy">Kami sentiasa berusaha memberikan pengalaman terbaik kepada anggota <strong>BRAVORIANS</strong>. Gunakan URL baharu di bawah untuk akses aplikasi dengan lebih pantas dan mudah.</p>
+        <div class="url-card">
+          <div class="url-label">🔗 URL rasmi baharu</div>
+          <div class="url-row"><div class="url">go.gov.my/bravorians</div><button class="copy-btn" id="copyBtn">SALIN URL</button></div>
+        </div>
+        <div class="actions">
+          <a class="btn btn-primary" href="https://go.gov.my/bravorians" target="_blank" rel="noopener">🚀 BUKA APLIKASI</a>
+          <a class="btn btn-secondary" href="#cara">▣ CARA AKSES</a>
+        </div>
+      </div>
+      <div class="hero-art reveal"><img src="assets/phones-bravorians.png" alt="Paparan aplikasi BRAVORIANS pada telefon"></div>
+    </section>
+
+    <section id="ciri" class="container">
+      <div class="section-head reveal"><div class="kicker">BRAVORIANS</div><h2 class="section-title">Semua Yang Anda Perlukan, Di Satu Tempat</h2><p class="section-desc">Jadikan urusan semakan jadual, catatan dan perancangan cuti lebih teratur.</p></div>
+      <div class="features">
+        <article class="feature reveal"><div class="icon">📅</div><h3>Semak Jadual Bertugas</h3><p>Semak tarikh dan lokasi bertugas untuk tahun 2026 dengan lebih mudah.</p></article>
+        <article class="feature reveal"><div class="icon">📝</div><h3>Tambah Catatan</h3><p>Simpan catatan pada tarikh yang dipilih supaya maklumat penting tidak terlupa.</p></article>
+        <article class="feature reveal"><div class="icon">🔎</div><h3>Rancang Permohonan Cuti</h3><p>Kenal pasti tarikh yang sesuai dan bantu merancang permohonan cuti anda.</p></article>
+        <article class="feature reveal"><div class="icon">📱</div><h3>Akses Pelbagai Peranti</h3><p>Boleh digunakan melalui telefon, tablet atau komputer dengan pengalaman yang responsif.</p></article>
+      </div>
+    </section>
+
+    <section id="cara" class="container">
+      <div class="access reveal">
+        <div class="qr-wrap">
+          <!-- Ditambah lazy loading -->
+          <img src="assets/qr-bravorians.png" alt="Kod QR BRAVORIANS" loading="lazy">
+          <div class="qr-note">Imbas kod QR untuk akses pantas</div>
+        </div>
+        <div>
+          <div class="kicker">Cara Akses</div><h2 class="section-title">3 Langkah Mudah</h2>
+          <div class="steps" style="margin-top:24px">
+            <div class="step"><div class="num">01</div><div><h3>Buka URL baharu</h3><p>Layari <strong>go.gov.my/bravorians</strong> atau imbas kod QR.</p></div></div>
+            <div class="step"><div class="num">02</div><div><h3>Log masuk</h3><p>Masukkan maklumat akaun BRAVORIANS anda.</p></div></div>
+            <div class="step"><div class="num">03</div><div><h3>Semak dan urus jadual</h3><p>Semak jadual bertugas, tambah catatan dan rancang tarikh cuti.</p></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="paparan" class="container">
+      <div class="showcase">
+        <div class="reveal">
+          <!-- Ditambah lazy loading -->
+          <img class="poster" src="assets/poster-bravorians.png" alt="Poster pengemaskinian URL BRAVORIANS" loading="lazy">
+        </div>
+        <div class="showcase-copy reveal"><div class="kicker">Paparan BRAVORIANS</div><h2 class="section-title">Lebih Kemas. Lebih Mudah. Lebih Teratur.</h2><p class="section-desc">Landing page ini meneruskan identiti visual poster BRAVORIANS dengan tema hitam dan kuning yang jelas serta sesuai untuk telefon dan komputer.</p><ul><li><span class="tick">✓</span><span>URL baharu mudah diingati: <strong>go.gov.my/bravorians</strong></span></li><li><span class="tick">✓</span><span>Butang akses pantas terus ke aplikasi</span></li><li><span class="tick">✓</span><span>QR code untuk pengguna telefon</span></li><li><span class="tick">✓</span><span>Reka bentuk responsif untuk skrin kecil dan besar</span></li></ul></div>
+      </div>
+    </section>
+
+    <section class="cta container">
+      <div class="cta-box reveal">
+        <div class="kicker">Akses Sekarang</div><h2>Dah Bersedia?<br><span>Jom Guna BRAVORIANS!</span></h2>
+        <p>Simpan URL baharu ini dan gunakan setiap kali anda ingin mengakses aplikasi BRAVORIANS.</p>
+        <div class="cta-url">go.gov.my/bravorians</div>
+        <a class="btn btn-primary" href="https://go.gov.my/bravorians" target="_blank" rel="noopener">🚀 BUKA APLIKASI BRAVORIANS</a>
+      </div>
+    </section>
+  </main>
+
+  <footer><div class="container footer-row"><div class="footer-brand">BRAVORIANS <span>•</span> B.S.I. JOHOR BAHRU</div><div>Bersama, Kita Lebih Teratur!</div></div></footer>
+  <div class="toast" id="toast">URL berjaya disalin!</div>
+
+  <script>
+    const copyBtn = document.getElementById('copyBtn'), 
+          toast = document.getElementById('toast');
+
+    // Pengendalian Ralat yang lebih baik untuk butang salin
+    copyBtn.addEventListener('click', async () => {
+      if (navigator.clipboard && window.isSecureContext) {
+        try {
+          await navigator.clipboard.writeText('https://go.gov.my/bravorians');
+          copyBtn.textContent = '✓ DISALIN';
+          toast.classList.add('show');
+          setTimeout(() => {
+            toast.classList.remove('show');
+            copyBtn.textContent = 'SALIN URL';
+          }, 1800);
+        } catch (e) {
+          alert('Sila salin pautan ini secara manual: https://go.gov.my/bravorians');
+        }
+      } else {
+        alert('Sila salin pautan ini secara manual: https://go.gov.my/bravorians');
+      }
+    });
+
+    const observer = new IntersectionObserver(entries => entries.forEach(e => {
+      if(e.isIntersecting) e.target.classList.add('visible')
+    }), {threshold:.12});
+    
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
